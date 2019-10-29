@@ -76,6 +76,24 @@ class Solution:
 
         return False
 
+    def missingNumber(self, nums: List[int]) -> int:
+        # way 1: wrong answer
+        # exceeding time limit
+        """
+        lens = len(nums)
+        return [i for i in range(lens+1) if i not in nums][0]
+        """
+
+        # 利用set性质以及并集结果
+        """
+        lens = len(nums)
+        return (set(range(lens+1)) - set(nums)).pop()
+        """
+
+        # way 2 use math
+        lens = len(nums)
+        return lens * (lens + 1) // 2 - sum(nums)
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -91,3 +109,6 @@ if __name__ == '__main__':
 
     # 219 存在重复元素2
     # print(show.containsNearbyDuplicate([1,2,3,1], 3))
+
+    # 268 缺失数字
+    # print(show.missingNumber([9,6,4,2,3,5,7,0,1]))
