@@ -5,7 +5,7 @@ class Solution:
     # 双指针法
     def twoSum(self, numbers: List[int], target: int) -> List[int]:
         lens = len(numbers)
-        i, j = 0, lens-1
+        i, j = 0, lens - 1
 
         # 由于题给条件，因此只能有如下情况
         while i != j:
@@ -15,7 +15,7 @@ class Solution:
             elif ans < target:
                 i += 1
             else:
-                return [i+1, j+1]
+                return [i + 1, j + 1]
 
         return []
 
@@ -60,12 +60,34 @@ class Solution:
 
         return candidate
 
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        # 利用set中无重复元素特性
+        return len(set(nums)) != len(nums)
+
+    def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        # 维护一个字典即可
+        dict = {}
+        lens = len(nums)
+        for i in range(lens):
+            if nums[i] in dict and i - dict[nums[i]] <= k:
+                return True
+            # 存在性问题，不管在不在都得更新
+            dict[nums[i]] = i
+
+        return False
+
 
 if __name__ == '__main__':
     show = Solution()
 
     # 167 两数和（有序数组）
-    print(show.twoSum([2, 7, 11, 15], 9))
+    # print(show.twoSum([2, 7, 11, 15], 9))
 
     # 168 求众数
-    print(show.majorityElement([47,47,72,47,72,47,79,47,12,92,13,47,47,83,33,15,18,47,47,47,47,64,47,65,47,47,47,47,70,47,47,55,47,15,60,47,47,47,47,47,46,30,58,59,47,47,47,47,47,90,64,37,20,47,100,84,47,47,47,47,47,89,47,36,47,60,47,18,47,34,47,47,47,47,47,22,47,54,30,11,47,47,86,47,55,40,49,34,19,67,16,47,36,47,41,19,80,47,47,27]))
+    # print(show.majorityElement([47,47,72,47,72,47,79,47,12,92,13,47,47,83,33,15,18,47,47,47,47,64,47,65,47,47,47,47,70,47,47,55,47,15,60,47,47,47,47,47,46,30,58,59,47,47,47,47,47,90,64,37,20,47,100,84,47,47,47,47,47,89,47,36,47,60,47,18,47,34,47,47,47,47,47,22,47,54,30,11,47,47,86,47,55,40,49,34,19,67,16,47,36,47,41,19,80,47,47,27]))
+
+    # 217 存在重复元素
+    # print(show.containsDuplicate([1,2,3,1]))
+
+    # 219 存在重复元素2
+    # print(show.containsNearbyDuplicate([1,2,3,1], 3))
