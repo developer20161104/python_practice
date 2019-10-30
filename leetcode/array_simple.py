@@ -1,4 +1,5 @@
 from typing import List
+import math
 
 
 class Solution:
@@ -94,6 +95,62 @@ class Solution:
         lens = len(nums)
         return lens * (lens + 1) // 2 - sum(nums)
 
+    def moveZeroes(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        # 使用k来统计已经出现的0的个数，用于后面的位移距离判断
+        k = 0
+        lens = len(nums)
+
+        for i in range(lens):
+            if nums[i] == 0:
+                k += 1
+            elif k > 0:
+                nums[i - k] = nums[i]
+                nums[i] = 0
+        # print(nums)
+
+    def thirdMax(self, nums: List[int]) -> int:
+        # 使用一个大小为3的列表来收入前三个最大的数字
+        # 表示无穷的技巧为使用float("-inf")
+        lists = [float("-inf"), float("-inf"), float("-inf")]
+
+        for i in nums:
+            # 去掉重复
+            if i in lists:
+                continue
+
+            if i > lists[0]:
+                lists = [i, lists[0], lists[1]]
+            elif i > lists[1]:
+                lists = [lists[0], i, lists[1]]
+            elif i > lists[2]:
+                lists[2] = [lists[0], lists[1], i]
+
+        # 判断语句还能与返回语句一起写的？
+        return int(lists[0]) if math.isinf(lists[2]) else int(lists[2])
+
+    def findDisappearedNumbers(self, nums: List[int]) -> List[int]:
+        # 利用了set的特性，但是空间复杂度不满足条件
+        """
+        lens = len(nums)
+        return list(set(range(1, lens+1)) - set(nums))
+        """
+        # 顺着数值找索引
+        # 将出现的数字作为下标，并对该位置加长度，然后再遍历这个数组，寻找低于这个长度的位置，即为消失的数字
+        lists = []
+        lens = len(nums)
+        for i in range(lens):
+            # 注意在添加长度后需要求余数，否则下标会溢出
+            index = (nums[i] - 1) % lens
+            nums[index] += lens
+
+        for i in range(lens):
+            if nums[i] <= lens:
+                lists.append(i + 1)
+        return lists
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -112,3 +169,12 @@ if __name__ == '__main__':
 
     # 268 缺失数字
     # print(show.missingNumber([9,6,4,2,3,5,7,0,1]))
+
+    # 283 移动零
+    # print(show.moveZeroes([0,0]))
+
+    # 414 第三大的数
+    # print(show.thirdMax([2,1,3]))
+
+    # 448 找到数组中消失的数字
+    # print(show.findDisappearedNumbers([4,3,2,7,8,2,3,1]))
