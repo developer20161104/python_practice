@@ -246,8 +246,6 @@ class Solution:
 
 if __name__ == '__main__':
     show = Solution()
-
-    # previous simple question solutions
     print(show.removeDuplicates([0,0,1,1,1,2,2,3,3,4]))
 
     print(show.removeElement([0,1,2,2,3,0,4,2], 2))
