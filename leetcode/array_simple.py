@@ -151,6 +151,61 @@ class Solution:
                 lists.append(i + 1)
         return lists
 
+    def findMaxConsecutiveOnes(self, nums: List[int]) -> int:
+        # 设置计数变量来统计当前连续数量即可
+        maxs, cur = 0, 0
+        lens = len(nums)
+
+        for i in nums:
+            if i:
+                cur += 1
+            else:
+                maxs = max(maxs, cur)
+                cur = 0
+
+        return max(cur, maxs)
+
+    def findPairs(self, nums: List[int], k: int) -> int:
+        # 过于耗时
+        """
+        # 排序后不需要再考虑前后互换重复，只需要判断相同元素重复即可
+        lens, res = len(nums), 0
+        # dicts保存的是当前已经加入的键值对
+        nums, dicts = sorted(nums), {}
+        # i为除最后一个外的每一个元素，j则为与i匹配的另一个元素
+        for i in range(lens-1):
+            j = i+1
+            while j < lens and nums[j]-nums[i] < k:
+                j += 1
+            # j可能会越界
+            if j < lens and nums[j]-nums[i] == k and nums[i] not in dicts:
+                dicts[nums[i]] = nums[j]
+                res += 1
+
+        return res
+        """
+        # 用两个set,一个保存当前遍历的元素，一个保存满足条件的较小数字（自动过滤重复，妙呀）
+        # 不能直接将所有元素添加，会把重复元素过滤造成错误，并且两个判断也不能合并，可能会出现同时满足的情况
+        if k < 0:
+            return 0
+        diff, total = set(), set()
+        for i in nums:
+            # 当前值较大
+            if i - k in total:
+                diff.add(i - k)
+            # 当前值较小
+            if i + k in total:
+                diff.add(i)
+            total.add(i)
+
+        return len(diff)
+
+    def arrayPairSum(self, nums: List[int]) -> int:
+        # 关键在于排序后将小的元素都放在一起，然后选取每对的第一个元素即可
+        lens = len(nums)
+        nums = sorted(nums)
+        return sum(nums[i] for i in range(0, lens, 2))
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -178,3 +233,12 @@ if __name__ == '__main__':
 
     # 448 找到数组中消失的数字
     # print(show.findDisappearedNumbers([4,3,2,7,8,2,3,1]))
+
+    # 485 最大连续1个数
+    # print(show.findMaxConsecutiveOnes([1,1,0,1,1,1]))
+
+    # 532 数组中的K-diff对
+    # print(show.findPairs([6,3,5,7,2,3,3,8,2,4], 2))
+
+    # 561 数组拆分I
+    # print(show.arrayPairSum([1,4,3,2]))
