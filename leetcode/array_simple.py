@@ -154,7 +154,6 @@ class Solution:
     def findMaxConsecutiveOnes(self, nums: List[int]) -> int:
         # 设置计数变量来统计当前连续数量即可
         maxs, cur = 0, 0
-        lens = len(nums)
 
         for i in nums:
             if i:
@@ -206,6 +205,89 @@ class Solution:
         nums = sorted(nums)
         return sum(nums[i] for i in range(0, lens, 2))
 
+    def matrixReshape(self, nums: List[List[int]], r: int, c: int) -> List[List[int]]:
+        # 先排个列表再进行处理，有点耗时
+        lists = [x for l in nums for x in l]
+        lens = len(lists)
+        if r * c - lens:
+            return nums
+
+        return [lists[i * c:(i + 1) * c] for i in range(r)]
+
+    def findUnsortedSubarray(self, nums: List[int]) -> int:
+
+        # wrong answer: 无法判断重复数组，思路不对
+        """
+        i, j = 1,  len(nums)-1
+        if j:
+            while i < j and nums[i] >= nums[i - 1]:
+                i += 1
+            while j > 0 and nums[j] >= nums[i-1] and nums[j] >= nums[j - 1]:
+                j -= 1
+        else:
+            return 0
+        return 0 if i == len(nums)-1 and j else j-i+2
+        """
+        # 对于重复序列无效
+        """
+        lens = len(nums)
+        if lens < 2:
+            return 0
+        max_front = nums[0]
+        for i in range(lens-1):
+            if nums[i] > nums[i+1]:
+                max_front = i
+                break
+        max_back = nums[lens-1]
+        for i in range(lens-1, 0, -1):
+            if nums[i] < nums[i-1] or (max_front < lens and nums[i] < nums[max_front]):
+                max_back = i
+                break
+        if max_front == nums[0] and max_back == nums[lens-1]:
+            return 0
+        return max_back-max_front+1
+        """
+        # 使用排序对比，过滤各种花里胡哨的样例
+        lens = len(nums)
+        left, right = lens - 1, 0
+        nums_sort = sorted(nums)
+        for i in range(lens):
+            if nums[i] != nums_sort[i]:
+                left = i
+                break
+
+        for i in range(lens - 1, -1, -1):
+            if nums[i] != nums_sort[i]:
+                right = i
+                break
+
+        return 0 if left == lens - 1 and right == 0 else right - left + 1
+
+    def canPlaceFlowers(self, flowerbed: List[int], n: int) -> bool:
+        # 对于两边都做了特殊判断，其实可以考虑防御式编程思想，判断之前就在首尾各加一个0，排除特殊情况
+        lens = len(flowerbed)
+        cur_zero = 1 if not flowerbed[0] else 0
+        for i in flowerbed:
+            if not i:
+                cur_zero += 1
+            else:
+                n = judge(cur_zero, n)
+                cur_zero = 0
+
+        if not flowerbed[lens - 1]:
+            cur_zero += 1
+            n = judge(cur_zero, n)
+        return False if n > 0 else True
+
+
+def judge(cur_zero: int, n: int):
+    jud = cur_zero % 2
+    if jud:
+        n -= cur_zero // 2
+    elif cur_zero:
+        n -= cur_zero // 2 - 1
+    return n
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -242,3 +324,12 @@ if __name__ == '__main__':
 
     # 561 数组拆分I
     # print(show.arrayPairSum([1,4,3,2]))
+
+    # 566 重塑矩阵
+    # print(show.matrixReshape([[1,2],[3,4]],2,4))
+
+    # 581 最短无序连续子数组（难）
+    # print(show.findUnsortedSubarray([3,2]))
+
+    # 605 种花问题（防御式编程思想）
+    # print(show.canPlaceFlowers([0,0,1,0,0,0,1,0,0], 2))
