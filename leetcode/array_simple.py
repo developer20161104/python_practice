@@ -1,4 +1,5 @@
 from typing import List
+from functools import reduce
 import math
 
 
@@ -279,7 +280,50 @@ class Solution:
             n = judge(cur_zero, n)
         return False if n > 0 else True
 
+    def maximumProduct(self, nums: List[int]) -> int:
+        lens = len(nums)
+        nums = sorted(nums)
 
+        # 没必要进行判断
+        """
+        lefts = 0
+        for i in nums:
+            if i < 0:
+                lefts += 1
+
+        right = nums[lens-2]*nums[lens-3]
+        if lefts < 2:
+            return right*nums[lens-1]
+        else:
+            left = nums[0] * nums[1]
+            return left*nums[lens-1] if left > right else right*nums[lens-1]
+        """
+        return max(reduce(lambda a, b: a * b, nums[lens - 3:]), nums[0] * nums[1] * nums[lens - 1])
+
+    def findMaxAverage(self, nums: List[int], k: int) -> float:
+        # 暴力枚举超时，每次都要全部求和会超时
+        """
+        total = -10000000
+        times = len(nums)-k+1
+        for i in range(times):
+            total = max(total, sum(nums[i:i+k]))
+
+        return total
+        """
+        # total仅记录当前的max，cur则为移动窗口，注意两者区别！
+        total = sum(nums[:k])
+        cur = total
+        times = len(nums) - k + 1
+        for i in range(1, times):
+            if k == 1:
+                total = max(total, nums[i])
+            else:
+                cur = cur - nums[i - 1] + nums[i + k - 1]
+                total = max(total, cur)
+
+        return total / k
+
+    
 def judge(cur_zero: int, n: int):
     jud = cur_zero % 2
     if jud:
@@ -333,3 +377,9 @@ if __name__ == '__main__':
 
     # 605 种花问题（防御式编程思想）
     # print(show.canPlaceFlowers([0,0,1,0,0,0,1,0,0], 2))
+
+    # 628 三个数的最大乘积
+    # print(show.maximumProduct([1,2,3,4]))
+
+    # 643 子数组最大平均数I
+    # print(show.findMaxAverage([4,2,1,3,3],2))
