@@ -385,6 +385,51 @@ class Solution:
 
         return max(maxs, cur)
 
+    def findShortestSubArray(self, nums: List[int]) -> int:
+        # 超时,使用dict没错，但是统计次数的话后面还要重复查找，费时
+        """
+        dicts = {}
+        for i in nums:
+            if i not in dicts:
+                dicts[i] = 1
+            else:
+                dicts[i] += 1
+
+        # 通过value获取对应的key值
+        # val = list(dicts.keys())[list(dicts.values()).index(max(dicts.values()))]
+        max_val = max(dicts.values())
+        pre_dig = [i for i in dicts if dicts[i] == max_val]
+        min_len, lens = 50001, len(nums)
+        for key in pre_dig:
+            i, j = 0, lens-1
+            while nums[i] != key:
+                i += 1
+            while nums[j] != key:
+                j -= 1
+            min_len = min(min_len, j-i+1)
+
+        return min_len
+        """
+        # 使用dict保存每个元素出现位置，则无需后面的位置判别
+        # 以空间换时间
+        lens = len(nums)
+        dicts = {}
+        for i in range(lens):
+            if nums[i] not in dicts:
+                dicts[nums[i]] = [i]
+            else:
+                dicts[nums[i]].append(i)
+
+        # 找出子列表中长度最长值
+        max_num = max([len(x) for x in dicts.values()])
+        min_len = lens
+        for i in dicts:
+            if len(dicts[i]) == max_num:
+                # 有了每个元素的位置，只需将最后一个与第一个作差即可得到最终结果
+                min_len = min(min_len, dicts[i][-1] - dicts[i][0] + 1)
+
+        return min_len
+
 
 def judge(cur_zero: int, n: int):
     jud = cur_zero % 2
@@ -454,3 +499,6 @@ if __name__ == '__main__':
 
     # 674 最大连续递增序列
     # print(show.findLengthOfLCIS([2,2,2]))
+
+    # 697 数组的度（需要优化）
+    # print(show.findShortestSubArray([1, 2, 2, 3, 1]))
