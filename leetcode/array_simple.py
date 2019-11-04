@@ -68,13 +68,13 @@ class Solution:
 
     def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
         # 维护一个字典即可
-        dict = {}
+        dicts = {}
         lens = len(nums)
         for i in range(lens):
-            if nums[i] in dict and i - dict[nums[i]] <= k:
+            if nums[i] in dicts and i - dicts[nums[i]] <= k:
                 return True
             # 存在性问题，不管在不在都得更新
-            dict[nums[i]] = i
+            dicts[nums[i]] = i
 
         return False
 
@@ -318,12 +318,74 @@ class Solution:
             if k == 1:
                 total = max(total, nums[i])
             else:
+                # 相比直接全体求和，保持一个窗口会大大减少求和时间
                 cur = cur - nums[i - 1] + nums[i + k - 1]
                 total = max(total, cur)
 
         return total / k
 
-    
+    def imageSmoother(self, M: List[List[int]]) -> List[List[int]]:
+        row, col = len(M), len(M[0])
+        # 对于图类型的题目，常采用偏移数组来进行位移，减少不必要的条件判断
+        move_r = [-1, 1, 0, 0, -1, -1, 1, 1]
+        move_c = [0, 0, -1, 1, -1, 1, -1, 1]
+        ans = []
+
+        for i in range(row):
+            cur_row = []
+            for j in range(col):
+                count = 1
+                sums = M[i][j]
+                for k in range(8):
+                    # 预判下一步是否符合条件
+                    next_r, next_c = i + move_r[k], j + move_c[k]
+                    # python竟然阔以这么玩
+                    if (0 <= next_r < row) and (0 <= next_c < col):
+                        count += 1
+                        sums += M[next_r][next_c]
+                cur_row.append(sums // count)
+            ans.append(cur_row)
+
+        return ans
+
+    def checkPossibility(self, nums: List[int]) -> bool:
+        # 注意区分两种情况：2,3,3,1,4 与 1,2,8,2,4 有点麻烦
+        count, lens = 0, len(nums)
+        if lens < 2:
+            return True
+        if nums[0] > nums[1]:
+            nums[0] = nums[1]
+            count += 1
+
+        for i in range(1, lens - 1):
+            if nums[i] > nums[i + 1]:
+                count += 1
+                if count > 1:
+                    return False
+                # 败在此处逻辑，只有两种情况：把大的变小，把小的变大
+                # 更换逻辑则为从右向左选择替换
+                if nums[i + 1] < nums[i - 1]:
+                    nums[i + 1] = nums[i]
+                else:
+                    nums[i] = nums[i - 1]
+
+        return True
+
+    def findLengthOfLCIS(self, nums: List[int]) -> int:
+        maxs, cur, lens = 0, 1, len(nums)
+        if not lens:
+            return 0
+        # 保存当前最大的记录即可
+        for i in range(lens - 1):
+            if nums[i] < nums[i + 1]:
+                cur += 1
+            else:
+                maxs = max(maxs, cur)
+                cur = 1
+
+        return max(maxs, cur)
+
+
 def judge(cur_zero: int, n: int):
     jud = cur_zero % 2
     if jud:
@@ -383,3 +445,12 @@ if __name__ == '__main__':
 
     # 643 子数组最大平均数I
     # print(show.findMaxAverage([4,2,1,3,3],2))
+
+    # 661 图片平滑器
+    # print(show.imageSmoother([[1,1,1],[1,0,1],[1,1,1]]))
+
+    # 665 非递减数列（难）
+    # print(show.checkPossibility([1,2,8,1,6]))
+
+    # 674 最大连续递增序列
+    # print(show.findLengthOfLCIS([2,2,2]))
