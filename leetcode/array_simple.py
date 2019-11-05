@@ -266,6 +266,14 @@ class Solution:
 
     def canPlaceFlowers(self, flowerbed: List[int], n: int) -> bool:
         # 对于两边都做了特殊判断，其实可以考虑防御式编程思想，判断之前就在首尾各加一个0，排除特殊情况
+        def judge(cur_zeros: int, n: int):
+            jud = cur_zeros % 2
+            if jud:
+                n -= cur_zeros // 2
+            elif cur_zeros:
+                n -= cur_zeros // 2 - 1
+            return n
+
         lens = len(flowerbed)
         cur_zero = 1 if not flowerbed[0] else 0
         for i in flowerbed:
@@ -430,14 +438,73 @@ class Solution:
 
         return min_len
 
+    def isOneBitCharacter(self, bits: List[int]) -> bool:
+        # 不能投机取巧
+        """
+        lens = len(bits)
+        if lens < 2:
+            return True
+        if bits[-1] == bits[-2] == 0:
+            return True
+        elif lens > 2 and bits[-3]:
+            return True
+        return False
+        """
+        lens, i = len(bits), 0
+        while i < lens:
+            # 出现为1时抵消两个
+            if bits[i]:
+                i += 2
+            else:
+                # 如果最后只剩一个，则必为True
+                if i == lens - 1:
+                    return True
+                i += 1
 
-def judge(cur_zero: int, n: int):
-    jud = cur_zero % 2
-    if jud:
-        n -= cur_zero // 2
-    elif cur_zero:
-        n -= cur_zero // 2 - 1
-    return n
+        return False
+
+    def pivotIndex(self, nums: List[int]) -> int:
+        # 由于有负数出现，因此无法以大小移动指针
+        # 当出现正负数时候，不能直接以大小来进行衡量，因此可以考虑采用窗口包裹，简化实现
+        """
+        lens = len(nums)
+        if lens < 3:
+            return -1
+        left_val, right_val = nums[0], nums[-1]
+        left, right = 0, lens-1
+
+        while left+1 < right:
+            if left_val > right_val:
+                right -= 1
+                right_val += nums[right]
+            elif left_val < right_val:
+                left += 1
+                left_val += nums[left]
+            else:
+                right -= 1
+                right_val += nums[right]
+                left += 1
+                left_val += nums[left]
+
+        return left if left_val == right_val and left+1 != right else -1
+        """
+        # 反正要移动指针，不如一开始就分成两块，直到找到相等的即可，窗口思想
+        lens = len(nums)
+        if lens < 3:
+            return -1
+        # 初始时左边为空，右边为从第一项开始的求和
+        left, right = 0, sum(nums[1:])
+
+        # 只能从最前面开始，否则会漏项 left=null，right=all=0
+        for i in range(0, lens - 1):
+            if left == right:
+                return i
+            left += nums[i]
+            right -= nums[i + 1]
+        # 必须把最后的盒子也要算上 left=all=0，right=null
+        if left == right:
+            return lens - 1
+        return -1
 
 
 if __name__ == '__main__':
@@ -502,3 +569,9 @@ if __name__ == '__main__':
 
     # 697 数组的度（需要优化）
     # print(show.findShortestSubArray([1, 2, 2, 3, 1]))
+
+    # 717 1比特与2比特字符
+    # print(show.isOneBitCharacter([0,1,1,0]))
+
+    # 724 寻找数组的中心索引
+    # print(show.pivotIndex([-1,-1,-1,0,1,1]))
