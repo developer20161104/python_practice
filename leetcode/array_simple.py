@@ -506,6 +506,42 @@ class Solution:
             return lens - 1
         return -1
 
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
+        # 动态规划还是有些想不出来
+        # 空间复杂度还可以优化
+        """lens = len(cost)
+        cur_cost = [0]*lens
+        cur_cost[0], cur_cost[1] = cost[0], cost[1]
+        for i in range(2, lens):
+            # 记录之前的数值，方便后续使用，以空间换时间
+            cur_cost[i] = min(cur_cost[i-1]+cost[i], cur_cost[i-2]+cost[i])
+
+        return min(cur_cost[-1], cur_cost[-2])"""
+        # 只需要保存左右两个值即可
+        # 状态转移方程为 f(n) = min(f(n-1)+cost[n-1], f(n-2)+cost[n-2])
+        lens = len(cost)
+        left, right = 0, 0
+        for i in range(2, lens + 1):
+            temp = right
+            right = min(right + cost[i - 1], left + cost[i - 2])
+            left = temp
+
+        return right
+
+    def dominantIndex(self, nums: List[int]) -> int:
+        # 维护一个二维列表即可,只需要扫描一遍，但是需要花费空间来存储两个值以及相应的元素
+        lens, pos = len(nums), -1
+        max_dig = [0] * 2
+        for i in range(lens):
+            if nums[i] > max_dig[0]:
+                max_dig[1] = max_dig[0]
+                max_dig[0] = nums[i]
+                pos = i
+            elif nums[i] > max_dig[1]:
+                max_dig[1] = nums[i]
+
+        return pos if max_dig[1] * 2 <= max_dig[0] else -1
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -575,3 +611,9 @@ if __name__ == '__main__':
 
     # 724 寻找数组的中心索引
     # print(show.pivotIndex([-1,-1,-1,0,1,1]))
+
+    # 746 使用最小花费爬楼梯
+    # print(show.minCostClimbingStairs([1, 100, 1, 1, 1, 100, 1, 1, 100, 1]))
+
+    # 747 至少是其他数字两倍的最大数
+    # print(show.dominantIndex([1,2,3,4]))
