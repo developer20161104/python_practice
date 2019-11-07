@@ -542,6 +542,46 @@ class Solution:
 
         return pos if max_dig[1] * 2 <= max_dig[0] else -1
 
+    def isToeplitzMatrix(self, matrix: List[List[int]]) -> bool:
+        # 对于每个对角线作循环判断即可，从右向左，参数设置方面需要好好斟酌
+        row, col = len(matrix), len(matrix[0])
+        for i in range(col - 2, -row, -1):
+            # 先整第一行的
+            if i > -1:
+                cur_row, cur_col = 1, i + 1
+            # 再整第一列的
+            else:
+                cur_row, cur_col = -i, 1
+            while cur_row < row and cur_col < col:
+                if matrix[cur_row][cur_col] != matrix[cur_row - 1][cur_col - 1]:
+                    return False
+                cur_row += 1
+                cur_col += 1
+        return True
+
+    def largeGroupPositions(self, S: str) -> List[List[int]]:
+        lens, res, cur_ch, cur_pos = len(S), [], S[0], 0
+        # 边缘判断一定不能少
+        if lens < 3:
+            return res
+        for i in range(1, lens):
+            if S[i] != cur_ch:
+                if i - cur_pos >= 3:
+                    res.append([cur_pos, i - 1])
+
+                cur_ch = S[i]
+                cur_pos = i
+
+        # 注意最后的判断与之前的不一样
+        if i - cur_pos + 1 >= 3:
+            res.append([cur_pos, i])
+        return res
+
+    def flipAndInvertImage(self, A: List[List[int]]) -> List[List[int]]:
+        # py大法好呀
+        # 先反转，再与1异或即可
+        return [list(map(lambda x: x ^ 1, rows[::-1])) for rows in A]
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -617,3 +657,12 @@ if __name__ == '__main__':
 
     # 747 至少是其他数字两倍的最大数
     # print(show.dominantIndex([1,2,3,4]))
+
+    # 766 托普利兹矩阵
+    # print(show.isToeplitzMatrix([[41,45],[81,41],[73,81],[47,73],[0,47],[79,76]]))
+
+    # 830 较大分组位置
+    # print(show.largeGroupPositions("aaa"))
+
+    # 832 翻转图像
+    # print(show.flipAndInvertImage([[1,1,0,0],[1,0,0,1],[0,1,1,1],[1,0,1,0]]))
