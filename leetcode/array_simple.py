@@ -582,6 +582,46 @@ class Solution:
         # 先反转，再与1异或即可
         return [list(map(lambda x: x ^ 1, rows[::-1])) for rows in A]
 
+    def numMagicSquaresInside(self, grid: List[List[int]]) -> int:
+        row, col = len(grid), len(grid[0])
+        if row < 3 or col < 3:
+            return 0
+
+        # 判断幻方函数
+        def check(mat: List[List[int]], st_row: int, st_cor: int) -> bool:
+            lists = sum([mat[st_row + k][st_cor:st_cor + 3] for k in range(3)], [])
+            if len(set(lists)) != 9 or max(lists) > 9 or min(lists) < 1:
+                return False
+            # ans = sum(mat[st_row][st_cor:st_cor+3])
+            ans = 15
+            # 其实还可以简化的，懒的搞了
+            for i in range(1, 3):
+                if sum(mat[i + st_row][st_cor:st_cor + 3]) != ans or sum(
+                        mat[st_row + k][st_cor + i] for k in range(3)) != ans:
+                    return False
+                if i == 1:
+                    if sum(mat[st_row + k][st_cor + k] for k in range(3)) != ans:
+                        return False
+                else:
+                    if sum(mat[st_row + k][st_cor + 2 - k] for k in range(3)) != ans:
+                        return False
+
+            return True
+
+        tot = 0
+        for j in range(row - 2):
+            for l in range(col - 2):
+                if check(grid, j, l):
+                    tot += 1
+
+        return tot
+
+    def maxDistToClosest(self, seats: List[int]) -> int:
+        pass
+
+    def transpose(self, A: List[List[int]]) -> List[List[int]]:
+        return [list(row) for row in zip(*A)]
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -666,3 +706,12 @@ if __name__ == '__main__':
 
     # 832 翻转图像
     # print(show.flipAndInvertImage([[1,1,0,0],[1,0,0,1],[0,1,1,1],[1,0,1,0]]))
+
+    # 840 矩阵中的幻方
+    # print(show.numMagicSquaresInside([[4,3,8,4],[9,5,1,9],[2,7,6,2]]))
+
+    # 849 到最近的人的最大距离
+    # print(show.maxDistToClosest([1,0,0,0,1,0,1]))
+
+    # 867 转置矩阵
+    # print(show.transpose([[1,2,3],[4,5,6],[7,8,9]]))
