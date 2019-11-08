@@ -617,7 +617,30 @@ class Solution:
         return tot
 
     def maxDistToClosest(self, seats: List[int]) -> int:
-        pass
+        # 由于最开始与最后面的有区别，所以只能单独使用一个变量来保存当前最大的值
+        cur_st, cur_ed, flag, max_st, max_ed, max_num, lens = 0, 0, True, 0, 0, 0, len(seats)
+        for i in range(lens):
+            if seats[i]:
+                cur_ed = i
+                # flag用于标记初始位置的特殊判断
+                if flag:
+                    max_num, max_st, max_ed = cur_ed - cur_st, cur_st, cur_ed
+                    flag = False
+
+                # 常规判断
+                if (cur_ed - cur_st + 1) // 2 > max_num:
+                    max_st, max_ed, max_num = cur_st, cur_ed, (cur_ed - cur_st + 1) // 2
+
+                # 使用此处标记方便后续判断
+                cur_st = i + 1
+
+        # 用于最后一段特殊判断
+        if cur_st < lens:
+            cur_ed = lens - 1
+            if cur_ed - cur_st + 1 > max_num:
+                max_num = cur_ed - cur_st + 1
+
+        return max_num
 
     def transpose(self, A: List[List[int]]) -> List[List[int]]:
         return [list(row) for row in zip(*A)]
@@ -711,7 +734,7 @@ if __name__ == '__main__':
     # print(show.numMagicSquaresInside([[4,3,8,4],[9,5,1,9],[2,7,6,2]]))
 
     # 849 到最近的人的最大距离
-    # print(show.maxDistToClosest([1,0,0,0,1,0,1]))
+    # print(show.maxDistToClosest([0, 0, 0, 0, 1, 0, 0, 0]))
 
     # 867 转置矩阵
     # print(show.transpose([[1,2,3],[4,5,6],[7,8,9]]))
