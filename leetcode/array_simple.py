@@ -643,7 +643,54 @@ class Solution:
         return max_num
 
     def transpose(self, A: List[List[int]]) -> List[List[int]]:
+        # 一种初始化多维列表的方法
+        # r = [[0 for i in range(m)] for j in range(n)]
+        # this will return a list[tuple()]
+        # return list(zip(*A))
         return [list(row) for row in zip(*A)]
+
+    def fairCandySwap(self, A: List[int], B: List[int]) -> List[int]:
+        # flag用来判断选的是A还是B， leetcode编译器不通过顺序不对的列表，说好的山盟海誓嘞！
+        sum_max, sum_min, flag = sum(A), sum(B), True
+        chosse_sort, search_sort = A, set(B)
+        if sum_max < sum_min:
+            chosse_sort, search_sort, flag = B, set(A), False
+
+        # 两者的差值
+        sub_abs = abs(sum_max - sum_min) // 2
+        # 使用set集合作为查找，减少查询时间
+        for i in chosse_sort:
+            if i - sub_abs in search_sort:
+                return [i - sub_abs, i] if not flag else [i, i - sub_abs]
+
+        return []
+
+    def isMonotonic(self, A: List[int]) -> bool:
+        # flag 标记递增递减序列
+        lens, flag, st = len(A), True, 1
+        pre = A[0]
+        # 需要过滤与第一个相等的元素（1,1,0）
+        while st < lens and A[st] == pre:
+            st += 1
+        for i in range(st, lens):
+            # 从不重复的第一个元素开始判断
+            if A[i] < pre and i == st:
+                pre, flag = A[i], False
+                continue
+
+            # 递增或者递减判断
+            if (flag and A[i] < pre) or (not flag and A[i] > pre):
+                return False
+            pre = A[i]
+
+        return True
+
+    def sortArrayByParity(self, A: List[int]) -> List[int]:
+        # 直接给定两个列表存储即可
+        sort_even, sort_odd = [], []
+        for i in A:
+            sort_odd.append(i) if i % 2 else sort_even.append(i)
+        return sort_even + sort_odd
 
 
 if __name__ == '__main__':
@@ -738,3 +785,12 @@ if __name__ == '__main__':
 
     # 867 转置矩阵
     # print(show.transpose([[1,2,3],[4,5,6],[7,8,9]]))
+
+    # 888 公平的糖果交换
+    # print(show.fairCandySwap([3,2],[1]))
+
+    # 896 单调数列
+    # print(show.isMonotonic([1,2,1,1,0]))
+
+    # 905 按奇偶排序数组
+    # print(show.sortArrayByParity([3,1,2,4]))
