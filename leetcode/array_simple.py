@@ -718,6 +718,18 @@ class Solution:
             x = comdiv(x, i)
         return True if len(deck) > 1 and x > 1 else False
 
+    def sortArrayByParityII(self, A: List[int]) -> List[int]:
+        lens = len(A) // 2
+        sort_even, sort_odd = [], []
+        for i in A:
+            sort_odd.append(i) if i % 2 else sort_even.append(i)
+
+        # 或许还能简化
+        res = []
+        for i in range(lens):
+            res.append(sort_even[i])
+            res.append(sort_odd[i])
+        return res
 
 
 if __name__ == '__main__':
@@ -824,3 +836,6 @@ if __name__ == '__main__':
 
     # 914 卡牌分组
     # print(show.hasGroupsSizeX([1,1,1,2,2,2,3,3]))
+
+    # 922 按奇偶排序数组II
+    # print(show.sortArrayByParityII([4,2,5,7]))
