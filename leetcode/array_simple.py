@@ -692,6 +692,33 @@ class Solution:
             sort_odd.append(i) if i % 2 else sort_even.append(i)
         return sort_even + sort_odd
 
+    def hasGroupsSizeX(self, deck: List[int]) -> bool:
+        # 其实如果只是提取出现次数，使用列表添加也行
+        dicts = {}
+        for i in deck:
+            if i in dicts:
+                dicts[i] += 1
+            else:
+                dicts[i] = 1
+
+        # set 缩小判断范围
+        table = list(set(dicts.values()))
+        x = table[0]
+
+        def comdiv(div1: int, div2: int) -> int:
+            # 辗转相除法，题解有错的呀
+            while div2:
+                temp = div1 % div2
+                div1 = div2
+                div2 = temp
+
+            return div1
+
+        for i in table[1:]:
+            x = comdiv(x, i)
+        return True if len(deck) > 1 and x > 1 else False
+
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -794,3 +821,6 @@ if __name__ == '__main__':
 
     # 905 按奇偶排序数组
     # print(show.sortArrayByParity([3,1,2,4]))
+
+    # 914 卡牌分组
+    # print(show.hasGroupsSizeX([1,1,1,2,2,2,3,3]))
