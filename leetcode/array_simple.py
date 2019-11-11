@@ -158,7 +158,7 @@ class Solution:
             return pre_1
         elif N == 1:
             return pre_2
-        for i in range(2, N+1):
+        for i in range(2, N + 1):
             cur_val = pre_1 + pre_2
             pre_1 = pre_2
             pre_2 = cur_val
@@ -760,6 +760,8 @@ class Solution:
             return True
         return False
 
+    def sortedSquares(self, A: List[int]) -> List[int]:
+        return sorted(list(map(lambda x: x * x, A)))
 
 
 if __name__ == '__main__':
@@ -875,3 +877,6 @@ if __name__ == '__main__':
 
     # 941 有效的山脉数组
     # print(show.validMountainArray([3,2,1]))
+
+    # 977 有序数组的平方
+    # print(show.sortedSquares([-7,-3,2,3,11]))
