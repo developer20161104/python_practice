@@ -40,13 +40,22 @@ class Notebook:
         """create a new note and add it to the list"""
         self.notes.append(Note(memo, tags))
 
+    def _find_note(self, note_id):
+        """locate the note with given id"""
+        for note in self.notes:
+            if str(note.id) == str(note_id):
+                return note
+        return None
+
     def modify_memo(self, note_id, memo):
         """find the note with the given id and change its memo to the given value
         """
-        for note in self.notes:
-            if note.id == note_id:
-                note.memo = memo
-                break
+        """there is a bug for None value"""
+        note = self._find_note(note_id)
+        if note:
+            note.memo = memo
+            return True
+        return False
 
     def modify_tags(self, note_id, tags):
         """find the note with the given id and change its tags to the given value
