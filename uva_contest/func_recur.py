@@ -1,7 +1,9 @@
 import sys
-from collections import OrderedDict
 from functools import reduce
+
 times = 1
+
+
 # p96 4-2
 def squares():
     global times
@@ -55,7 +57,7 @@ def squares():
         circle = sys.stdin.readline()
         print('**********************************')
 
-from typing import List
+
 # p97 4-4
 def cube_painting():
     strs = sys.stdin.readline()
@@ -64,9 +66,9 @@ def cube_painting():
 
         for i in range(3):
             exc_1.append([strs[i], strs[5 - i]])
-            exc_2.append([strs[i+6], strs[11 - i]])
+            exc_2.append([strs[i + 6], strs[11 - i]])
 
-        #直接剔除相关元素，最后如果全部剔除完毕，则必相等
+        # 直接剔除相关元素，最后如果全部剔除完毕，则必相等
         for i in range(3):
             if exc_1[i] in exc_2:
                 exc_2.remove(exc_1[i])
@@ -79,7 +81,10 @@ def cube_painting():
             print('TRUE')
         strs = sys.stdin.readline()
 
+
 get_num = [128, 192, 224, 240, 248, 252, 254, 255]
+
+
 # p97 4-5
 def network_ip():
     n = sys.stdin.readline()
@@ -87,7 +92,7 @@ def network_ip():
         n = int(n)
         elem = []
         for i in range(n):
-            elem.append(list(map(int,sys.stdin.readline().strip('\n').split('.'))))
+            elem.append(list(map(int, sys.stdin.readline().strip('\n').split('.'))))
 
         # print(elem)
         short_pos = []
@@ -105,30 +110,30 @@ def network_ip():
                 # 通过迭代获取第一个有序的dict组
                 short_pos = sorted(list(dicts.keys()))
                 break
-            strs_1 += str(list(dicts.keys())[0])+'.'
+            strs_1 += str(list(dicts.keys())[0]) + '.'
 
         last = reduce(lambda x, y: x & y, short_pos)
         strs_1 += str(last)
 
-        for k in range(3-i):
+        for k in range(3 - i):
             strs_1 += '.0'
 
         # 根据得到的最小IP求取子网掩码
-        strs_2 =''
+        strs_2 = ''
         for t in range(i):
             strs_2 += '255.'
 
-        strs_2 += str(get_num[bin(last).rfind('1')-1])
+        strs_2 += str(get_num[bin(last).rfind('1') - 1])
 
-        for k in range(3-i):
+        for k in range(3 - i):
             strs_2 += '.0'
-
 
         print(strs_1)
         print(strs_2)
 
         # use i to guess length
         n = sys.stdin.readline()
+
 
 if __name__ == '__main__':
     # squares()
@@ -139,4 +144,4 @@ if __name__ == '__main__':
     '''
     # cube_painting()
     network_ip()
-    #print(bin(get_num[bin(176).rfind('1')-2]))
+    # print(bin(get_num[bin(176).rfind('1')-2]))
