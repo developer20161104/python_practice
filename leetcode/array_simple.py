@@ -152,6 +152,19 @@ class Solution:
                 lists.append(i + 1)
         return lists
 
+    def fib(self, N: int) -> int:
+        pre_1, pre_2 = 0, 1
+        if not N:
+            return pre_1
+        elif N == 1:
+            return pre_2
+        for i in range(2, N+1):
+            cur_val = pre_1 + pre_2
+            pre_1 = pre_2
+            pre_2 = cur_val
+
+        return pre_2
+
     def findMaxConsecutiveOnes(self, nums: List[int]) -> int:
         # 设置计数变量来统计当前连续数量即可
         maxs, cur = 0, 0
@@ -731,6 +744,23 @@ class Solution:
             res.append(sort_odd[i])
         return res
 
+    def validMountainArray(self, A: List[int]) -> bool:
+        lens = len(A)
+        # 判别长度
+        if lens < 3:
+            return False
+
+        max_val = max(A)
+        max_pos = A.index(max_val)
+
+        # 最大元素位置不能出现在首部以及尾部，并且不能出现多次，左右两边分别为顺序与逆序，并且不能含有重复元素
+        if (max_pos != lens - 1 and max_pos and A[max_pos + 1] != max_val and sorted(set(A[:max_pos + 1])) == A[
+                                                                                                              :max_pos + 1]
+                and sorted(set(A[max_pos + 1:]), reverse=True) == A[max_pos + 1:]):
+            return True
+        return False
+
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -761,6 +791,9 @@ if __name__ == '__main__':
 
     # 485 最大连续1个数
     # print(show.findMaxConsecutiveOnes([1,1,0,1,1,1]))
+
+    # 509 斐波那契数
+    # print(show.fib(0))
 
     # 532 数组中的K-diff对
     # print(show.findPairs([6,3,5,7,2,3,3,8,2,4], 2))
@@ -839,3 +872,6 @@ if __name__ == '__main__':
 
     # 922 按奇偶排序数组II
     # print(show.sortArrayByParityII([4,2,5,7]))
+
+    # 941 有效的山脉数组
+    # print(show.validMountainArray([3,2,1]))
