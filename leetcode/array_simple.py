@@ -763,6 +763,31 @@ class Solution:
     def sortedSquares(self, A: List[int]) -> List[int]:
         return sorted(list(map(lambda x: x * x, A)))
 
+    def sumEvenAfterQueries(self, A: List[int], queries: List[List[int]]) -> List[int]:
+        sum_even = sum([x for x in A if not x % 2])
+        lens = len(queries)
+        ans = []
+        for i in range(lens):
+            cur = queries[i][0] + A[queries[i][1]]
+            # 初始为偶，后为奇时要减去初始
+            if cur % 2 and not A[queries[i][1]] % 2:
+                sum_even -= A[queries[i][1]]
+            # 初始为奇，后为偶时要添加当前值
+            elif not cur % 2 and A[queries[i][1]] % 2:
+                sum_even += cur
+            # 初始为偶，后为偶时要添加增量值
+            elif not cur % 2 and not A[queries[i][1]] % 2:
+                sum_even += queries[i][0]
+
+            # 列表也需要进行更新
+            A[queries[i][1]] = cur
+            ans.append(sum_even)
+
+        return ans
+
+    def addToArrayForm(self, A: List[int], K: int) -> List[int]:
+        pass
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -880,3 +905,9 @@ if __name__ == '__main__':
 
     # 977 有序数组的平方
     # print(show.sortedSquares([-7,-3,2,3,11]))
+
+    # 985 查询后的偶数和
+    # print(show.sumEvenAfterQueries([1,2,3,4],[[1,0],[-3,1],[-4,0],[2,3]]))
+
+    # 989 数组形式的整数加法
+    # print(show.addToArrayForm([1,2,0,0],34))
