@@ -786,7 +786,35 @@ class Solution:
         return ans
 
     def addToArrayForm(self, A: List[int], K: int) -> List[int]:
-        pass
+        A, i = A[::-1], 0
+        while K:
+            # cur保存当前被加数
+            cur, K = K % 10, K // 10
+            # 注意A的长度是动态变化的
+            cre, j, lens = 0, i + 1, len(A)
+            # 当前数组长度较短时，直接添加
+            if i == lens:
+                A.append(cur)
+            else:
+                # 否则需要判断是否大于9
+                A[i] = A[i] + cur
+                if A[i] > 9:
+                    A[i] -= 10
+                    cre = 1
+                while cre and j < lens:
+                    A[j] += cre
+                    if A[j] > 9:
+                        A[j] = 0
+                        cre = 1
+                        j += 1
+                    else:
+                        cre = 0
+                # 尾数判断
+                if cre:
+                    A.append(1)
+            i += 1
+
+        return A[::-1]
 
 
 if __name__ == '__main__':
@@ -910,4 +938,4 @@ if __name__ == '__main__':
     # print(show.sumEvenAfterQueries([1,2,3,4],[[1,0],[-3,1],[-4,0],[2,3]]))
 
     # 989 数组形式的整数加法
-    # print(show.addToArrayForm([1,2,0,0],34))
+    # print(show.addToArrayForm([0],100000))
