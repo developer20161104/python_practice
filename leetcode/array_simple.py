@@ -816,6 +816,77 @@ class Solution:
 
         return A[::-1]
 
+    def numRookCaptures(self, board: List[List[str]]) -> int:
+        row, col, total = 0, 0, 0
+        # 先找到R的位置
+        for i in range(8):
+            for j in range(8):
+                if board[i][j] == 'R':
+                    row, col = i, j
+
+        pos_cre = [[-1, 0], [0, 1], [1, 0], [0, -1]]
+        # 再从四个方向分别判断即可
+        for i in pos_cre:
+            cur_row, cur_col = i[0] + row, i[1] + col
+            while 0 <= cur_row < 8 and 0 <= cur_col < 8:
+                if board[cur_row][cur_col] == 'B':
+                    break
+                elif board[cur_row][cur_col] == 'p':
+                    total += 1
+                    break
+                cur_row += i[0]
+                cur_col += i[1]
+
+        return total
+
+    def commonChars(self, A: List[str]) -> List[str]:
+        # 此方法过于智障
+        """
+        lens = len(A)
+        if lens < 2:
+            return [x for x in A[0]]
+
+        # 使用字典逐一存储，既耗空间又浪费时间
+        all_dict, sort_ch = [], []
+        for str_arr in A[1:]:
+            dicts = {}
+            for i in str_arr:
+                if i not in dicts:
+                    dicts[i] = 1
+                else:
+                    dicts[i] += 1
+            all_dict.append(dicts)
+
+        for ch in A[0]:
+            count = 0
+            for diction in all_dict:
+                if ch in diction and diction[ch] > 0:
+                    diction[ch] -= 1
+                    count += 1
+                elif ch not in diction or diction[ch] < 0:
+                    break
+            if count == lens - 1:
+                sort_ch.append(ch)
+
+        return sort_ch
+        """
+        # 统计每个字符出现次数的最小值即可,妙啊
+        ans = []
+        if not A:
+            return []
+        for ch in set(A[0]):
+            # 统计结果
+            count = [w.count(ch) for w in A]
+            # 如果并没有全部出现，则count的最小值必为0
+            s = ch * min(count)
+            for i in s:
+                ans.append(i)
+
+        return ans
+
+        # 可简写为一行解决
+        # return [i for ch in set(A[0]) for i in ch * min(w.count(ch) for w in A)] if A else []
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -939,3 +1010,12 @@ if __name__ == '__main__':
 
     # 989 数组形式的整数加法
     # print(show.addToArrayForm([0],100000))
+
+    # 999 车的可用补货量
+    # print(show.numRookCaptures([[".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", "p", ".", ".", ".", "."],
+    #                            [".", ".", ".", "R", ".", ".", ".", "p"], [".", ".", ".", ".", ".", ".", ".", "."],
+    #                            [".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", "p", ".", ".", ".", "."],
+    #                            [".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", "."]]))
+
+    # 1002 查找常用字符
+    # print(show.commonChars(["cool", "lock", "cook"]))
