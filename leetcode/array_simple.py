@@ -887,6 +887,54 @@ class Solution:
         # 可简写为一行解决
         # return [i for ch in set(A[0]) for i in ch * min(w.count(ch) for w in A)] if A else []
 
+    def numPairsDivisibleBy60(self, time: List[int]) -> int:
+        # 暴力法，果不其然会超时
+        """
+        lens, totoal = len(time), 0
+        for i in range(lens-1):
+            for j in range(i+1, lens):
+                if not (time[i]+time[j]) % 60:
+                    totoal+= 1
+        return totoal
+        """
+        # 预处理将数据区间缩小
+        time = [x % 60 for x in time]
+
+        from collections import defaultdict
+        dicts = defaultdict(int)
+        total = 0
+
+        for t in time:
+            # 处理余数为0时候的情况
+            reside = (60 - t) % 60
+            if reside in dicts:
+                total += dicts[reside]
+
+            # 注意字典中保存的是余数， 因此需要将其求余处理
+            dicts[t] += 1
+
+        return total
+        # 在必须进行逐一查找时，务必考虑字典或者set，将查询时间大大缩短，以空间换时间
+
+    def canThreePartsEqualSum(self, A: List[int]) -> bool:
+        # 用两个指针判断位置即可， 最终结果已经给出，因此以是否相等为结束条件
+        ans = sum(A)
+        if ans % 3:
+            return False
+        ans = ans // 3
+        st, ed, left_t, right_t = 0, len(A) - 1, A[0], A[-1]
+        while st < ed and left_t != ans:
+            st += 1
+            left_t += A[st]
+
+        while st < ed and right_t != ans:
+            ed -= 1
+            right_t += A[ed]
+
+        if st < ed and left_t == right_t == sum(A[st + 1:ed]):
+            return True
+        return False
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -1019,3 +1067,9 @@ if __name__ == '__main__':
 
     # 1002 查找常用字符
     # print(show.commonChars(["cool", "lock", "cook"]))
+
+    # 1010 总持续时间可被60整除的歌曲
+    # print(show.numPairsDivisibleBy60([30,20,150,100,40]))
+
+    # 1013 将数组分成和相等的三个部分
+    # print(show.canThreePartsEqualSum([18, 12, -18, 18, -19, -1, 10, 10]))
