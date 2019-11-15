@@ -935,6 +935,82 @@ class Solution:
             return True
         return False
 
+    def prefixesDivBy5(self, A: List[int]) -> List[bool]:
+        # 顺序有错
+        """
+            A, lens, cur_val, ans = A[::-1], len(A), 0, []
+            for i in range(lens-1, -1, -1):
+                cur_val += 2**(lens-1-i)*A[i]
+                if cur_val % 5:
+                    ans.append(False)
+                else:
+                    ans.append(True)
+
+            return ans
+        """
+        """
+        # 强行使用内置方法过于耗时
+        lens = len(A)
+        ans, cur_str = [], ""
+        for i in range(lens):
+            cur_str += str(A[i])
+            if not int(cur_str, 2) % 5:
+                ans.append(True)
+            else:
+                ans.append(False)
+
+        return ans
+        """
+        # 使用移位运算稍微优化了时间，但是还是不够
+        """
+        ans = []
+        tot = int("".join(map(str, A[:])), 2)
+        for _ in A:
+            if tot % 5:
+                ans.append(False)
+            else:
+                ans.append(True)
+            tot = tot >> 1
+
+        return ans[::-1]
+        """
+        # 大神思路：紧跟最后一位即可，无需全部计算，换位思考很重要
+        ans, tail = [], 0
+        for i in A:
+            # 只需要记录尾数即可
+            tail = tail * 2 + i
+            if tail > 9:
+                tail -= 10
+            if not tail or tail == 5:
+                ans.append(True)
+            else:
+                ans.append(False)
+
+        return ans
+
+    def countCharacters(self, words: List[str], chars: str) -> int:
+        # wrong answer
+        """
+        dicts, res = {}, 0
+        for i in chars:
+            if i not in dicts:
+                dicts[i] = 1
+            else:
+                dicts[i] += 1
+
+        for strs in words:
+            cur_dict, lens, i = dicts, len(strs), 0
+            for i in range(lens):
+                if strs[i] not in cur_dict or cur_dict[strs[i]] < 0:
+                    break
+                else:
+                    cur_dict[strs[i]] -= 1
+            if i == lens-1:
+                res += lens
+
+        return res
+        """
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -1073,3 +1149,9 @@ if __name__ == '__main__':
 
     # 1013 将数组分成和相等的三个部分
     # print(show.canThreePartsEqualSum([18, 12, -18, 18, -19, -1, 10, 10]))
+
+    # 1018 可被5整除的二进制前缀
+    # print(show.prefixesDivBy5([1,1,0,0,0,1,0,0,1]))
+
+    # 1160 拼写单词
+    # print(show.countCharacters(["hello","world","leetcode"], "welldonehoneyr"))
