@@ -989,27 +989,30 @@ class Solution:
         return ans
 
     def countCharacters(self, words: List[str], chars: str) -> int:
-        # wrong answer
-        """
         dicts, res = {}, 0
+
+        # 统计字母表
         for i in chars:
             if i not in dicts:
                 dicts[i] = 1
             else:
                 dicts[i] += 1
 
+        # 逐一判断词汇表
         for strs in words:
-            cur_dict, lens, i = dicts, len(strs), 0
-            for i in range(lens):
-                if strs[i] not in cur_dict or cur_dict[strs[i]] < 0:
-                    break
-                else:
-                    cur_dict[strs[i]] -= 1
-            if i == lens-1:
-                res += lens
+            # 不能直接使用dicts，每次判断都需要原来的数量
+            cur_dict, count = dicts.copy(), 0
+            for i in strs:
+                # 小技巧：对于这种总量的判别，可以设一个变量统计总数，相等即满足条件，判断不满足逻辑太麻烦
+                # 注意数量上的判断
+                if i in cur_dict and cur_dict[i] > 0:
+                    count += 1
+                    cur_dict[i] -= 1
+
+            if count == len(strs):
+                res += count
 
         return res
-        """
 
 
 if __name__ == '__main__':
@@ -1154,4 +1157,4 @@ if __name__ == '__main__':
     # print(show.prefixesDivBy5([1,1,0,0,0,1,0,0,1]))
 
     # 1160 拼写单词
-    # print(show.countCharacters(["hello","world","leetcode"], "welldonehoneyr"))
+    print(show.countCharacters(["cat","bt","hat","tree"], "atach"))
