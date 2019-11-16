@@ -988,6 +988,79 @@ class Solution:
 
         return ans
 
+    def heightChecker(self, heights: List[int]) -> int:
+        # 思路错误，此方法无法判断较多重复列表
+        """
+        max_len, pre_val, cur_len = 0, heights[0], 1
+        for i in heights[1:]:
+            if i >= pre_val:
+                cur_len += 1
+            else:
+                if max_len < cur_len:
+                    max_len = cur_len
+                cur_len = 1
+            pre_val = i
+
+        return len(heights) - max(max_len, cur_len)
+        """
+        # 考虑排序,常规做法
+        """
+        new_height = sorted(heights.copy())
+        count, lens = 0, len(heights)
+        for i in range(lens):
+            if heights[i] != new_height[i]:
+                count += 1
+
+        return count
+        """
+        # 大神做法：利用高度限制的特点，设置数组统计即可，神奇的是，用时竟然比排序还长，神奇
+        # 统计每个数字出现的次数
+        arr = [0]*101
+        for i in heights:
+            arr[i] += 1
+        count, j = 0, 0
+        for i in range(1, 101):
+            # 根据统计的数组，判断height中是否与当前相同，不同则为必须更换的数量
+            while arr[i]:
+                arr[i] -= 1
+                if heights[j] != i:
+                    count += 1
+                j += 1
+
+        return count
+
+    def duplicateZeros(self, arr: List[int]) -> None:
+        # 思路一片混乱,思维僵化了
+        """
+        new_arr = arr.copy()
+        i, cur_pos, lens = 0, 0, len(arr)
+        while i < lens:
+            if not new_arr[cur_pos]:
+                i += 1
+                while i < lens:
+                    arr[i] = new_arr[cur_pos]
+                    i += 1
+                    cur_pos += 1
+                    if not new_arr[cur_pos]:
+                        i -= 1
+                        break
+            else:
+                i += 1
+                cur_pos += 1
+        """
+        # 题解思路
+        i = 0
+        j = len(arr)
+        while i < j:
+            if not arr[i]:
+                # 原地插入即可
+                arr.insert(i, 0)
+                # 末尾删除，保持长度不变
+                arr.pop()
+                i += 2
+            else:
+                i += 1
+
     def countCharacters(self, words: List[str], chars: str) -> int:
         dicts, res = {}, 0
 
@@ -1156,5 +1229,11 @@ if __name__ == '__main__':
     # 1018 可被5整除的二进制前缀
     # print(show.prefixesDivBy5([1,1,0,0,0,1,0,0,1]))
 
+    # 1051 高度检查器
+    # print(show.heightChecker([1,2,1,2,1,1,1,2,1]))
+
+    # 1089 复写零
+    # print(show.duplicateZeros([1,0,2,3,0,4,5,0]))
+
     # 1160 拼写单词
-    print(show.countCharacters(["cat","bt","hat","tree"], "atach"))
+    # print(show.countCharacters(["cat","bt","hat","tree"], "atach"))
