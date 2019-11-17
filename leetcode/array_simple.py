@@ -1061,6 +1061,45 @@ class Solution:
             else:
                 i += 1
 
+    def relativeSortArray(self, arr1: List[int], arr2: List[int]) -> List[int]:
+        len_arr2 = len(arr2)
+        not_in, dicts = [], {}
+        for i in arr2:
+            dicts[i] = 0
+
+        # 用一个字典保存数量
+        for i in arr1:
+            if i not in dicts:
+                not_in.append(i)
+            else:
+                dicts[i] += 1
+
+        res = []
+        # 先放置存在于arr2的元素，再放置没有的元素
+        for i in range(len_arr2):
+            res += [arr2[i]]*dicts[arr2[i]]
+
+        return res + sorted(not_in)
+
+    def numEquivDominoPairs(self, dominoes: List[List[int]]) -> int:
+        # 时间复杂度为0(n)
+        dicts = {}
+        # 使用字典记录当前的骨牌对
+        for i in dominoes:
+            if tuple(i) in dicts:
+                dicts[tuple(i)] += 1
+            elif tuple(i[::-1]) in dicts:
+                dicts[tuple(i[::-1])] += 1
+            else:
+                dicts[tuple(i)] = 1
+
+        total = 0
+        # 应用组合数来计算C(i , 2)
+        for i in dicts:
+            total += dicts[i]*(dicts[i]-1)//2
+
+        return total
+
     def countCharacters(self, words: List[str], chars: str) -> int:
         dicts, res = {}, 0
 
@@ -1234,6 +1273,12 @@ if __name__ == '__main__':
 
     # 1089 复写零
     # print(show.duplicateZeros([1,0,2,3,0,4,5,0]))
+
+    # 1122 数组的相对排序
+    # print(show.relativeSortArray([2,3,1,3,2,4,6,7,9,2,19], [2,1,4,3,9,6]))
+
+    # 1128 等价多米诺骨牌对的数量
+    # print(show.numEquivDominoPairs([[1,2],[2,1],[3,4],[5,6]]))
 
     # 1160 拼写单词
     # print(show.countCharacters(["cat","bt","hat","tree"], "atach"))
