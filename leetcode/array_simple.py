@@ -1126,6 +1126,37 @@ class Solution:
 
         return res
 
+    def numSmallerByFrequency(self, queries: List[str], words: List[str]) -> List[int]:
+        # 统计词汇表中的f值，并对其排序
+        # 完全没必要进行排序，还是思路太迷
+        """
+        words = sorted(list(map(lambda x: x.count(min(x)), words)))
+        ans, lens = [], len(words)
+        for strs in queries:
+            count = strs.count(min(strs))
+            # 必须考虑极端情况，当count小于所有words时，此时为1
+            if words[0] > count:
+                ans.append(1)
+            else:
+                for i in range(lens - 1, -1, -1):
+                    if words[i] <= count:
+                        break
+
+                ans.append(lens - i - 1)
+
+        return ans
+        """
+        # 基本思路，一致，但是少了排序，多了查找的时间
+        words = list(map(lambda x: x.count(min(x)), words))
+        res = []
+        for strs in queries:
+            count = strs.count(min(strs))
+            res.append(len([x for x in words if x > count]))
+        return res
+
+    def distanceBetweenBusStops(self, distance: List[int], start: int, destination: int) -> int:
+        pass
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -1282,3 +1313,9 @@ if __name__ == '__main__':
 
     # 1160 拼写单词
     # print(show.countCharacters(["cat","bt","hat","tree"], "atach"))
+
+    # 1170 比较字符串最小字母出现频次
+    # print(show.numSmallerByFrequency(["cbd","bbb","cc"], ["zaaaz","a","aa","aaaa"]))
+
+    # 1184 公交车站的距离
+    print(show.distanceBetweenBusStops([1,2,3,4], 0, 1))
