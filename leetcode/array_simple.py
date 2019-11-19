@@ -1155,7 +1155,33 @@ class Solution:
         return res
 
     def distanceBetweenBusStops(self, distance: List[int], start: int, destination: int) -> int:
-        pass
+        # 由于只有两边的路径，因此只需要考虑两个方向即可
+        from_pos, to_pos = start, destination
+        if from_pos > to_pos:
+            from_pos, to_pos = destination, start
+
+        direct_dis = sum(distance[from_pos:to_pos])
+        return min(direct_dis, sum(distance)-direct_dis)
+
+    def dayOfTheWeek(self, day: int, month: int, year: int) -> str:
+        # 利用1971年1月1日作为参考系
+        week = ["Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"]
+        day_mon = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+        count_day = 0
+        # 计算年份
+        if year > 1971:
+            for i in range(1971, year):
+                count_day += 365
+                if (not i % 4 and i % 100) or (not i % 400):
+                    count_day += 1
+        # 计算月份
+        count_day += sum(day_mon[:month-1])
+        if month > 2 and ((not year % 4 and year % 100) or (not year % 400)):
+            count_day += 1
+
+        # 直接求解
+        return week[(count_day+day-1) % 7]
 
 
 if __name__ == '__main__':
@@ -1318,4 +1344,7 @@ if __name__ == '__main__':
     # print(show.numSmallerByFrequency(["cbd","bbb","cc"], ["zaaaz","a","aa","aaaa"]))
 
     # 1184 公交车站的距离
-    print(show.distanceBetweenBusStops([1,2,3,4], 0, 1))
+    # print(show.distanceBetweenBusStops([1,2,3,4], 0, 1))
+
+    # 1185 一周中的几天
+    # print(show.dayOfTheWeek(29, 2, 2000))
