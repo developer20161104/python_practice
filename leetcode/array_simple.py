@@ -1183,6 +1183,48 @@ class Solution:
         # 直接求解
         return week[(count_day+day-1) % 7]
 
+    def minimumAbsDifference(self, arr: List[int]) -> List[List[int]]:
+        # 先进行排序，消除绝对值的考虑，然后再找出最小差值即可
+        sort_arr, lens = sorted(arr), len(arr)
+        res = [sort_arr[i] - sort_arr[i-1] for i in range(1, lens)]
+        min_val = min(res)
+        return [[sort_arr[i], sort_arr[i+1]] for i in range(lens-1) if res[i] == min_val]
+
+    def minCostToMoveChips(self, chips: List[int]) -> int:
+        # 错误点：如果出现多个众数，还得判断哪个所包含的元素更多
+        # 并且代码太过于冗长
+        """
+        lens = len(chips)
+        chips = sorted(chips)
+        max_pos, max_num, cur_pos, cur_num = 0, 0, 0, 1
+        for i in range(1, lens):
+            if chips[i] != chips[cur_pos]:
+                if cur_num > max_num:
+                    max_num, max_pos = cur_num, cur_pos
+                cur_pos, cur_num = i, 1
+            else:
+                cur_num += 1
+
+        if cur_num > max_num:
+            max_num, max_pos = cur_num, cur_pos
+
+        if max_num != 1:
+            tot = 0
+            for i in chips:
+                if i != chips[max_pos] and (i - chips[max_pos]) % 2:
+                    tot += 1
+            return tot
+        else:
+            return lens//2
+        """
+        # 大神思路: 统计奇偶即可！
+        # 问题的转化思想很重要
+        odd = 0
+        for i in chips:
+            if i % 2:
+                odd += 1
+        return min(odd, len(chips)-odd)
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -1348,3 +1390,9 @@ if __name__ == '__main__':
 
     # 1185 一周中的几天
     # print(show.dayOfTheWeek(29, 2, 2000))
+
+    # 1200 最小绝对差
+    # print(show.minimumAbsDifference([3,8,-10,23,19,-4,-14,27]))
+
+    # 1217 玩筹码
+    # print(show.minCostToMoveChips([1,2,3,3,4,5]))
