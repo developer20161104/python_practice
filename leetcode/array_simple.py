@@ -1225,6 +1225,35 @@ class Solution:
                 odd += 1
         return min(odd, len(chips)-odd)
 
+    def checkStraightLine(self, coordinates: List[List[int]]) -> bool:
+        # 使用斜率进行判断，需要考虑浮点数带来的精度问题
+        """
+        if len(set([i[0] for i in coordinates])) == 1:
+            return True
+
+        lens = len(coordinates)
+        div = coordinates[1][0]-coordinates[0][0]
+        if not div:
+            return False
+        pre_key = round((coordinates[1][1]-coordinates[0][1])/div, 3)
+        for i in range(2, lens):
+            try:
+                cur_key = round((coordinates[i][1]-coordinates[i-1][1])/(coordinates[i][0]-coordinates[i-1][0]), 3)
+            except ZeroDivisionError:
+                return False
+            else:
+                if pre_key != cur_key:
+                    return False
+
+        return True
+        """
+        # 方法二，直接进行比较，而不是求取斜率，这样可以节约一部分时间
+        k1, k2, lens = coordinates[1][1]-coordinates[0][1], coordinates[1][0]-coordinates[0][0], len(coordinates)
+        for i in range(1, lens):
+            if (coordinates[i][1]-coordinates[i-1][1])*k2 != (coordinates[i][0]-coordinates[i-1][0])*k1:
+                return False
+        return True
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -1396,3 +1425,6 @@ if __name__ == '__main__':
 
     # 1217 玩筹码
     # print(show.minCostToMoveChips([1,2,3,3,4,5]))
+
+    # 1232 点缀成线
+    # print(show.checkStraightLine([[1,1],[2,2],[3,4],[4,5],[5,6],[7,7]]))
