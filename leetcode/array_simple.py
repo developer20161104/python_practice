@@ -1254,6 +1254,35 @@ class Solution:
                 return False
         return True
 
+    def oddCells(self, n: int, m: int, indices: List[List[int]]) -> int:
+        arr_row, arr_col = [0]*n, [0]*m
+        # 统计每行每列的增益
+        for ops in indices:
+            arr_row[ops[0]] += 1
+            arr_col[ops[1]] += 1
+        count = 0
+        # 逐个统计次数即可
+        for i in range(n):
+            for j in range(m):
+                if (arr_row[i]+arr_col[j]) % 2:
+                    count += 1
+
+        return count
+
+    def shiftGrid(self, grid: List[List[int]], k: int) -> List[List[int]]:
+        lists, row, col = [], len(grid), len(grid[0])
+        # 先转化为一维列表，便于后续处理
+        for ele in grid:
+            lists += ele
+
+        lens = len(lists)
+        # 右移 k%lens 位
+        central = lens-k % lens
+        lists = lists[central:] + lists[:central]
+
+        # 将结果转化为二维列表
+        return [lists[i*col:(i+1)*col] for i in range(row)]
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -1428,3 +1457,9 @@ if __name__ == '__main__':
 
     # 1232 点缀成线
     # print(show.checkStraightLine([[1,1],[2,2],[3,4],[4,5],[5,6],[7,7]]))
+
+    # 1252 奇数值单元格数目
+    # print(show.oddCells(2, 2, [[0,0],[1,1]]))
+
+    # 1260 二维网格迁移
+    # print(show.shiftGrid([[1,2,3],[4,5,6],[7,8,9]], 9))
