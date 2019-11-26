@@ -67,6 +67,27 @@ class Solution:
                 return front[:i]
         return front
 
+    def isValid(self, s: str) -> bool:
+        # 使用栈来处理，并利用一个字典映射两边括号之间的关系即可
+        dicts = {"(": ")", "[": "]", "{": "}"}
+
+        if not len(s):
+            return True
+        stack = []
+        for sym in s:
+            if sym == "(" or sym == "{" or sym == "[":
+                stack.append(sym)
+            else:
+                # 注意此处需要判断当前的栈是否为空，即s中只含有右括号时
+                if not len(stack) or dicts[stack.pop()] != sym:
+                    return False
+
+        return False if len(stack) else True
+
+    def strStr(self, haystack: str, needle: str) -> int:
+        # 调用库函数解法
+        return haystack.index(needle) if needle in haystack else -1
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -76,3 +97,9 @@ if __name__ == '__main__':
 
     # 14 最长公共前缀
     # print(show.longestCommonPrefix(["dog","racecar","car"]))
+
+    # 20 有效的括号
+    # print(show.isValid(")"))
+
+    # 28 实现strStr()
+    # print(show.strStr("hello", "ll"))
