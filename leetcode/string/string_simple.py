@@ -88,6 +88,68 @@ class Solution:
         # 调用库函数解法
         return haystack.index(needle) if needle in haystack else -1
 
+    def countAndSay(self, n: int) -> str:
+        if n < 1:
+            return ""
+
+        # 使用set会将后面元素与之前的合并
+        """
+        pre_str = "1"
+        for i in range(2, n+1):
+            cur_set, cur_str = set(pre_str), ""
+            while len(cur_set):
+                cur_val = cur_set.pop()
+                cur_str += str(pre_str.count(cur_val)) + cur_val
+
+            pre_str = cur_str
+
+        return pre_str
+        """
+        # 只能通过遍历进行判断
+        pre_str = "1"
+        for _ in range(2, n+1):
+            # all_val记录当前保存的输出
+            all_val, cur_val, count_val = "", pre_str[0], 0
+            # 通过统计每个元素出现的个数来创建输出
+            for ch in pre_str:
+                if ch == cur_val:
+                    count_val += 1
+                else:
+                    all_val += str(count_val) + str(cur_val)
+                    cur_val, count_val = ch, 1
+
+            # 不能忘记添加尾项
+            pre_str = all_val + str(count_val) + str(cur_val)
+
+        return pre_str
+
+    def lengthOfLastWord(self, s: str) -> int:
+        # 最后一个单词需要省略空格，因此需要从后向前看
+        """
+        count = 0
+        for ch in s:
+            if ch == " ":
+                count = 0
+            else:
+                count += 1
+
+        return count
+
+        # 从后向前看
+        count, lens = 0, len(s)
+        for i in range(lens-1, -1, -1):
+            if s[i] == " ":
+                # 注意读取了一个长度以后就需要结束了
+                if count:
+                    break
+                count = 0
+            else:
+                count += 1
+        return count
+        """
+        # 库函数调用
+        return len(s.strip(' ').split(' ')[-1])
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -103,3 +165,9 @@ if __name__ == '__main__':
 
     # 28 实现strStr()
     # print(show.strStr("hello", "ll"))
+
+    # 38 报数
+    # print(show.countAndSay(7))
+
+    # 58 最后一个单词长度
+    # print(show.lengthOfLastWord("dhello world"))
