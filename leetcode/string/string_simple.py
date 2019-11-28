@@ -150,6 +150,51 @@ class Solution:
         # 库函数调用
         return len(s.strip(' ').split(' ')[-1])
 
+    def addBinary(self, a: str, b: str) -> str:
+        # 可直接使用字符串与数字之间的关系进行转换计算
+        # return str(bin(int(a, 2) + int(b, 2)))[2:]
+
+        # 常规做法：翻转逐一比对
+        len_a, len_b = len(a), len(b)
+        dicts = {"0": 0, "1": 1}
+
+        a, b = a[::-1], b[::-1]
+        # 防御式做法：预先将字符串设为等长就能大大减少后续的处理流程
+        if len_a < len_b:
+            a += "0"*(len_b - len_a)
+        else:
+            b += "0"*(len_a - len_b)
+            # 为后面的长度选择做准备
+            len_b = len_a
+
+        incre, res = 0, ""
+        # 比对
+        for i in range(len_b):
+            cur_val = dicts[a[i]] + dicts[b[i]] + incre
+            if cur_val > 1:
+                incre = 1
+                res += str(cur_val-2)
+            else:
+                res += str(cur_val)
+                incre = 0
+
+        # 注意最后还有可能进位
+        return (res+"1")[::-1] if incre else res[::-1]
+
+    def isPalindrome(self, s: str) -> bool:
+        # 先从中筛选， 去掉无用的元素
+        pre_sort = ""
+        for ch in s:
+            if "0" <= ch <= "9" or "a" <= ch <= "z":
+                pre_sort += ch
+            elif "A" <= ch <= "Z":
+                pre_sort += ch.lower()
+
+        lens = len(pre_sort)
+
+        # 慢在此处库函数的调用，如果采用双指针应该会快很多
+        return pre_sort[:lens//2] == pre_sort[lens-lens//2:][::-1]
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -171,3 +216,9 @@ if __name__ == '__main__':
 
     # 58 最后一个单词长度
     # print(show.lengthOfLastWord("dhello world"))
+
+    # 67 二进制求和
+    # print(show.addBinary("100", "110010"))
+
+    # 125 验证回文串
+    # print(show.isPalindrome("race a car"))
