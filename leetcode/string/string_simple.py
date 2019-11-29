@@ -195,6 +195,64 @@ class Solution:
         # 慢在此处库函数的调用，如果采用双指针应该会快很多
         return pre_sort[:lens//2] == pre_sort[lens-lens//2:][::-1]
 
+    def reverseString(self, s: List[str]) -> None:
+        head, tail = 0, len(s)-1
+        # 设置双指针交换即可
+        while head < tail:
+            s[head], s[tail] = s[tail], s[head]
+            head += 1
+            tail -= 1
+
+    def reverseVowels(self, s: str) -> str:
+        # 想法是从两边提取元素，分别置于左右两个字符串，最后将其合并即可
+        # 代码冗余度太高
+        """
+        vow, ans_left, ans_right = set('aeiouAEIOU'), "", ""
+        head, tail = 0, len(s)-1
+        if tail < 1:
+            return s
+        while head <= tail:
+            if s[head] in vow:
+                while tail > head and s[tail] not in vow:
+                    ans_right = s[tail] + ans_right
+                    tail -= 1
+                ans_left += s[tail]
+                # 注意到当两指针位置相同时，只需要放入一个即可
+                if tail != head:
+                    ans_right = s[head] + ans_right
+
+            elif s[tail] in vow:
+                while head < tail and s[head] not in vow:
+                    ans_left += s[head]
+                    head += 1
+                ans_left += s[tail]
+                if tail != head:
+                    ans_right = s[head] + ans_right
+            else:
+                ans_left += s[head]
+                # 应对奇数数量的字符串时的操作
+                if tail != head:
+                    ans_right = s[tail] + ans_right
+
+            head += 1
+            tail -= 1
+
+        return ans_left + ans_right
+        """
+        # 思想是先找到需要置换的元素，在反转后逐一插入新字符串即可，需要遍历两次，但是中间的判断减少了很多
+        # 在时间与代码量上完爆前面一种方法
+        vow, res = set('aeiouAEIOU'), ""
+        exch, pos = [x for x in s if x in vow][::-1], 0
+
+        for ch in s:
+            if ch in vow:
+                res += exch[pos]
+                pos += 1
+            else:
+                res += ch
+
+        return res
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -222,3 +280,9 @@ if __name__ == '__main__':
 
     # 125 验证回文串
     # print(show.isPalindrome("race a car"))
+
+    # 344 反转字符串
+    # print(show.reverseString(["H","a","n","a","h"]))
+
+    # 345 反转字符串中的元音字母
+    # print(show.reverseVowels("leetcode"))
