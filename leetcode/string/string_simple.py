@@ -253,6 +253,44 @@ class Solution:
 
         return res
 
+    def canConstruct(self, ransomNote: str, magazine: str) -> bool:
+        # use general method
+        """
+        dicts = {}
+        # 先保存字典
+        for ch in magazine:
+            if ch in dicts:
+                dicts[ch] += 1
+            else:
+                dicts[ch] = 1
+
+        for ch in ransomNote:
+            # 逐一进行查找
+            if ch not in dicts or dicts[ch] < 1:
+                return False
+            dicts[ch] -= 1
+
+        return True
+        """
+        # 使用 count 方法，效率会高很多
+        coll = set(ransomNote)
+        for ch in coll:
+            if ransomNote.count(ch) > magazine.count(ch):
+                return False
+
+        return True
+
+    def firstUniqChar(self, s: str) -> int:
+        # 切记python里面的set返回的顺序是不确定的，因此在进行顺序判断时不能直接使用
+        coll, rep = set(s), []
+        # 统计出现的位置
+        for ch in coll:
+            if s.count(ch) == 1:
+                rep.append(s.index(ch))
+
+        # 返回最小值或默认-1
+        return min(rep) if len(rep) else -1
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -286,3 +324,9 @@ if __name__ == '__main__':
 
     # 345 反转字符串中的元音字母
     # print(show.reverseVowels("leetcode"))
+
+    # 383 赎金信
+    # print(show.canConstruct("aa", "aab"))
+
+    # 387 字符串中的第一个唯一字符
+    # print(show.firstUniqChar("leetcode"))
