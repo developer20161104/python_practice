@@ -291,6 +291,40 @@ class Solution:
         # 返回最小值或默认-1
         return min(rep) if len(rep) else -1
 
+    def addStrings(self, num1: str, num2: str) -> str:
+        # 使用字典来映射关系
+        dicts = {"0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9}
+        len_1, len_2 = len(num1), len(num2)
+
+        # 取反方便计算机顺序遍历
+        num1, num2 = num1[::-1], num2[::-1]
+        # 将两字符串设置为等长方便处理
+        if len_1 > len_2:
+            num2 += "0" * (len_1 - len_2)
+        else:
+            num1 += "0" * (len_2 - len_1)
+            len_1 = len_2
+
+        incre, res = 0, ""
+        # 逐一相加并进行条件判断
+        for pos in range(len_1):
+            cur_ans = dicts[num1[pos]] + dicts[num2[pos]] + incre
+
+            if cur_ans > 9:
+                res += str(cur_ans - 10)
+                incre = 1
+            else:
+                res += str(cur_ans)
+                incre = 0
+
+        # 注意最后的增量判断
+        return (res+"1")[::-1] if incre else res[::-1]
+
+    def countSegments(self, s: str) -> int:
+        # 调用库函数切分，并且除去长度为0的部分，即为结果
+        return len([x for x in s.split(" ") if len(x)])
+        # 也可以转化为数空格的个数
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -330,3 +364,9 @@ if __name__ == '__main__':
 
     # 387 字符串中的第一个唯一字符
     # print(show.firstUniqChar("leetcode"))
+
+    # 415 字符串相加
+    # print(show.addStrings("111", "999"))
+
+    # 434 字符串中的单词数
+    # print(show.countSegments("Hello, my   name is John"))
