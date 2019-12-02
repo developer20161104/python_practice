@@ -325,6 +325,42 @@ class Solution:
         return len([x for x in s.split(" ") if len(x)])
         # 也可以转化为数空格的个数
 
+    def compress(self, chars: List[str]) -> int:
+        # 需要细分考虑尾数，有点麻烦
+        lens = len(chars)
+        # 当长度为1时，排除考虑
+        if lens == 1:
+            return lens
+        # 需要记录当前的统计位置，当前值以及其数量，以及用于尾数判断的标志
+        count_pos, cur_count, cur_val, flag = 0, 1, chars[0], chars[-2]
+        for i in range(1, lens):
+            if chars[i] == cur_val:
+                cur_count += 1
+            # 此处不包含尾数与前一位相同的情况
+            if chars[i] != cur_val or i == lens-1:
+                if cur_count > 1:
+                    chars[count_pos], strs = cur_val, str(cur_count)
+                    count_pos += 1
+                    # 逐字符录入
+                    for k in range(len(strs)):
+                        chars[count_pos] = strs[k]
+                        count_pos += 1
+                else:
+                    # 单一字符仅需打印本身
+                    chars[count_pos] = cur_val
+                    count_pos += 1
+
+                cur_val, cur_count = chars[i], 1
+
+        # 若统计位置已经超出长度，说明已经完成，否则需要考虑尾数
+        if count_pos < lens and cur_val != flag:
+            chars[count_pos] = cur_val
+            count_pos += 1
+        return count_pos
+
+    def repeatedSubstringPattern(self, s: str) -> bool:
+        pass
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -370,3 +406,9 @@ if __name__ == '__main__':
 
     # 434 字符串中的单词数
     # print(show.countSegments("Hello, my   name is John"))
+
+    # 443 压缩字符串
+    # print(show.compress(["a","a"]))
+
+    # 459 重复的子字符串
+    print(set("aba"))
