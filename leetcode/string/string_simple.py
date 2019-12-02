@@ -359,7 +359,22 @@ class Solution:
         return count_pos
 
     def repeatedSubstringPattern(self, s: str) -> bool:
-        pass
+        # 常规思路
+        """
+        lens = len(s)
+        # 缩小一半加上非倍数的开销
+        for i in range(1, lens//2+1):
+            # 判断是否被除尽
+            if not lens % i and s[:i]*(lens // i) == s:
+                return True
+
+        return False
+        """
+        # 由于母串可由子串构成，因此必满足周期性结构(满满的数学)
+        # 由此可有 假设由 n 个子串构成， 则2S = 2n， 去掉首尾后破坏两组余下 2n-2 组
+        # 如果其中不包括 n 组子串，则有 2n-2 > n, 即 n < 2 , n = 1, 为非周期结构
+        # 因此在两组去掉首尾的母串中必含一组母串
+        return (s + s)[1:-1].find(s) != -1
 
 
 if __name__ == '__main__':
@@ -411,4 +426,4 @@ if __name__ == '__main__':
     # print(show.compress(["a","a"]))
 
     # 459 重复的子字符串
-    print(set("aba"))
+    # print(show.repeatedSubstringPattern("abab"))
