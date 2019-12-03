@@ -376,6 +376,25 @@ class Solution:
         # 因此在两组去掉首尾的母串中必含一组母串
         return (s + s)[1:-1].find(s) != -1
 
+    def detectCapitalUse(self, word: str) -> bool:
+        # 直接进行判断
+        """
+        return True if len(word) < 2 or word.upper() == word or word.lower() == word or (word[0].upper() == word[0] and word[1:] == word[1:].lower()) else False
+        """
+        # 网上大神的逆向思维很好：从后向前看，如果是大写，则前面必全为大写，否则，第二个到最后的必须全为小写，其他情况皆为False
+        if word[-1].upper() == word[-1]:
+            if word[:-1].upper() == word[:-1]:
+                return True
+        else:
+            # 考虑长度为1的情况
+            if len(word) == 1 or word[1:].lower() == word[1:]:
+                return True
+        return False
+
+    def findLUSlength(self, a: str, b: str) -> int:
+        # 自身长度也算，也是服气
+        return -1 if a == b else max(len(a), len(b))
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -427,3 +446,9 @@ if __name__ == '__main__':
 
     # 459 重复的子字符串
     # print(show.repeatedSubstringPattern("abab"))
+
+    # 520 检测大写字母
+    # print(show.detectCapitalUse("Flag"))
+
+    # 521 最长特殊序列I
+    # print(show.findLUSlength("aba", "abaac"))
