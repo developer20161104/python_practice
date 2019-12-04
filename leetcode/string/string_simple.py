@@ -395,6 +395,36 @@ class Solution:
         # 自身长度也算，也是服气
         return -1 if a == b else max(len(a), len(b))
 
+    def reverseStr(self, s: str, k: int) -> str:
+        lens, res = len(s), ""
+        # times 保存处理次数，reside 保存余数
+        times, reside = lens // (2*k), lens % (2*k)
+        for i in range(times):
+            res += s[2*i*k:2*i*k+k][::-1] + s[2*i*k+k: 2*(i+1)*k]
+
+        # 条件判断
+        if reside >= k:
+            res += s[2*times*k:2*times*k+k][::-1] + s[2*times*k+k:]
+        else:
+            res += s[2*times*k:][::-1]
+
+        return res
+
+    def checkRecord(self, s: str) -> bool:
+        dicts = {"A": -1, "P": 0}
+        # score 统计当前分数判断A与P， times统计迟到次数
+        lens, score, times, pos = len(s), 1, 0, 0
+        while pos < lens and score > -1 and times < 3:
+            if s[pos] not in dicts:
+                times += 1
+            else:
+                # 迟到必须为连续
+                times = 0
+                score += dicts[s[pos]]
+            pos += 1
+
+        return True if score > -1 and times < 3 else False
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -452,3 +482,9 @@ if __name__ == '__main__':
 
     # 521 最长特殊序列I
     # print(show.findLUSlength("aba", "abaac"))
+
+    # 541 反转字符串II
+    # print(show.reverseStr("abcdefg", 8))
+
+    # 551 学生出勤记录I
+    # print(show.checkRecord("PPALLLP"))
