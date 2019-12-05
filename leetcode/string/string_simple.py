@@ -1,6 +1,13 @@
 from typing import List
 
 
+class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+
 class Solution:
     def romanToInt(self, s: str) -> int:
         # 建立字典表进行映射判断
@@ -425,6 +432,45 @@ class Solution:
 
         return True if score > -1 and times < 3 else False
 
+    def reverseWords(self, s: str) -> str:
+        # 先整体反转获取各翻转字符串，再逆序输出即可
+        """return " ".join([x for x in s[::-1].split(" ")][::-1])"""
+        # 方法二：直接逐一逆序输出
+        return " ".join(x[::-1] for x in s.split(" "))
+
+    def initial_tree(self, arr: List[int]) -> TreeNode:
+        # 由于None与类中的None的不同，因此只能单独设置
+        def create(arrs: List[int], index: int):
+            # 递归构建二叉树的方法：先序构造
+            if index < len(arrs):
+                Tn = TreeNode(None)
+                Tn.val = arrs[index]
+                Tn.left = create(arrs, index*2+1)
+                Tn.right = create(arrs, index*2+2)
+                return Tn
+            else:
+                return None
+
+        return create(arr, 0)
+
+    def tree2str(self, t: TreeNode) -> str:
+        if not t:
+            return ''
+        """
+        left = '(' + self.tree2str(t.left) + ')' if (t.left or t.right) else ''
+        right = '(' + self.tree2str(t.right) + ')' if t.right else ''
+        return str(t.val) + left + right
+        """
+        # 注意括号添加的条件：左子树添加为左不空或者右不空
+        # 右子树则只能为右不空时添加
+        res = str(t.val)
+        if t.left or t.right:
+            res += "(" + self.tree2str(t.left) + ")"
+        if t.right:
+            res += "(" + self.tree2str(t.right) + ")"
+
+        return res
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -488,3 +534,9 @@ if __name__ == '__main__':
 
     # 551 学生出勤记录I
     # print(show.checkRecord("PPALLLP"))
+
+    # 557 反转字符串中的单词III
+    # print(show.reverseWords("Let's take LeetCode contest"))
+
+    # 606 根据二叉树创建字符串
+    # print(show.tree2str(show.initial_tree([1,2,3,None,4])))
