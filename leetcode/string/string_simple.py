@@ -432,6 +432,7 @@ class Solution:
 
         return True if score > -1 and times < 3 else False
 
+
     def reverseWords(self, s: str) -> str:
         # 先整体反转获取各翻转字符串，再逆序输出即可
         """return " ".join([x for x in s[::-1].split(" ")][::-1])"""
@@ -470,6 +471,64 @@ class Solution:
             res += "(" + self.tree2str(t.right) + ")"
 
         return res
+
+    def judgeCircle(self, moves: str) -> bool:
+        # 字典法1慢出天际
+        """
+        dicts = {"R": [0, 1], "L": [0, -1], "U": [-1, 0], "D": [1, 0]}
+        init = [0, 0]
+        for ch in moves:
+            init[0] += dicts[ch][0]
+            init[1] += dicts[ch][1]
+        return True if init == [0, 0] else False
+        """
+        # 字典法2优化了许多
+        """
+        dicts = {"L": -1, "R": 1, "U": -100, "D": 100}
+        res = 0
+        for ch in moves:
+            res += dicts[ch]
+
+        return False if res else True
+        """
+        # 内库调用最快
+        return True if moves.count("L") == moves.count("R") and moves.count("U") == moves.count("D") else False
+
+    def validPalindrome(self, s: str) -> bool:
+        # 完全不用内库慢成go
+        """
+        st, ed, flag, born = 0, len(s)-1, True, False
+        while st < ed:
+            if s[st] != s[ed]:
+                break
+            st += 1
+            ed -= 1
+
+        def judge(s: str, st: int, ed: int):
+            while st < ed:
+                if s[st] != s[ed]:
+                    return False
+                st += 1
+                ed -= 1
+            return True
+
+        return judge(s, st+1, ed) or judge(s, st, ed-1)
+        """
+        # 初始判断能节约大部分时间
+        if s == s[::-1]:
+            return True
+        # 使用内库
+        st, ed = 0, len(s)-1
+        while st < ed:
+            if s[st] != s[ed]:
+                break
+            st += 1
+            ed -= 1
+
+        # 关于回文数的判断，直接判断是否逆转后仍然相等即可，无需求取中间值，学到了
+        # 两种情况分别作判断即可
+        a, b = s[st+1: ed+1], s[st:ed]
+        return a == a[::-1] or b == b[::-1]
 
 
 if __name__ == '__main__':
@@ -540,3 +599,9 @@ if __name__ == '__main__':
 
     # 606 根据二叉树创建字符串
     # print(show.tree2str(show.initial_tree([1,2,3,None,4])))
+
+    # 657 机器人能否返回原点
+    # print(show.judgeCircle("UD"))
+
+    # 680 验证回文字符串II
+    # print(show.validPalindrome("aguokepatgbnvfqmgmlcupuufxoohdfpgjdmysgvhmvffcnqxjjxqncffvmhvgsymdjgpfdhooxfuupuculmgmqfvnbgtapekouga"))
