@@ -28,8 +28,8 @@ class Solution:
         # 遍历查找
         while sp < lens:
             # 出现特殊字符
-            if sp+1 < lens and s[sp:sp+2] in special:
-                count += special[s[sp:sp+2]]
+            if sp + 1 < lens and s[sp:sp + 2] in special:
+                count += special[s[sp:sp + 2]]
                 sp += 2
             else:
                 # 正常情况
@@ -114,7 +114,7 @@ class Solution:
         """
         # 只能通过遍历进行判断
         pre_str = "1"
-        for _ in range(2, n+1):
+        for _ in range(2, n + 1):
             # all_val记录当前保存的输出
             all_val, cur_val, count_val = "", pre_str[0], 0
             # 通过统计每个元素出现的个数来创建输出
@@ -168,9 +168,9 @@ class Solution:
         a, b = a[::-1], b[::-1]
         # 防御式做法：预先将字符串设为等长就能大大减少后续的处理流程
         if len_a < len_b:
-            a += "0"*(len_b - len_a)
+            a += "0" * (len_b - len_a)
         else:
-            b += "0"*(len_a - len_b)
+            b += "0" * (len_a - len_b)
             # 为后面的长度选择做准备
             len_b = len_a
 
@@ -180,13 +180,13 @@ class Solution:
             cur_val = dicts[a[i]] + dicts[b[i]] + incre
             if cur_val > 1:
                 incre = 1
-                res += str(cur_val-2)
+                res += str(cur_val - 2)
             else:
                 res += str(cur_val)
                 incre = 0
 
         # 注意最后还有可能进位
-        return (res+"1")[::-1] if incre else res[::-1]
+        return (res + "1")[::-1] if incre else res[::-1]
 
     def isPalindrome(self, s: str) -> bool:
         # 先从中筛选， 去掉无用的元素
@@ -200,10 +200,10 @@ class Solution:
         lens = len(pre_sort)
 
         # 慢在此处库函数的调用，如果采用双指针应该会快很多
-        return pre_sort[:lens//2] == pre_sort[lens-lens//2:][::-1]
+        return pre_sort[:lens // 2] == pre_sort[lens - lens // 2:][::-1]
 
     def reverseString(self, s: List[str]) -> None:
-        head, tail = 0, len(s)-1
+        head, tail = 0, len(s) - 1
         # 设置双指针交换即可
         while head < tail:
             s[head], s[tail] = s[tail], s[head]
@@ -325,7 +325,7 @@ class Solution:
                 incre = 0
 
         # 注意最后的增量判断
-        return (res+"1")[::-1] if incre else res[::-1]
+        return (res + "1")[::-1] if incre else res[::-1]
 
     def countSegments(self, s: str) -> int:
         # 调用库函数切分，并且除去长度为0的部分，即为结果
@@ -344,7 +344,7 @@ class Solution:
             if chars[i] == cur_val:
                 cur_count += 1
             # 此处不包含尾数与前一位相同的情况
-            if chars[i] != cur_val or i == lens-1:
+            if chars[i] != cur_val or i == lens - 1:
                 if cur_count > 1:
                     chars[count_pos], strs = cur_val, str(cur_count)
                     count_pos += 1
@@ -405,15 +405,15 @@ class Solution:
     def reverseStr(self, s: str, k: int) -> str:
         lens, res = len(s), ""
         # times 保存处理次数，reside 保存余数
-        times, reside = lens // (2*k), lens % (2*k)
+        times, reside = lens // (2 * k), lens % (2 * k)
         for i in range(times):
-            res += s[2*i*k:2*i*k+k][::-1] + s[2*i*k+k: 2*(i+1)*k]
+            res += s[2 * i * k:2 * i * k + k][::-1] + s[2 * i * k + k: 2 * (i + 1) * k]
 
         # 条件判断
         if reside >= k:
-            res += s[2*times*k:2*times*k+k][::-1] + s[2*times*k+k:]
+            res += s[2 * times * k:2 * times * k + k][::-1] + s[2 * times * k + k:]
         else:
-            res += s[2*times*k:][::-1]
+            res += s[2 * times * k:][::-1]
 
         return res
 
@@ -432,7 +432,6 @@ class Solution:
 
         return True if score > -1 and times < 3 else False
 
-
     def reverseWords(self, s: str) -> str:
         # 先整体反转获取各翻转字符串，再逆序输出即可
         """return " ".join([x for x in s[::-1].split(" ")][::-1])"""
@@ -446,8 +445,8 @@ class Solution:
             if index < len(arrs):
                 Tn = TreeNode(None)
                 Tn.val = arrs[index]
-                Tn.left = create(arrs, index*2+1)
-                Tn.right = create(arrs, index*2+2)
+                Tn.left = create(arrs, index * 2 + 1)
+                Tn.right = create(arrs, index * 2 + 2)
                 return Tn
             else:
                 return None
@@ -518,7 +517,7 @@ class Solution:
         if s == s[::-1]:
             return True
         # 使用内库
-        st, ed = 0, len(s)-1
+        st, ed = 0, len(s) - 1
         while st < ed:
             if s[st] != s[ed]:
                 break
@@ -527,8 +526,89 @@ class Solution:
 
         # 关于回文数的判断，直接判断是否逆转后仍然相等即可，无需求取中间值，学到了
         # 两种情况分别作判断即可
-        a, b = s[st+1: ed+1], s[st:ed]
+        a, b = s[st + 1: ed + 1], s[st:ed]
         return a == a[::-1] or b == b[::-1]
+
+    def repeatedStringMatch(self, A: str, B: str) -> int:
+        # 最多向两个方向延伸，因此最多加2
+        times = len(B) // len(A) + 2
+        for i in range(1, times + 1):
+            if B in A * i:
+                return i
+
+        return -1
+
+    def countBinarySubstrings(self, s: str) -> int:
+        # 逐一统计果然会超时
+        """
+        total, times = 0, len(s) // 2
+        cur_str = "01"
+        for i in range(times):
+            total += s.count(cur_str) + s.count(cur_str[::-1])
+            cur_str = "0" + cur_str + "1"
+
+        return total
+        """
+        # 分成两步来看待，分别为当前统计的数量与上一次统计数量，求取其最小值即可
+        i, lens = 0, len(s)
+        count = 0
+        zero, one = 0, 0
+        while i < lens:
+            # 将先前变量保存
+            pre = s[i]
+            # 统计当前的数量
+            while i < lens and pre == s[i]:
+                zero += 1
+                i += 1
+            count += min(one, zero)
+            one, zero = zero, 0
+
+        return count
+
+    def toLowerCase(self, str: str) -> str:
+        res = ""
+        for ch in str:
+            if "A" <= ch <= "Z":
+                # 普通转化
+                res += chr(ord(ch)+32)
+            else:
+                res += ch
+
+        return res
+
+    def rotatedDigits(self, N: int) -> int:
+        """
+        count = 0
+        dicts = {0: 0, 1: 1, 2: 5, 5: 2, 6: 9, 8: 8, 9: 6}
+
+        # 按照题给思路逐一比对的方法
+        for i in range(1, N+1):
+            cur_val, flag, dig, t = i, True, 0, 0
+            while cur_val:
+                # 整数的拆分
+                div, mod = cur_val // 10, cur_val % 10
+                if mod not in dicts:
+                    flag = False
+                    break
+                cur_val = div
+                # 比较变换后的数字
+                dig += dicts[mod]*10**t
+                t += 1
+
+            if flag and i != dig:
+                count += 1
+
+        return count
+        """
+        # 方法二：直接判断，不用计算出结果
+        count = 0
+        for i in range(1, N+1):
+            cur = str(i)
+            if "3" in cur or "4" in cur or "7" in cur:
+                continue
+            if "2" in cur or "5" in cur or "6" in cur or "9" in cur:
+                count += 1
+        return count
 
 
 if __name__ == '__main__':
@@ -605,3 +685,15 @@ if __name__ == '__main__':
 
     # 680 验证回文字符串II
     # print(show.validPalindrome("aguokepatgbnvfqmgmlcupuufxoohdfpgjdmysgvhmvffcnqxjjxqncffvmhvgsymdjgpfdhooxfuupuculmgmqfvnbgtapekouga"))
+
+    # 686 重复叠加字符串匹配
+    # print(show.repeatedStringMatch("abc", "dabcdab"))
+
+    # 696 计数二进制子串
+    # print(show.countBinarySubstrings("000111000"))
+
+    # 709 转换成小写字母
+    # print(show.toLowerCase("Hello"))
+
+    # 788 旋转数字
+    # print(show.rotatedDigits(10))
