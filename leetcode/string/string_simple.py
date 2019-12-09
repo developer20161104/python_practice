@@ -610,6 +610,56 @@ class Solution:
                 count += 1
         return count
 
+    def uniqueMorseRepresentations(self, words: List[str]) -> int:
+        exch = [".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."]
+        # 添加到set中自动虑重
+        res = set()
+        for strs in words:
+            """
+            cur_str = ""
+            for ch in strs:
+                # 此处应该可以简写
+                cur_str += exch[ord(ch)-97]
+            res.add(cur_str)
+            """
+            # 简写形式
+            res.add("".join(map(lambda x: exch[ord(x)-97], strs)))
+        return len(res)
+
+    def mostCommonWord(self, paragraph: str, banned: List[str]) -> str:
+        # 无法过滤其它连接符号
+        # lists = list(map(lambda x: x.lower().strip("!?.;,'"), paragraph.split()))
+
+        # 将过滤集合转化为set，缩短时间
+        ban, sym, cur_str = set(banned), set("!?.,'; "), ""
+        # 添加空集
+        ban.add('')
+        dicts = {}
+        # 由于中间连接词不止一种，只能采用逐一过滤，或者可以改为正则表达式
+        for ch in paragraph:
+            if ch not in sym:
+                cur_str += ch.lower()
+            else:
+                if cur_str not in ban:
+                    if cur_str in dicts:
+                        dicts[cur_str] += 1
+                    else:
+                        dicts[cur_str] = 1
+                cur_str = ""
+
+        # 如果只有一个元素时，上面的循环根本不会判断
+        if not len(dicts) and len(cur_str):
+            return cur_str if cur_str not in ban else ""
+
+        max_key, max_val = 0, ""
+        # 找到出现次数最多的单词
+        for key in dicts:
+            if dicts[key] > max_key:
+                max_val = key
+                max_key = dicts[key]
+
+        return max_val
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -697,3 +747,9 @@ if __name__ == '__main__':
 
     # 788 旋转数字
     # print(show.rotatedDigits(10))
+
+    # 804 唯一摩尔斯密码词
+    # print(show.uniqueMorseRepresentations(["gin", "zen", "gig", "msg"]))
+
+    # 819 最常见的单词
+    # print(show.mostCommonWord("Bob", []))
