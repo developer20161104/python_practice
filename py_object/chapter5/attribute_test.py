@@ -1,3 +1,6 @@
+import time
+
+
 class Color:
     def __init__(self, rgb_value, name):
         # 使用下划线表示私有变量
@@ -24,12 +27,15 @@ class Silly:
     def silly(self):
         """This is a silly property"""
         print("you are getting silly")
-        return self._silly
+        # 设置时效
+        return self._silly if time.localtime(time.time() - self._old_time ).tm_sec < 3 else ""
 
     @silly.setter
     def silly(self, value):
         print("you are making silly {}".format(value))
         self._silly = value
+        # 从创建开始进行计时
+        self._old_time = time.time()
 
     @silly.deleter
     def silly(self):
@@ -57,6 +63,8 @@ if __name__ == '__main__':
 
     s = Silly()
     s.silly = "test"
+    # 添加休眠时间来手动增加延时
+    # time.sleep(4)
     print(s.silly)
 
     del s.silly
