@@ -570,7 +570,7 @@ class Solution:
         for ch in str:
             if "A" <= ch <= "Z":
                 # 普通转化
-                res += chr(ord(ch)+32)
+                res += chr(ord(ch) + 32)
             else:
                 res += ch
 
@@ -602,7 +602,7 @@ class Solution:
         """
         # 方法二：直接判断，不用计算出结果
         count = 0
-        for i in range(1, N+1):
+        for i in range(1, N + 1):
             cur = str(i)
             if "3" in cur or "4" in cur or "7" in cur:
                 continue
@@ -611,7 +611,8 @@ class Solution:
         return count
 
     def uniqueMorseRepresentations(self, words: List[str]) -> int:
-        exch = [".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."]
+        exch = [".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---",
+                ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."]
         # 添加到set中自动虑重
         res = set()
         for strs in words:
@@ -623,7 +624,7 @@ class Solution:
             res.add(cur_str)
             """
             # 简写形式
-            res.add("".join(map(lambda x: exch[ord(x)-97], strs)))
+            res.add("".join(map(lambda x: exch[ord(x) - 97], strs)))
         return len(res)
 
     def mostCommonWord(self, paragraph: str, banned: List[str]) -> str:
@@ -659,6 +660,45 @@ class Solution:
                 max_key = dicts[key]
 
         return max_val
+
+    def toGoatLatin(self, S: str) -> str:
+        judge, s = set("aeiouAEIOU"), S.split()
+        res, lens = "", len(s)
+
+        # 区分元音辅音即可
+        for i in range(lens):
+            if s[i][0] in judge:
+                res += s[i] + "ma" + "a" * (i + 1) + " "
+            else:
+                cen_val = s[i][0] + "ma" + "a" * (i + 1) + " "
+
+                # 注意辅音判别时必须要看长度，否则可能下标越界
+                if len(s[i]) > 1:
+                    res += s[i][1:] + cen_val
+                else:
+                    res += cen_val
+
+        # 末尾空格删除
+        return res[:-1]
+
+    def buddyStrings(self, A: str, B: str) -> bool:
+        # 唯一相同也满足的情况: error 还有其他情况
+        len_a, len_b = len(A), len(B)
+        if len_a == len_b:
+            # 相同时必须满足串中至少包含两个相同字符，所以用set长度判断即可
+            if len_a > len(set(A)) and A == B:
+                return True
+            # 双指针法确定位置
+            st, ed = 0, len_a - 1
+            while st < ed and A[st] == B[st]:
+                st += 1
+            while st < ed and A[ed] == B[ed]:
+                ed -= 1
+            # 剔除其他情况
+            if st < ed and A[st] == B[ed] and A[ed] == B[st]:
+                return True
+
+        return False
 
 
 if __name__ == '__main__':
@@ -753,3 +793,9 @@ if __name__ == '__main__':
 
     # 819 最常见的单词
     # print(show.mostCommonWord("Bob", []))
+
+    # 824 山羊拉丁文
+    # print(show.toGoatLatin("I speak Goat Latin"))
+
+    # 859 亲密字符串
+    # print(show.buddyStrings("bacccc", "abcccc"))
