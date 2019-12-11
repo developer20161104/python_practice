@@ -700,6 +700,58 @@ class Solution:
 
         return False
 
+    def numSpecialEquivGroups(self, A: List[str]) -> int:
+        # 题意是通过奇偶交换使得两个字符串相同即为一组
+        set_val = set()
+        for val in A:
+            # 先对元素进行奇偶排序，然后放入set中自动过滤重复
+            set_val.add(str(sorted(val[::2])+sorted(val[1::2])))
+
+        return len(set_val)
+
+    def reverseOnlyLetters(self, S: str) -> str:
+        # 同时加减有点复杂，还是需要存储
+        """
+        res, lens, k = "", len(S), 0
+        pos_other, pos_al = 0, lens-1
+        while pos_al > -1:
+            while pos_other < lens and 97 <= ord(S[pos_other].lower()) <= 122:
+                pos_other += 1
+
+            while k < pos_other:
+                if 97 <= ord(S[pos_al].lower()) <= 122:
+                    res += S[pos_al]
+                    k += 1
+                pos_al -= 1
+
+            if pos_other < lens:
+                res += S[pos_other]
+                pos_other += 1
+
+        return res
+        """
+        # 防御式编程思想，无需在后面进行多余的判断
+        S += "!"
+        # 找出符号位置
+        sym_pos = [pos for pos, ch in enumerate(S) if ord(ch.lower()) < 97]
+        res = ""
+        # cur_pos为逆序字母位置，i为字符位置下标，k为已经放置的数量
+        cur_pos, i, k = len(S)-1, 0, 0
+        while i < len(sym_pos):
+            while k < sym_pos[i]:
+                if 97 <= ord(S[cur_pos].lower()) <= 122:
+                    res += S[cur_pos]
+                    k += 1
+                cur_pos -= 1
+
+            # 注意在添加了非字符后，当前长度也得增加
+            res += S[sym_pos[i]]
+            k += 1
+            i += 1
+
+        # 最后一个非字母切除即可
+        return res[:-1]
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -799,3 +851,9 @@ if __name__ == '__main__':
 
     # 859 亲密字符串
     # print(show.buddyStrings("bacccc", "abcccc"))
+
+    # 893 特殊等价字符串组：难在题意的理解上面
+    # print(show.numSpecialEquivGroups(["abc","acb","bac","bca","cab","cba"]))
+
+    # 917 仅仅反转字母
+    # print(show.reverseOnlyLetters("Test1ng-Leet=code-Q!"))
