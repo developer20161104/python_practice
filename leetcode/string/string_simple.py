@@ -752,6 +752,62 @@ class Solution:
         # 最后一个非字母切除即可
         return res[:-1]
 
+    def reorderLogFiles(self, logs: List[str]) -> List[str]:
+        # 未知错误：'o'为什么比'w'还排在后面？
+        # 测试案例：["j mo", "5 m w", "g 07", "o 2 0", "t q h"]
+        # 案例结果：["5 m w","j mo","t q h","g 07","o 2 0"]
+        """
+        alpha_list, digit_list = ["1 zzzzzz"], []
+
+        def find_next(strs:str, pos_val: int):
+            while pos_val < len(strs) and strs[pos_val].isspace():
+                pos_val += 1
+            return pos_val
+
+        for log in logs:
+            if log[-1].isdigit():
+                digit_list.append(log)
+            else:
+                flag = False
+                for i in range(len(alpha_list)):
+                    pos_log, pos_cur = find_next(log, log.index(" ")+1), find_next(alpha_list[i], alpha_list[i].index(" ")+1)
+
+                    # 用的是插入排序，由于python的list特性，不需要进行移项
+                    while log[pos_log] == alpha_list[i][pos_cur]:
+                        pos_log, pos_cur = find_next(log, pos_log+1), find_next(alpha_list[i], pos_cur+1)
+                        # 特殊判断，当两者相同时
+                        if pos_log == len(log) and pos_cur == len(alpha_list[i]):
+                            flag = True
+                            break
+
+                    if flag:
+                        alpha_list.insert(i+1, log) if log[:log.index(" ")] > alpha_list[i][:alpha_list[i].index(" ")] else alpha_list.insert(i, log)
+                        break
+                    # 防御式编程，设置一个极大数作为边界，因此无需进行后续判断
+                    if log[pos_log] < alpha_list[i][pos_cur]:
+                        alpha_list.insert(i, log)
+                        break
+
+        return alpha_list[:-1] + digit_list
+        """
+        nums = []
+        tmp = []
+        ret = []
+        for k in logs:
+            space = k.index(" ")
+            if k[space + 1].isdigit():
+                nums.append(k)
+            else:
+                mark = k[:space]
+                tmp.append((mark, k[space + 1:]))
+        # 利用了多重排序，但是没有去掉空格直接进行判断？
+        for k in sorted(tmp, key=lambda x: (x[1], x[0])):
+            ret.append(k[0] + " " + k[1])
+        return ret + nums
+
+    def gcdOfStrings(self, str1: str, str2: str) -> str:
+        pass
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -857,3 +913,9 @@ if __name__ == '__main__':
 
     # 917 仅仅反转字母
     # print(show.reverseOnlyLetters("Test1ng-Leet=code-Q!"))
+
+    # 937 重新排列日志文件
+    # print(show.reorderLogFiles(["j mo", "5 m w", "g 07", "o 2 0", "t q h"]))
+
+    # 1071 字符串的最大公因子
+    print(show.gcdOfStrings("ABCABC", "ABC"))
