@@ -752,6 +752,56 @@ class Solution:
         # 最后一个非字母切除即可
         return res[:-1]
 
+    def isLongPressedName(self, name: str, typed: str) -> bool:
+        # 无字母顺序不一致时的情况
+        """
+        from collections import defaultdict
+        dicts = defaultdict(int)
+        for ch in typed:
+            dicts[ch] += 1
+
+        for ch in name:
+            if ch not in dicts or dicts[ch] == 0:
+                return False
+            dicts[ch] -= 1
+
+        return True
+        """
+        # 分别记录name下标，以及上一次的字符
+        pos_n, lens, pre_val = 0, len(typed), name[0]
+        for pos in range(lens):
+            # 逐一比对
+            if name[pos_n] == typed[pos]:
+                pre_val = name[pos_n]
+                pos_n += 1
+
+            # 过滤重复元素
+            elif typed[pos] != pre_val:
+                return False
+
+            # 必须在内部判断，否则可能会下标越界
+            if pos_n == len(name):
+                return True
+
+        return False
+
+    def numUniqueEmails(self, emails: List[str]) -> int:
+        collect = set()
+        for email in emails:
+            cur_str = ""
+            for ch in email:
+                if ch == ".":
+                    continue
+                # 注意有可能直接遍历到@，因此也需要其作为终止符
+                elif ch == "+" or ch == "@":
+                    break
+                cur_str += ch
+
+            # 由于每个邮箱地址仅有一个@，因此可以使用index来寻找下标
+            collect.add(cur_str+email[email.index("@"):])
+
+        return len(collect)
+
     def reorderLogFiles(self, logs: List[str]) -> List[str]:
         # 未知错误：'o'为什么比'w'还排在后面？
         # 测试案例：["j mo", "5 m w", "g 07", "o 2 0", "t q h"]
@@ -913,6 +963,12 @@ if __name__ == '__main__':
 
     # 917 仅仅反转字母
     # print(show.reverseOnlyLetters("Test1ng-Leet=code-Q!"))
+
+    # 925 长按键入
+    # print(show.isLongPressedName("alex", "alexxx"))
+
+    # 929 独特的电子邮件地址
+    # print(show.numUniqueEmails(["test.email+alex@leetcode.com", "test.email@leetcode.com"]))
 
     # 937 重新排列日志文件
     # print(show.reorderLogFiles(["j mo", "5 m w", "g 07", "o 2 0", "t q h"]))
