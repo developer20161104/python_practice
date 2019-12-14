@@ -856,7 +856,30 @@ class Solution:
         return ret + nums
 
     def gcdOfStrings(self, str1: str, str2: str) -> str:
-        pass
+        """
+        min_str, max_str = str1, str2
+        if len(str1) > len(str2):
+            min_str, max_str = max_str, min_str
+
+        max_len = 0
+        if max_str in 10*min_str:
+            for i in range(1, len(min_str)+1):
+                # 需要逐一遍历，太zz了
+                if not len(min_str) % i and min_str[:i]*(len(min_str)//i) == min_str and min_str[:i]*(len(max_str)//i) == max_str and i > max_len:
+                    max_len = i
+
+        return "" if not max_len else min_str[:max_len]
+        """
+        # 网上大神做法:模拟GCD 妙啊！
+        while str1 != str2:
+            if len(str1) < len(str2):
+                str1, str2 = str2, str1
+            # 不能整除完毕则必无最大公因子
+            if str1[:len(str2)] != str2:
+                return ""
+            # 字符串无除法，因此此处用减法来慢慢削减，直至长度相同为止
+            str1 = str1[len(str2):]
+        return str1
 
 
 if __name__ == '__main__':
@@ -973,5 +996,5 @@ if __name__ == '__main__':
     # 937 重新排列日志文件
     # print(show.reorderLogFiles(["j mo", "5 m w", "g 07", "o 2 0", "t q h"]))
 
-    # 1071 字符串的最大公因子
-    print(show.gcdOfStrings("ABCABC", "ABC"))
+    # 1071 字符串的最大公因子 print(show.gcdOfStrings("CESFHCESFHCESFHCESFHCESFH",
+    # "CESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFH"))
