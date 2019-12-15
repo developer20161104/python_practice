@@ -808,6 +808,40 @@ class Solution:
     def gcdOfStrings(self, str1: str, str2: str) -> str:
         pass
 
+    def defangIPaddr(self, address: str) -> str:
+        # 使用join方法为每个中间项追加字符串
+        return "[.]".join(address.split("."))
+
+    def maxNumberOfBalloons(self, text: str) -> int:
+        dicts = {"b": 0, "a": 0, "l": 0, "o": 0, "n": 0}
+        for ch in text:
+            if ch in dicts:
+                dicts[ch] += 1
+        # 应该取最大，但是找不到
+        min_count = 100000
+        for ch in dicts:
+            # 有两种字符需要单独判别，取其中的最小即可
+            if ch == 'l' or ch == 'o':
+                min_count = min(min_count, dicts[ch]//2)
+            else:
+                min_count = min(min_count, dicts[ch])
+
+        return min_count
+
+    def balancedStringSplit(self, s: str) -> int:
+        # 贪心思想
+        count, balance = 0, 0
+        for ch in s:
+            if ch == 'R':
+                balance += 1
+            else:
+                balance -= 1
+            # 碰到就是赚到
+            if not balance:
+                count += 1
+
+        return count
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -918,4 +952,13 @@ if __name__ == '__main__':
     # print(show.reorderLogFiles(["j mo", "5 m w", "g 07", "o 2 0", "t q h"]))
 
     # 1071 字符串的最大公因子
-    print(show.gcdOfStrings("ABCABC", "ABC"))
+    # print(show.gcdOfStrings("ABCABC", "ABC"))
+
+    # 1108 IP地址无效化
+    # print(show.defangIPaddr("255.100.50.0"))
+
+    # 1189 气球的最大数量
+    # print(show.maxNumberOfBalloons("loonbalxballpoon"))
+
+    # 1221 分隔平衡字符串
+    # print(show.balancedStringSplit("RLLLLRRRLR"))
