@@ -856,30 +856,41 @@ class Solution:
         return ret + nums
 
     def gcdOfStrings(self, str1: str, str2: str) -> str:
-        """
-        min_str, max_str = str1, str2
-        if len(str1) > len(str2):
-            min_str, max_str = max_str, min_str
+        pass
 
-        max_len = 0
-        if max_str in 10*min_str:
-            for i in range(1, len(min_str)+1):
-                # 需要逐一遍历，太zz了
-                if not len(min_str) % i and min_str[:i]*(len(min_str)//i) == min_str and min_str[:i]*(len(max_str)//i) == max_str and i > max_len:
-                    max_len = i
+    def defangIPaddr(self, address: str) -> str:
+        # 使用join方法为每个中间项追加字符串
+        return "[.]".join(address.split("."))
 
-        return "" if not max_len else min_str[:max_len]
-        """
-        # 网上大神做法:模拟GCD 妙啊！
-        while str1 != str2:
-            if len(str1) < len(str2):
-                str1, str2 = str2, str1
-            # 不能整除完毕则必无最大公因子
-            if str1[:len(str2)] != str2:
-                return ""
-            # 字符串无除法，因此此处用减法来慢慢削减，直至长度相同为止
-            str1 = str1[len(str2):]
-        return str1
+    def maxNumberOfBalloons(self, text: str) -> int:
+        dicts = {"b": 0, "a": 0, "l": 0, "o": 0, "n": 0}
+        for ch in text:
+            if ch in dicts:
+                dicts[ch] += 1
+        # 应该取最大，但是找不到
+        min_count = 100000
+        for ch in dicts:
+            # 有两种字符需要单独判别，取其中的最小即可
+            if ch == 'l' or ch == 'o':
+                min_count = min(min_count, dicts[ch]//2)
+            else:
+                min_count = min(min_count, dicts[ch])
+
+        return min_count
+
+    def balancedStringSplit(self, s: str) -> int:
+        # 贪心思想
+        count, balance = 0, 0
+        for ch in s:
+            if ch == 'R':
+                balance += 1
+            else:
+                balance -= 1
+            # 碰到就是赚到
+            if not balance:
+                count += 1
+
+        return count
 
 
 if __name__ == '__main__':
@@ -996,5 +1007,14 @@ if __name__ == '__main__':
     # 937 重新排列日志文件
     # print(show.reorderLogFiles(["j mo", "5 m w", "g 07", "o 2 0", "t q h"]))
 
-    # 1071 字符串的最大公因子 print(show.gcdOfStrings("CESFHCESFHCESFHCESFHCESFH",
-    # "CESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFHCESFH"))
+    # 1071 字符串的最大公因子
+    # print(show.gcdOfStrings("ABCABC", "ABC"))
+
+    # 1108 IP地址无效化
+    # print(show.defangIPaddr("255.100.50.0"))
+
+    # 1189 气球的最大数量
+    # print(show.maxNumberOfBalloons("loonbalxballpoon"))
+
+    # 1221 分隔平衡字符串
+    # print(show.balancedStringSplit("RLLLLRRRLR"))
