@@ -24,12 +24,53 @@ class Solution:
 
         return max(f1, f2)
 
+    def isSubsequence(self, s: str, t: str) -> bool:
+        for i in range(len(s)):
+            try:
+                cur_pos = t.index(s[i])
+            # 找不到了必为False
+            except ValueError as _:
+                return False
+            # 截取后半部分进行查找
+            t = t[cur_pos+1:]
+
+        return True
+
+    def divisorGame(self, N: int) -> bool:
+        # 纯数学思想
+        return N % 2 == 0
+
+
+class NumArray:
+    # 状态转移方程为 dp[i] = nums[i-1] + dp[i-1]
+    # 现将中间结果进行缓存，使用时再进行提取操作
+    def __init__(self, nums: List[int]):
+        lens = len(nums)
+        self.dp = [0]*(lens + 1)
+        self.dp[0] = 0
+
+        for i in range(1, lens+1):
+            self.dp[i] = nums[i-1] + self.dp[i-1]
+
+    def sumRange(self, i: int, j: int) -> int:
+        # 可以推导出来
+        return self.dp[j+1] - self.dp[i]
+
 
 if __name__ == '__main__':
     show = Solution()
 
     # 70 爬楼梯
-    print(show.climbStairs(4))
+    # print(show.climbStairs(4))
 
     # 198 打家劫舍
-    print(show.rob([2,7,9,3,1]))
+    # print(show.rob([2,7,9,3,1]))
+
+    # 303 区域和检索-数组不可变
+    # print(NumArray([-2, 0, 3, -5, 2, -1]).sumRange(2, 5))
+
+    # 392 判断子序列
+    # print(show.isSubsequence("acb","ahbgdc"))
+
+    # 1025 除数博弈
+    # print(show.divisorGame(100))
