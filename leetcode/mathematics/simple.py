@@ -1,3 +1,6 @@
+import math
+
+
 class Solution:
     def reverse(self, x: int) -> int:
         """
@@ -55,6 +58,25 @@ class Solution:
         # 此处需要看源数字是否为奇数量还是偶数量
         return reverse == x or reverse//10 == x
 
+    def mySqrt(self, x: int) -> int:
+        # 神奇的魔数 0x5f3759df
+        s1 = x
+        while abs(s1*s1 - x) > 0.1:
+            # 牛顿法x（n+1）=x（n）+ S/x（n）
+            s1 = (s1 + x/s1)/2
+
+        return int(s1)
+
+    def convertToTitle(self, n: int) -> str:
+        res = ""
+        while n > 0:
+            # 由于从1开始计数，所以需要在求余时进行减一计算
+            n -= 1
+            res = chr(65 + n % 26) + res
+            n //= 26
+
+        return res
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -64,3 +86,9 @@ if __name__ == '__main__':
 
     # 9 回文数
     print(show.isPalindrome(10))
+
+    # 69 x的平方根
+    print(show.mySqrt(1000))
+
+    # 168 Excel表列名称
+    print(show.convertToTitle(704))
