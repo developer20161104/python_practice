@@ -70,12 +70,31 @@ class Solution:
     def convertToTitle(self, n: int) -> str:
         res = ""
         while n > 0:
-            # 由于从1开始计数，所以需要在求余时进行减一计算
-            n -= 1
-            res = chr(65 + n % 26) + res
+            y = n % 26
+            # 难点主要在于对求余时没有对应的结果，因此需要进行手动转化
+            if not y:
+                # 从商中借一个拿来替换当前的余数
+                n -= 1
+                y = 26
+            res = chr(64 + y) + res
             n //= 26
 
         return res
+
+    def titleToNumber(self, s: str) -> int:
+        res, k = 0, 0
+        for ch in s[::-1]:
+            # 简单的进制转化
+            res += (ord(ch)-64)*(26**k)
+            k += 1
+
+        return res
+
+    def trailingZeroes(self, n: int) -> int:
+        # 通过暴力破解可以发现规律：将2与5进行配对，每出现一对则结果尾数必含一个0
+        # 由于5出现的次数一定比2少，因此只需要判断5的个数即可，当然也要考虑25 等特殊情形
+        # 类似条件表达式的递归写法
+        return 0 if not n else n//5 + Solution.trailingZeroes(self, n // 5)
 
 
 if __name__ == '__main__':
@@ -91,4 +110,10 @@ if __name__ == '__main__':
     print(show.mySqrt(1000))
 
     # 168 Excel表列名称
-    print(show.convertToTitle(704))
+    print(show.convertToTitle(702))
+
+    # 171 Excel表列序号
+    print(show.titleToNumber("AAA"))
+
+    # 172 阶乘后的零
+    print(show.trailingZeroes(10))
