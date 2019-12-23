@@ -24,7 +24,7 @@ class Solution:
             # 数字取反的新套路
             # python 对负数取余时需要使用负数来求取
             if x > 0:
-                y = y*10 + x % 10
+                y = y * 10 + x % 10
             else:
                 y = y * 10 + x % -10
 
@@ -52,18 +52,18 @@ class Solution:
 
         reverse = 0
         while x > reverse:
-            reverse = reverse*10 + x % 10
+            reverse = reverse * 10 + x % 10
             x //= 10
 
         # 此处需要看源数字是否为奇数量还是偶数量
-        return reverse == x or reverse//10 == x
+        return reverse == x or reverse // 10 == x
 
     def mySqrt(self, x: int) -> int:
         # 神奇的魔数 0x5f3759df
         s1 = x
-        while abs(s1*s1 - x) > 0.1:
+        while abs(s1 * s1 - x) > 0.1:
             # 牛顿法x（n+1）=x（n）+ S/x（n）
-            s1 = (s1 + x/s1)/2
+            s1 = (s1 + x / s1) / 2
 
         return int(s1)
 
@@ -85,7 +85,7 @@ class Solution:
         res, k = 0, 0
         for ch in s[::-1]:
             # 简单的进制转化
-            res += (ord(ch)-64)*(26**k)
+            res += (ord(ch) - 64) * (26 ** k)
             k += 1
 
         return res
@@ -94,26 +94,89 @@ class Solution:
         # 通过暴力破解可以发现规律：将2与5进行配对，每出现一对则结果尾数必含一个0
         # 由于5出现的次数一定比2少，因此只需要判断5的个数即可，当然也要考虑25 等特殊情形
         # 类似条件表达式的递归写法
-        return 0 if not n else n//5 + Solution.trailingZeroes(self, n // 5)
+        return 0 if not n else n // 5 + Solution.trailingZeroes(self, n // 5)
+
+    def isHappy(self, n: int) -> bool:
+        # 关键点：保存当前已经出现过的数值以作为结束依据
+        res_set = set()
+        cur_val = 0
+        while cur_val != 1:
+            # 直接进行模拟操作
+            while n:
+                cur_val += (n % 10) ** 2
+                n //= 10
+
+            # 结束依据判断
+            if cur_val in res_set:
+                return False
+            # 当前数值不满足条件时继续下一轮判断并保留计算结果
+            if cur_val != 1:
+                res_set.add(cur_val)
+                n = cur_val
+                cur_val = 0
+
+        return True
+
+    def countPrimes(self, n: int) -> int:
+        # 暴力统计必然会超时
+        """
+        import math
+        count = 0
+        if n < 3:
+            return 0
+        for i in range(2, n):
+            flag = True
+            for k in range(2, int(math.sqrt(i))+1):
+                if not i % k:
+                    flag = False
+                    break
+
+            if flag:
+                count += 1
+        return count
+        """
+        # 需要用空间来换时间
+        # 使用一个状态列表来保存所有的数字，通过质数的倍数来进行消除
+        if n < 3:
+            return 0
+
+        state = [0] * n
+        # 只计算根号前面部分即可
+        l = int(n ** 0.5)
+
+        for i in range(2, l + 1):
+            if state[i]:
+                continue
+            # 此处将质数的倍数部分全部填满
+            state[i * i:n:i] = [1] * len(state[i * i:n:i])
+
+        # 注意要删减0,1两个数字
+        return len(state) - sum(state) - 2
 
 
 if __name__ == '__main__':
     show = Solution()
 
     # 7 整数反转
-    print(show.reverse(-1234))
+    # print(show.reverse(-1234))
 
     # 9 回文数
-    print(show.isPalindrome(10))
+    # print(show.isPalindrome(10))
 
     # 69 x的平方根
-    print(show.mySqrt(1000))
+    # print(show.mySqrt(1000))
 
     # 168 Excel表列名称
-    print(show.convertToTitle(702))
+    # print(show.convertToTitle(702))
 
     # 171 Excel表列序号
-    print(show.titleToNumber("AAA"))
+    # print(show.titleToNumber("AAA"))
 
     # 172 阶乘后的零
-    print(show.trailingZeroes(10))
+    # print(show.trailingZeroes(10))
+
+    # 202 快乐数
+    # print(show.isHappy(10))
+
+    # 204 计数质数
+    # print(show.countPrimes(10))
