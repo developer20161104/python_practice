@@ -166,9 +166,9 @@ class Solution:
         return True
 
     def addDigits(self, num: int) -> int:
-        # 考虑到9时的特殊情况
+        # 考虑到9时的特殊情况：妙啊！
         return (num - 1) % 9 + 1 if num else 0
-        # 一种更快的方法: 9的倍数各位加上的和还是9，错误，只是在样本范围内可以抓小空子
+        # 一种更快的方法：9的倍数各位加上的和还是9，错误，只是在样本范围内可以抓小空子
         # return num % 9 or 9 * bool(num)
 
 
