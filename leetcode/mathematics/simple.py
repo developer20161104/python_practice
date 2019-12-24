@@ -153,6 +153,24 @@ class Solution:
         # 注意要删减0,1两个数字
         return len(state) - sum(state) - 2
 
+    def isPowerOfTwo(self, n: int) -> bool:
+        # 需要考虑边界条件
+        if n < 1:
+            return False
+        # 只要在求取中出现除1外的奇数，即为False
+        while n != 1:
+            if n % 2:
+                return False
+            n //= 2
+
+        return True
+
+    def addDigits(self, num: int) -> int:
+        # 考虑到9时的特殊情况
+        return (num - 1) % 9 + 1 if num else 0
+        # 一种更快的方法: 9的倍数各位加上的和还是9，错误，只是在样本范围内可以抓小空子
+        # return num % 9 or 9 * bool(num)
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -180,3 +198,9 @@ if __name__ == '__main__':
 
     # 204 计数质数
     # print(show.countPrimes(10))
+
+    # 231 2的幂
+    # print(show.isPowerOfTwo(0))
+
+    # 258 各位相加
+    # print(show.addDigits(27))
