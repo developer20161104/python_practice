@@ -171,6 +171,43 @@ class Solution:
         # 一种更快的方法：9的倍数各位加上的和还是9，错误，只是在样本范围内可以抓小空子
         # return num % 9 or 9 * bool(num)
 
+    def isUgly(self, num: int) -> bool:
+        if num < 1:
+            return False
+        # 需要判断的除数
+        div = [2, 3, 5]
+
+        while num != 1:
+            res = num
+            for div_d in div:
+                # 只要包含就行
+                if not res % div_d:
+                    res = res // div_d
+                    break
+            # 如果不包含则直接返回False
+            if res == num:
+                return False
+            # 最后替换下一轮元素
+            num = res
+
+        return True
+
+    def isPowerOfThree(self, n: int) -> bool:
+        # 常规循环解法
+        """
+        if n < 1:
+            return False
+        # 只要在求取中出现除1外的奇数，即为False
+        while n != 1:
+            if n % 3:
+                return False
+            n //= 3
+
+        return True
+        """
+        # 找限制范围：直接使用取值的上界作为判断基准即可，limit:3**19
+        return n > 0 and not 1162261467 % n
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -204,3 +241,9 @@ if __name__ == '__main__':
 
     # 258 各位相加
     # print(show.addDigits(27))
+
+    # 263 丑数
+    # print(show.isUgly(1))
+
+    # 326 3的幂
+    # print(show.isPowerOfThree(3))
