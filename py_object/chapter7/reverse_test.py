@@ -21,5 +21,5 @@ if __name__ == '__main__':
         print("\n{}: ".format(seq.__class__.__name__), end="")
 
         for item in reversed(seq):
-            # end属性将在每一个尾部添加结束符
+            # end属性将在每一个尾部添加结束符,更改原始的\n
             print(item, end=", ")
