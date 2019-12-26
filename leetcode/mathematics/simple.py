@@ -208,6 +208,59 @@ class Solution:
         # 找限制范围：直接使用取值的上界作为判断基准即可，limit:3**19
         return n > 0 and not 1162261467 % n
 
+    def isPerfectSquare(self, num: int) -> bool:
+        # 暴力法，本质为查找
+        """
+        if num < 1:
+            return False
+        cur = 1
+        while cur**2 < num:
+            cur += 1
+
+        return True if cur**2 == num else False
+        """
+        # 思路为二分查找，但是列表的空间还能优化
+        """
+        if num < 4:
+            return False if num != 1 else True
+
+        arr = range(1, num//2+1)
+        left, right = 0, len(arr)-1
+        while left < right:
+            mid = (left + right)//2
+            if arr[mid]**2 < num:
+                left = mid + 1
+            else:
+                right = mid
+
+        return arr[left]**2 == num
+        """
+        # 优化的查找部分可以忽略不计 -_-!
+        left, right = 1, num
+        while left < right:
+            mid = (left + right) // 2
+            # 常规二分查找，顺序问题
+            if mid ** 2 < num:
+                left = mid + 1
+            else:
+                right = mid
+
+        return left ** 2 == num
+
+    def arrangeCoins(self, n: int) -> int:
+        # 实质还是一个二分查找问题
+        left, right = 1, n
+        while left < right:
+            mid = (left + right) // 2
+            # 只是查找时比较的是等差求和公式(n+1)*n//2
+            if mid * (mid + 1) // 2 < n:
+                left = mid + 1
+            else:
+                right = mid
+
+        # 由于采用整数截断，因此需要将刚好相等的进行特殊判断
+        return left-1 if n != left*(left+1)//2 else left
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -247,3 +300,9 @@ if __name__ == '__main__':
 
     # 326 3的幂
     # print(show.isPowerOfThree(3))
+
+    # 367 有效的完全平方数
+    # print(show.isPerfectSquare(43537405842735850251441))
+
+    # 441 排列硬币
+    # print(show.arrangeCoins(6))
