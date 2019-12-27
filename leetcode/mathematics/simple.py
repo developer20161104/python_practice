@@ -1,4 +1,4 @@
-import math
+from typing import List
 
 
 class Solution:
@@ -259,7 +259,57 @@ class Solution:
                 right = mid
 
         # 由于采用整数截断，因此需要将刚好相等的进行特殊判断
-        return left-1 if n != left*(left+1)//2 else left
+        return left - 1 if n != left * (left + 1) // 2 else left
+
+    def minMoves(self, nums: List[int]) -> int:
+        # 整体思路不对，只用数学上的等式无法完全满足要求
+        """
+        if len(set(nums)) == 1:
+            return 0
+        lens, time, res = len(nums), 1, sum(nums)
+        while (res + time*(lens-1)) % lens:
+            time += 1
+
+        return time
+        """
+        # 需要暴力查找规律
+        compare, time = min(nums), 0
+        for dig in nums:
+            time += dig - compare
+
+        return time
+
+        # 虽然一行解决，但是过于耗时
+        # return sum([x-min(nums) for x in nums])
+
+    def checkPerfectNumber(self, num: int) -> bool:
+        # 动态限制长度，还是会超时
+        """
+        res = set()
+        cur, limit = 1, num
+        while cur < limit:
+            if not num % cur and cur not in res:
+                res.add(cur)
+                if cur != 1:
+                    limit = num//cur
+                    res.add(limit)
+
+            cur += 1
+
+        return sum(res) == num
+        """
+        # 方法依旧暴力，但是将上限限制到了sqrt(num)，因此不会超时
+        if num < 1:
+            return False
+        import math
+        total, limit = 0, int(math.sqrt(num))+1
+        for i in range(1, limit):
+            if not num % i:
+                total += i
+                if i*i != num:
+                    total += num // i
+
+        return total - num == num
 
 
 if __name__ == '__main__':
@@ -306,3 +356,9 @@ if __name__ == '__main__':
 
     # 441 排列硬币
     # print(show.arrangeCoins(6))
+
+    # 453 最小移动次数使得数组元素相等
+    # print(show.minMoves([1, 2, 3]))
+
+    # 507 完美数
+    # print(show.checkPerfectNumber(25964951))
