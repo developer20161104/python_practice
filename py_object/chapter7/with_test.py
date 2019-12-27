@@ -17,4 +17,5 @@ if __name__ == '__main__':
         for i in range(15):
             lists.append(random.choice(string.ascii_letters))
 
-    print(lists,"\n",lists.result)
+    # 通过改写exit内部方法来对执行完with后的部分进行处理
+    print(lists, "\n", lists.result)
