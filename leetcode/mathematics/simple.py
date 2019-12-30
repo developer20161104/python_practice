@@ -302,14 +302,46 @@ class Solution:
         if num < 1:
             return False
         import math
-        total, limit = 0, int(math.sqrt(num))+1
+        total, limit = 0, int(math.sqrt(num)) + 1
         for i in range(1, limit):
             if not num % i:
                 total += i
-                if i*i != num:
+                if i * i != num:
                     total += num // i
 
         return total - num == num
+
+    def findErrorNums(self, nums: List[int]) -> List[int]:
+        # 以空间换时间的做法
+        # 题给案例限制，因此设置为n长度即可
+        res = [0] * 10000
+        for i in nums:
+            res[i - 1] += 1
+
+        # 找到出现两次与没有出现的元素
+        return [res.index(2) + 1, res.index(0) + 1]
+
+    def selfDividingNumbers(self, left: int, right: int) -> List[int]:
+        res = []
+        for i in range(left, right + 1):
+            # 当小于10时，直接添加
+            if i < 10:
+                res.append(i)
+            elif i % 10:
+                # 保留原数
+                jud = i
+                while i:
+                    div = i % 10
+                    # 需要判断包含0的情况，直接返回
+                    if not div or jud % div:
+                        break
+                    i = i // 10
+
+                # 如果没有完全判断，则必不为自除数
+                if not i:
+                    res.append(jud)
+
+        return res
 
 
 if __name__ == '__main__':
@@ -362,3 +394,9 @@ if __name__ == '__main__':
 
     # 507 完美数
     # print(show.checkPerfectNumber(25964951))
+
+    # 645 错误的集合
+    # print(show.findErrorNums([1,2,2,4]))
+
+    # 728 自除数
+    # print(show.selfDividingNumbers(1, 120))
