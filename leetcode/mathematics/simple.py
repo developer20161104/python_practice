@@ -370,6 +370,41 @@ class Solution:
 
         return res
 
+    def largestTriangleArea(self, points: List[List[int]]) -> float:
+        # 暴力法即可，需要使用海伦公式
+        # 纯数学
+        res, lens = 0, len(points)
+        for i in range(lens):
+            x1, y1 = points[i][0], points[i][1]
+            for j in range(i + 1, lens):
+                x2, y2 = points[j][0], points[j][1]
+
+                for k in range(j + 1, lens):
+                    x3, y3 = points[k][0], points[k][1]
+
+                    # 海伦公式
+                    res = max(res, abs(x1 * y2 + x2 * y3 + x3 * y1 - x2 * y1 - x3 * y2 - x1 * y3) / 2)
+
+        return res
+
+    def isRectangleOverlap(self, rec1: List[int], rec2: List[int]) -> bool:
+        # 判断相交根本行不通，情况过多，无法考虑，因此要反其道行之
+        """
+        min_x, min_y, lar_x, lar_y = rec1[:]
+        if min_x > lar_x:
+            min_x, lar_x = lar_x, min_x
+        if min_y > lar_y:
+            min_y, lar_y = lar_y, min_y
+
+        def judge(mins, maxs, pos):
+            return mins < pos < maxs
+        return True if (judge(min_x, lar_x, min(rec2[0], rec2[2])+0.1) and judge(min_y, lar_y, min(rec2[1], rec2[3])+0.1)) \
+            or (judge(min_x, lar_x, max(rec2[0], rec2[2])-0.1) and judge(min_y, lar_y, max(rec2[1], rec2[3])-0.1)) else False
+        """
+        # 题目已经限定位置，前一个为左下，后一个为右上，不需要判断大小
+        # 判断不在的情况，分别表示rec1在右侧 上侧 左侧 下侧
+        return not (rec1[0] >= rec2[2] or rec1[1] >= rec2[3] or rec1[2] <= rec2[0] or rec1[3] <= rec2[1])
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -433,3 +468,9 @@ if __name__ == '__main__':
 
     # 728 自除数
     # print(show.selfDividingNumbers(1, 120))
+
+    # 812 最大三角形面积
+    # print(show.largestTriangleArea([[0,0],[0,1],[1,0],[0,2],[2,0]]))
+
+    # 836 矩形重叠
+    # print(show.isRectangleOverlap([2,17,6,20],[3,8,6,20]))
