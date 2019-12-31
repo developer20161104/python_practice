@@ -311,6 +311,33 @@ class Solution:
 
         return total - num == num
 
+    def maxCount(self, m: int, n: int, ops: List[List[int]]) -> int:
+        # 直接模拟会内存溢出
+        """
+        count = [0]*(m*n)
+        for e in ops:
+            for i in range(e[0]):
+                count[i*n:i*n+e[1]] = [x+1 for x in count[i*n:i*n+e[1]]]
+
+        return count.count(count[0])
+        """
+        # 短板效应:只需考虑最短的位置即可，已经限制了顶点位，因此可以使用此方法
+        if not ops:
+            return m * n
+        # 将多维列表解压
+        a, b = zip(*ops)
+        return min(a) * min(b)
+
+    def judgeSquareSum(self, c: int) -> bool:
+        limit = c ** 0.5
+        for i in range(1, int(limit) + 1):
+            # 此处为判断求平方根是否为整数
+            res = (c - i * i) ** 0.5
+            if int(res) == res:
+                return True
+
+        return False if c else True
+
     def findErrorNums(self, nums: List[int]) -> List[int]:
         # 以空间换时间的做法
         # 题给案例限制，因此设置为n长度即可
@@ -394,6 +421,12 @@ if __name__ == '__main__':
 
     # 507 完美数
     # print(show.checkPerfectNumber(25964951))
+
+    # 598 范围求和II
+    # print(show.maxCount(3, 3, [[2, 2], [3, 3]]))
+
+    # 633 平方数之和
+    # print(show.judgeSquareSum(20))
 
     # 645 错误的集合
     # print(show.findErrorNums([1,2,2,4]))
