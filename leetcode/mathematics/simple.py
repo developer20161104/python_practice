@@ -405,6 +405,43 @@ class Solution:
         # 判断不在的情况，分别表示rec1在右侧 上侧 左侧 下侧
         return not (rec1[0] >= rec2[2] or rec1[1] >= rec2[3] or rec1[2] <= rec2[0] or rec1[3] <= rec2[1])
 
+    def binaryGap(self, N: int) -> int:
+        # 分别统计0出现的次数以及是否出现，注意只出现一个1时候的情况即可
+        count, max_cou, time = 0, 0, False
+        while N:
+            div = N % 2
+            if div:
+                # 出现多个1时才会有此处使用
+                if time:
+                    # 在计算距离时需要再加上本身的距离
+                    max_cou = max(max_cou, count + 1)
+                time = True
+                count = 0
+            else:
+                count += 1
+
+            N //= 2
+
+        return max(max_cou, count)
+
+    def projectionArea(self, grid: List[List[int]]) -> int:
+        # 俯视图对应元素数，侧视图对应行最长，正视图对应列最长（对于不等长的列表，无法使用zip，因此不考虑zip的解压）
+        count = 0
+        max_column = [0] * len(grid[0])
+        for pos in grid:
+            lens = len(pos)
+            for i in range(lens):
+                # 统计列最长
+                max_column[i] = max(max_column[i], pos[i])
+                if pos[i]:
+                    # 统计元素个数
+                    count += 1
+
+            # 统计行最长
+            count += max(pos)
+
+        return count + sum(max_column)
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -474,3 +511,9 @@ if __name__ == '__main__':
 
     # 836 矩形重叠
     # print(show.isRectangleOverlap([2,17,6,20],[3,8,6,20]))
+
+    # 868 二进制间距
+    # print(show.binaryGap(8))
+
+    # 883 三维形体投影面积
+    # print(show.projectionArea([[2,2,2],[2,1,2],[2,2,2]]))
