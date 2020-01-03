@@ -467,7 +467,8 @@ class Solution:
         return surface + 2*back
 
     def smallestRangeI(self, A: List[int], K: int) -> int:
-        pass
+        # 当两者差值K已经无法弥补了，则输出差值，否则一律为0
+        return max(max(A)-min(A)-2*K, 0)
 
 
 if __name__ == '__main__':
@@ -549,3 +550,4 @@ if __name__ == '__main__':
     # print(show.surfaceArea([[3,3,3],[3,4,5],[5,0,4]]))
 
     # 908 最小差值I
+    # print(show.smallestRangeI([1,3,6],3))
