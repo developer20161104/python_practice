@@ -442,6 +442,33 @@ class Solution:
 
         return count + sum(max_column)
 
+    def surfaceArea(self, grid: List[List[int]]) -> int:
+        # 需要对六个面进行计算
+        # 转化为求行最长，列最长以及元素个数统计，不能忽略中间的凹槽部分面积
+        # 整体统计完全不可行，会有重复
+        surface, lens_row, len_col, back = 0, len(grid[0]), len(grid), 0
+
+        # 分行列逐一判断
+        for ro_cur in grid:
+            # 边缘侧面积
+            surface += ro_cur[0] + ro_cur[-1]
+            # back保存的是底面积
+            back += lens_row - ro_cur.count(0)
+            for i in range(1, lens_row):
+                # 逐一比对邻近块，横向侧面积
+                surface += abs(ro_cur[i]-ro_cur[i-1])
+        for co_cur in zip(*grid):
+            # 边缘正面积
+            surface += co_cur[0] + co_cur[-1]
+            for j in range(1, len_col):
+                # 纵向正面积
+                surface += abs(co_cur[j]-co_cur[j-1])
+
+        return surface + 2*back
+
+    def smallestRangeI(self, A: List[int], K: int) -> int:
+        pass
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -517,3 +544,8 @@ if __name__ == '__main__':
 
     # 883 三维形体投影面积
     # print(show.projectionArea([[2,2,2],[2,1,2],[2,2,2]]))
+
+    # 892 三维形体的表面积
+    # print(show.surfaceArea([[3,3,3],[3,4,5],[5,0,4]]))
+
+    # 908 最小差值I
