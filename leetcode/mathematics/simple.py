@@ -470,6 +470,29 @@ class Solution:
         # 当两者差值K已经无法弥补了，则输出差值，否则一律为0
         return max(max(A)-min(A)-2*K, 0)
 
+    def diStringMatch(self, S: str) -> List[int]:
+        lens = len(S)
+        cur_max, cur_min = lens, 0
+        res = []
+
+        for val in S:
+            # 对于小于填写当前最小值即可
+            if val == "I":
+                res.append(cur_min)
+                cur_min += 1
+            # 对于大于则选择当前最大值
+            else:
+                res.append(cur_max)
+                cur_max -= 1
+
+        # 最后剩余的也需要添加上去
+        res.append(cur_min)
+
+        return res
+
+    def largestTimeFromDigits(self, A: List[int]) -> str:
+        res = ""
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -551,3 +574,6 @@ if __name__ == '__main__':
 
     # 908 最小差值I
     # print(show.smallestRangeI([1,3,6],3))
+
+    # 942 增减字符串匹配
+    print(show.diStringMatch("DDI"))
