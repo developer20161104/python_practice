@@ -456,19 +456,19 @@ class Solution:
             back += lens_row - ro_cur.count(0)
             for i in range(1, lens_row):
                 # 逐一比对邻近块，横向侧面积
-                surface += abs(ro_cur[i]-ro_cur[i-1])
+                surface += abs(ro_cur[i] - ro_cur[i - 1])
         for co_cur in zip(*grid):
             # 边缘正面积
             surface += co_cur[0] + co_cur[-1]
             for j in range(1, len_col):
                 # 纵向正面积
-                surface += abs(co_cur[j]-co_cur[j-1])
+                surface += abs(co_cur[j] - co_cur[j - 1])
 
-        return surface + 2*back
+        return surface + 2 * back
 
     def smallestRangeI(self, A: List[int], K: int) -> int:
         # 当两者差值K已经无法弥补了，则输出差值，否则一律为0
-        return max(max(A)-min(A)-2*K, 0)
+        return max(max(A) - min(A) - 2 * K, 0)
 
     def diStringMatch(self, S: str) -> List[int]:
         lens = len(S)
@@ -491,7 +491,20 @@ class Solution:
         return res
 
     def largestTimeFromDigits(self, A: List[int]) -> str:
-        res = ""
+        res = -1
+        # 暴力字典序
+        for i in range(4):
+            for j in range(4):
+                if i != j:
+                    for k in range(4):
+                        if k != j and k != i:
+                            l = 6 - i - j - k
+                            hour, minute = A[i] * 10 + A[j], A[k] * 10 + A[l]
+                            if hour < 24 and minute < 60:
+                                res = max(res, hour * 60 + minute)
+
+        # 格式化输出格式，少了要补零
+        return "" if res < 0 else "{:02}:{:02}".format(res // 60, res % 60)
 
 
 if __name__ == '__main__':
@@ -576,4 +589,7 @@ if __name__ == '__main__':
     # print(show.smallestRangeI([1,3,6],3))
 
     # 942 增减字符串匹配
-    print(show.diStringMatch("DDI"))
+    # print(show.diStringMatch("DDI"))
+
+    # 949 给定数字能组成的最大时间
+    # print(show.largestTimeFromDigits([1, 2, 3, 4]))
