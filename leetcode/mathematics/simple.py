@@ -506,6 +506,77 @@ class Solution:
         # 格式化输出格式，少了要补零
         return "" if res < 0 else "{:02}:{:02}".format(res // 60, res % 60)
 
+    def powerfulIntegers(self, x: int, y: int, bound: int) -> List[int]:
+        """
+        res = set()
+
+        # 先逐一计算
+        def getall(xs: int, bounds: int) -> List[int]:
+            if xs == 1:
+                return [1]
+            p, rep = 0, 1
+            reps = []
+            while rep < bound:
+                reps.append(rep)
+                p += 1
+                rep = xs**p
+
+            return reps
+
+        # 再合并结果
+        ans1, ans2 = getall(x, bound), getall(y, bound)
+        for k1 in ans1:
+            for k2 in ans2:
+                if k1 + k2 <= bound:
+                    res.add(k1 + k2)
+
+        return list(res)
+        """
+        # 各种边界条件有点恶心
+        i, j = 0, 0
+        if x == 1:
+            if y == 1:
+                # 还需要判断约束范围
+                return [2] if bound > 1 else []
+            x, y = y, x
+        res = set()
+        rep = 2
+        while rep <= bound:
+            while rep <= bound:
+                res.add(rep)
+                j += 1
+                rep = x ** i + y ** j
+                # 将x或y等于1的情况放内部处理，只需要保留一项即可
+                if y == 1:
+                    break
+            j = 0
+            i += 1
+            rep = x**i + y**j
+
+        return list(res)
+
+    def largestPerimeter(self, A: List[int]) -> int:
+        # 思路有错，不能只找当前最大的三个数
+        """
+        arr = A[:3]
+        cur_max = min(arr)
+        for i in A[3:]:
+            if i > cur_max:
+                arr[arr.index(cur_max)] = i
+                cur_max = i
+
+        return sum(arr) if sum(arr)-max(arr) > max(arr) else 0
+        """
+        # 先对总体排序，若要构成最长的周长，则每个元素在满足构成条件下寻找最优即可
+        new_a = sorted(A)
+        lens = len(new_a)
+        for i in range(lens-3, -1, -1):
+            if new_a[i] + new_a[i+1] > new_a[i+2]:
+                return sum(new_a[i:i+3])
+
+        # 找不到就返回0
+        return 0
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -593,3 +664,9 @@ if __name__ == '__main__':
 
     # 949 给定数字能组成的最大时间
     # print(show.largestTimeFromDigits([1, 2, 3, 4]))
+
+    # 970 强整数
+    # print(show.powerfulIntegers(1,2,10))
+
+    # 976 三角形的最大周长
+    # print(show.largestPerimeter([2,2,1]))
