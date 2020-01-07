@@ -577,6 +577,43 @@ class Solution:
         # 找不到就返回0
         return 0
 
+    def bitwiseComplement(self, N: int) -> int:
+        i = 0
+        # 注意可以相等
+        while 2**i <= N:
+            i += 1
+
+        # 只含有一位时需要特别判断
+        return N ^ (2**i-1) if N > 1 else N ^ 1
+
+    def isBoomerang(self, points: List[List[int]]) -> bool:
+        # 可以优化，待会再改
+        max_p, min_p = points[0], points[0]
+        cur1, cur2 = 0, 0
+        # 可能都不需要求解大小，直接进行判断即可
+        for i in range(1, 3):
+            if points[i] > max_p:
+                max_p, cur1 = points[i], i
+            if points[i] < min_p:
+                min_p, cur2 = points[i], i
+        if cur1 == cur2:
+            return False
+        k_f = max_p[0] - min_p[0]
+        k = max_p[1] - min_p[1]
+
+        cur3 = 3-cur1-cur2
+        # 考虑k不存在时候的情况
+        if k_f:
+            k /= k_f
+            b = max_p[1] - k*max_p[0]
+            if k*points[cur3][0] + b != points[cur3][1]:
+                return True
+        else:
+            if points[cur3][0] != max_p[0]:
+                return True
+
+        return False
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -670,3 +707,9 @@ if __name__ == '__main__':
 
     # 976 三角形的最大周长
     # print(show.largestPerimeter([2,2,1]))
+
+    # 1009 十进制整数的反码
+    # print(show.bitwiseComplement(2))
+
+    # 1037 有效的回旋镖
+    # print(show.isBoomerang([[0,2],[0,1],[0,1]]))
