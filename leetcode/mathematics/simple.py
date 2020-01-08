@@ -551,7 +551,7 @@ class Solution:
                     break
             j = 0
             i += 1
-            rep = x**i + y**j
+            rep = x ** i + y ** j
 
         return list(res)
 
@@ -570,9 +570,9 @@ class Solution:
         # 先对总体排序，若要构成最长的周长，则每个元素在满足构成条件下寻找最优即可
         new_a = sorted(A)
         lens = len(new_a)
-        for i in range(lens-3, -1, -1):
-            if new_a[i] + new_a[i+1] > new_a[i+2]:
-                return sum(new_a[i:i+3])
+        for i in range(lens - 3, -1, -1):
+            if new_a[i] + new_a[i + 1] > new_a[i + 2]:
+                return sum(new_a[i:i + 3])
 
         # 找不到就返回0
         return 0
@@ -580,11 +580,11 @@ class Solution:
     def bitwiseComplement(self, N: int) -> int:
         i = 0
         # 注意可以相等
-        while 2**i <= N:
+        while 2 ** i <= N:
             i += 1
 
         # 只含有一位时需要特别判断
-        return N ^ (2**i-1) if N > 1 else N ^ 1
+        return N ^ (2 ** i - 1) if N > 1 else N ^ 1
 
     def isBoomerang(self, points: List[List[int]]) -> bool:
         # 可以优化，待会再改
@@ -601,18 +601,49 @@ class Solution:
         k_f = max_p[0] - min_p[0]
         k = max_p[1] - min_p[1]
 
-        cur3 = 3-cur1-cur2
+        cur3 = 3 - cur1 - cur2
         # 考虑k不存在时候的情况
         if k_f:
             k /= k_f
-            b = max_p[1] - k*max_p[0]
-            if k*points[cur3][0] + b != points[cur3][1]:
+            b = max_p[1] - k * max_p[0]
+            if k * points[cur3][0] + b != points[cur3][1]:
                 return True
         else:
             if points[cur3][0] != max_p[0]:
                 return True
 
         return False
+
+    def distributeCandies(self, candies: int, num_people: int) -> List[int]:
+        i = int(candies ** 0.5)
+        # 先找到有多少项，取向上值
+        while i * (i + 1) < 2 * candies:
+            i += 1
+
+        # 选取前i-1项再加上尾项
+        rep = list(range(1, i)) + [candies - (i - 1) * i // 2]
+        res = [0] * num_people
+
+        for j in range(num_people):
+            # 分间隔求和即可
+            res[j] = sum(rep[j::num_people])
+
+        return res
+
+    def dayOfYear(self, date: str) -> int:
+        # 列表保存每月的天数
+        day_of_mon = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+        # 切割年月日
+        value = [int(v) for v in date.split('-')]
+        day = value[2]
+
+        # 当月份大于2月时再进行求和
+        if value[1] > 1:
+            day += sum(day_of_mon[:value[1] - 1])
+
+        # 判断是否为闰年
+        return day + 1 if value[1] > 2 and not value[0] % 4 and value[0] != 1900 else day
 
 
 if __name__ == '__main__':
@@ -713,3 +744,9 @@ if __name__ == '__main__':
 
     # 1037 有效的回旋镖
     # print(show.isBoomerang([[0,2],[0,1],[0,1]]))
+
+    # 1103 分糖果II
+    # print(show.distributeCandies(22,3))
+
+    # 1154 一年中的几天
+    # print(show.dayOfYear("2019-02-10"))
