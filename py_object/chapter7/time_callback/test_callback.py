@@ -32,6 +32,18 @@ class Repeator:
         timer.call_after(5, self.repeater)
 
 
+class Repeator2:
+    def __init__(self):
+        self.count = 0
+
+    # 通过内建函数来调用自身
+    def __call__(self, timer):
+        format_time("{now}: repeat {0}", self.count)
+
+        self.count += 1
+        timer.call_after(5, self)
+
+
 if __name__ == '__main__':
     timer = Timer()
     # 通过计时器回调函数来选择调用顺序
@@ -45,7 +57,15 @@ if __name__ == '__main__':
     repeater = Repeator()
 
     # 重复执行
+    """
     timer.call_after(5, repeater.repeater)
+    format_time("{now}: starting")
+
+    timer.run()
+    """
+
+    # 使用内建call来执行
+    timer.call_after(5, Repeator2())
     format_time("{now}: starting")
 
     timer.run()
