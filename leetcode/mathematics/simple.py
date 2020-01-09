@@ -645,6 +645,32 @@ class Solution:
         # 判断是否为闰年
         return day + 1 if value[1] > 2 and not value[0] % 4 and value[0] != 1900 else day
 
+    def numPrimeArrangements(self, n: int) -> int:
+        # 排列问题
+        if n == 1:
+            return 1
+
+        # 厄拉多塞筛法？？？
+        # 名字不晓得，但是是以空间换时间的典型案例
+        arr = [1]*(n+1)
+        end = int(n**0.5)
+        for i in range(2, end+1):
+            # 切片的用法
+            arr[2*i::i] = [0]*len(arr[2*i::i])
+
+        k1 = sum(arr)-2
+        k2 = n - k1
+
+        from functools import reduce
+        # reduce用法，函数加迭代器进行累计
+        # 注意科学计数法得到的数是浮点数，因此需要转化
+        return reduce(lambda x, y: x*y, range(1, k1+1))*reduce(lambda x, y: x*y, range(1, k2+1)) % int(1e9 + 7)
+
+    def subtractProductAndSum(self, n: int) -> int:
+        from functools import reduce
+        # 内库调用，先转字符串再逐一累计
+        return reduce(lambda x, y: int(x)*int(y), str(n))-reduce(lambda x, y: int(x)+int(y), str(n)) if n > 1 else 0
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -750,3 +776,9 @@ if __name__ == '__main__':
 
     # 1154 一年中的几天
     # print(show.dayOfYear("2019-02-10"))
+
+    # 1175 质数排列
+    # print(show.numPrimeArrangements(100))
+
+    # 1281  整数的各位积和之差
+    # print(show.subtractProductAndSum(234))
