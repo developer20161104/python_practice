@@ -10,6 +10,10 @@ class TreeNode:
 
 # 采用先序遍历 将列表转化为二叉树
 def generate_tree(ele: List[int], pos: int) -> TreeNode:
+    # 有问题：在前面的父节点包含一个为空时，计算会有误(即列表元素少于2**h-1时)
+    # 样本问题
+    # example: [0,2,4,1,None,3,-1,5,1,None,6,None,8]
+
     if pos >= len(ele) or ele[pos] is None:
         return None
 
@@ -21,12 +25,34 @@ def generate_tree(ele: List[int], pos: int) -> TreeNode:
     return T
 
 
+# 先序输出
 def travel(T: TreeNode):
     if T is None:
         return
     print(T.val)
     travel(T.left)
     travel(T.right)
+
+
+def BFS(T: TreeNode):
+    from collections import deque
+    # 队列实现
+    q = deque()
+    q.append(T)
+    lens = 0
+    while len(q):
+        lens += 1
+        size = len(q)
+        # BFS模板系列，自己写的根本没照顾到层次问题
+        for i in range(size):
+            # 逐层进行遍历与添加元素
+            ele = q.popleft()
+            if ele.left:
+                q.append(ele.left)
+            if ele.right:
+                q.append(ele.right)
+
+    return lens
 
 
 class Solution:
@@ -74,6 +100,25 @@ class Solution:
 
         return judge(root.left, root.right) if root else True
 
+    def maxDepth(self, root: TreeNode) -> int:
+        # 参数式递归
+        """
+        def get_deep(roots: TreeNode, lens) -> int:
+            if roots is None:
+                # 将结果返回
+                return lens
+            # 每层都要加 1
+            lens += 1
+            return max(get_deep(roots.left, lens), get_deep(roots.right, lens))
+        return get_deep(root, 0)
+        """
+        # 方法二：直观递归
+        # 只看结束条件即可
+        if root is None:
+            return 0
+        # 增加的因子直接放到判断返回中，进行简化
+        return max(Solution().maxDepth(root.left), Solution().maxDepth(root.right))+1
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -83,3 +128,6 @@ if __name__ == '__main__':
 
     # 101 对称二叉树
     # print(show.isSymmetric(generate_tree([1,2,3], 0)))
+
+    # 104 二叉树的最大深度
+    # print(show.maxDepth(generate_tree([3,9,20,None,None,15,7], 0)))
