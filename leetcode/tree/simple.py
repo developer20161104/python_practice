@@ -117,7 +117,46 @@ class Solution:
         if root is None:
             return 0
         # 增加的因子直接放到判断返回中，进行简化
-        return max(Solution().maxDepth(root.left), Solution().maxDepth(root.right))+1
+        return max(Solution().maxDepth(root.left), Solution().maxDepth(root.right)) + 1
+
+    def levelOrderBottom(self, root: TreeNode) -> List[List[int]]:
+        if not root:
+            return []
+
+        from collections import deque
+        # 保存每级的 val
+        stack = []
+        q = deque()
+        q.append(root)
+
+        while q:
+            floor_size = len(q)
+            temp = []
+            for i in range(floor_size):
+                pops = q.popleft()
+                if pops is not None:
+                    # 由于结构体约束，还是得在弹出时添加，不增加额外时间消耗
+                    temp.append(pops.val)
+                    if pops.left:
+                        q.append(pops.left)
+                    if pops.right:
+                        q.append(pops.right)
+            stack.append(temp)
+        return stack[::-1]
+
+    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+        # 此种解法不能根据大小判断，因此得到的结果不是二叉搜索树
+        """lens = len(nums)
+        if not lens:
+            return None
+        pos = lens//2
+        T = TreeNode(nums[pos])
+        T.left = generate_tree(nums[:pos], 0)
+        T.right = generate_tree(nums[pos+1:], 0)
+
+        return T"""
+        # 树的题目还是有点麻烦
+        pass
 
 
 if __name__ == '__main__':
@@ -131,3 +170,9 @@ if __name__ == '__main__':
 
     # 104 二叉树的最大深度
     # print(show.maxDepth(generate_tree([3,9,20,None,None,15,7], 0)))
+
+    # 107 二叉树的层次遍历II
+    # print(show.levelOrderBottom(generate_tree([3,9,20,None,None,15,7], 0)))
+
+    # 108 将有序数组转化为二叉搜索树
+    # print(show.sortedArrayToBST([-10,-3,0,5,9]))
