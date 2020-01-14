@@ -119,6 +119,31 @@ class Solution:
         # 增加的因子直接放到判断返回中，进行简化
         return max(Solution().maxDepth(root.left), Solution().maxDepth(root.right))+1
 
+    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+        """
+        def create_SearchTree(num: List[int], st: int, end: int) -> TreeNode:
+            if st > end:
+                return None
+
+            # 思路不错，总是有些想不到
+            mid = st + (end-st)//2
+            # 每次利用中间位置构造中间节点，两边则为左右节点
+            T = TreeNode(num[mid])
+            T.left = create_SearchTree(num, st, mid-1)
+            T.right = create_SearchTree(num, mid+1, end)
+
+            return T
+
+        return create_SearchTree(nums, 0, len(nums)-1)
+        """
+        # 更适合递归的解法
+        if nums:
+            # 右移一位，即除2
+            m = len(nums) >> 1
+            T = TreeNode(nums[m])
+            T.left, T.right = map(self.sortedArrayToBST, [nums[:m], nums[m+1:]])
+            return T
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -131,3 +156,6 @@ if __name__ == '__main__':
 
     # 104 二叉树的最大深度
     # print(show.maxDepth(generate_tree([3,9,20,None,None,15,7], 0)))
+
+    # 108 将有序数组转化为二叉搜索树
+    # print(travel(show.sortedArrayToBST([-10,-3,0,5,9])))
