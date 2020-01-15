@@ -155,8 +155,47 @@ class Solution:
         T.right = generate_tree(nums[pos+1:], 0)
 
         return T"""
-        # 树的题目还是有点麻烦
-        pass
+
+        """
+        def create_SearchTree(num: List[int], st: int, end: int) -> TreeNode:
+            if st > end:
+                return None
+
+            # 思路不错，总是有些想不到
+            mid = st + (end-st)//2
+            # 每次利用中间位置构造中间节点，两边则为左右节点
+            T = TreeNode(num[mid])
+            T.left = create_SearchTree(num, st, mid-1)
+            T.right = create_SearchTree(num, mid+1, end)
+
+            return T
+
+        return create_SearchTree(nums, 0, len(nums)-1)
+        """
+        # 更适合递归的解法
+        if nums:
+            # 右移一位，即除2
+            m = len(nums) >> 1
+            T = TreeNode(nums[m])
+            T.left, T.right = map(self.sortedArrayToBST, [nums[:m], nums[m+1:]])
+            return T
+
+    def isBalanced(self, root: TreeNode) -> bool:
+        def get_len(roots: TreeNode) -> int:
+            if not roots:
+                return 0
+            # 当前已经出现不满足平衡二叉树的就直接全部返回-1，剪枝操作
+            left = get_len(roots.left)
+            if left == -1:
+                return -1
+            right = get_len(roots.right)
+            if right == -1:
+                return -1
+
+            # 需要比较的都是最大高度，因此需要 max
+            return max(left, right)+1 if abs(left-right) < 2 else -1
+
+        return get_len(root) != -1
 
 
 if __name__ == '__main__':
@@ -176,3 +215,6 @@ if __name__ == '__main__':
 
     # 108 将有序数组转化为二叉搜索树
     # print(show.sortedArrayToBST([-10,-3,0,5,9]))
+
+    # 110 平衡二叉树
+    # print(show.isBalanced(generate_tree([1,None,2,None,None,3,None], 0)))
