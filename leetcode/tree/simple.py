@@ -177,7 +177,7 @@ class Solution:
             # 右移一位，即除2
             m = len(nums) >> 1
             T = TreeNode(nums[m])
-            T.left, T.right = map(self.sortedArrayToBST, [nums[:m], nums[m+1:]])
+            T.left, T.right = map(self.sortedArrayToBST, [nums[:m], nums[m + 1:]])
             return T
 
     def isBalanced(self, root: TreeNode) -> bool:
@@ -193,9 +193,64 @@ class Solution:
                 return -1
 
             # 需要比较的都是最大高度，因此需要 max
-            return max(left, right)+1 if abs(left-right) < 2 else -1
+            return max(left, right) + 1 if abs(left - right) < 2 else -1
 
         return get_len(root) != -1
+
+    def minDepth(self, root: TreeNode) -> int:
+        # BFS 大法好
+        """
+        if not root:
+            return 0
+        from collections import deque
+        q = deque()
+        q.append(root)
+        height = 0
+        while q:
+            # 层数统计
+            height += 1
+            size = len(q)
+            for i in range(size):
+                ele = q.popleft()
+                if ele:
+                    if ele.left:
+                        q.append(ele.left)
+                    if ele.right:
+                        q.append(ele.right)
+                    # 当其左右子树皆不存在时，此时即为最小高度
+                    if ele.left is None and ele.right is None:
+                        return height
+
+        return height"""
+        # 尝试递归
+        # 关键在于对结束条件的把握
+        # 当前节点为空时不返回高度
+        if not root:
+            return 0
+        # 当前节点无子节点时返回高度（可与包含一个节点的合并）
+        """
+        if root.left is None and root.right is None:
+            return 1
+        """
+        # 当前节点包含一个节点时继续向下寻找（此处没想到）
+        if root.left is None or root.right is None:
+            return self.minDepth(root.left) + self.minDepth(root.right) + 1
+        # 两个都有子节点时找短的部分
+        else:
+            return min(self.minDepth(root.left), self.minDepth(root.right)) + 1
+
+    def hasPathSum(self, root: TreeNode, sum: int) -> bool:
+        # 排除无节点但是sum为0的情况
+        if not root:
+            return False
+
+        sum -= root.val
+        # 如果已经为叶子节点，则进行判断即可
+        if root.left is None and root.right is None:
+            return True if not sum else False
+
+        # 注意到只要有一个满足即可
+        return self.hasPathSum(root.left, sum) or self.hasPathSum(root.right, sum)
 
 
 if __name__ == '__main__':
@@ -218,3 +273,9 @@ if __name__ == '__main__':
 
     # 110 平衡二叉树
     # print(show.isBalanced(generate_tree([1,None,2,None,None,3,None], 0)))
+
+    # 111 二叉树的最小深度
+    # print(show.minDepth(generate_tree([3,9,20,None,None,15,7], 0)))
+
+    # 112 路径总和
+    # print(show.hasPathSum(generate_tree([], 0), 0))
