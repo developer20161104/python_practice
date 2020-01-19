@@ -252,6 +252,69 @@ class Solution:
         # 注意到只要有一个满足即可
         return self.hasPathSum(root.left, sum) or self.hasPathSum(root.right, sum)
 
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        # 实质为后序递归法
+        if not root:
+            return None
+
+        # 先分别获得左右子树并异位
+        left = self.invertTree(root.right)
+        right = self.invertTree(root.left)
+
+        # 再将子树与根节点拼接
+        root.left = left
+        root.right = right
+        return root
+
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        # 此处为利用搜索树的性质解决问题
+        if root.val > p.val and root.val > q.val:
+            return self.lowestCommonAncestor(root.left, p, q)
+        elif root.val < p.val and root.val < q.val:
+            return self.lowestCommonAncestor(root.right, p, q)
+        # 当p与q分别在两侧时，此时的节点为公共节点
+        else:
+            return root
+
+    def binaryTreePaths(self, root: TreeNode) -> List[str]:
+        """
+        total = []
+        L = []
+
+        def get_path(roots: TreeNode):
+            if not roots:
+                return []
+
+            L.append(str(roots.val))
+
+            if roots.left is None and roots.right is None:
+                total.append("->".join(L))
+            else:
+                get_path(roots.left)
+                get_path(roots.right)
+            # 回溯思想
+            L.remove(L[-1])
+
+        get_path(root)
+        return total
+        """
+        if not root:
+            return []
+
+        # 当前已经到叶子节点后
+        if root.left is None and root.right is None:
+            return [str(root.val)]
+
+        path = []
+        # 递归接收各个路径
+        if root.left:
+            for i in self.binaryTreePaths(root.left):
+                path.append(str(root.val) + "->" + i)
+        if root.right:
+            for i in self.binaryTreePaths(root.right):
+                path.append(str(root.val) + "->" + i)
+        return path
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -279,3 +342,12 @@ if __name__ == '__main__':
 
     # 112 路径总和
     # print(show.hasPathSum(generate_tree([], 0), 0))
+
+    # 226 翻转二叉树
+    # print(show.invertTree(generate_tree([4,2,7,1,3,6,9], 0)))
+
+    # 235 二叉搜索树的最近公共祖先
+    # print(show.lowestCommonAncestor(generate_tree([6,2,8,0,4,7,9,None,None,3,5], 0), TreeNode(2), TreeNode(8)).val)
+
+    # 257 二叉树的所有路径
+    # print(show.binaryTreePaths(generate_tree([1,2,3,None,5], 0)))
