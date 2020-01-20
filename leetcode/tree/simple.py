@@ -9,7 +9,7 @@ class TreeNode:
 
 
 # 采用先序遍历 将列表转化为二叉树
-def generate_tree(ele: List[int], pos: int) -> TreeNode:
+def generate_tree(ele: List[int], pos=0) -> TreeNode:
     # 有问题：在前面的父节点包含一个为空时，计算会有误(即列表元素少于2**h-1时)
     # 样本问题
     # example: [0,2,4,1,None,3,-1,5,1,None,6,None,8]
@@ -315,6 +315,51 @@ class Solution:
                 path.append(str(root.val) + "->" + i)
         return path
 
+    def sumOfLeftLeaves(self, root: TreeNode) -> int:
+        if root is None:
+            return 0
+        """
+        # 采用中序遍历
+        sums = self.sumOfLeftLeaves(root.left)
+        # 左右相对于父节点来考虑，因此需要预先判别
+        if root.left and root.left.left is None and root.left.right is None:
+            # 此处的sums增加的是右侧左叶子节点的值
+            sums += root.left.val
+
+        sums += self.sumOfLeftLeaves(root.right)
+        return sums
+        """
+        # 改写变量
+        if root.left and not root.left.left and not root.left.right:
+            # 注意到此处为 right 部分，毕竟条件已经将左边部分约束了
+            return root.left.val + self.sumOfLeftLeaves(root.left)
+        else:
+            # 然后把两边的左叶子节点统计起来
+            return self.sumOfLeftLeaves(root.left) + self.sumOfLeftLeaves(root.right)
+
+    counts = 0
+
+    def pathSum(self, root: TreeNode, sum: int) -> int:
+        if root is None:
+            return 0
+
+        # 内部判别函数
+        def judge_path(roots: TreeNode, sums: int):
+            if roots is None:
+                return 0
+
+            # 注意到此处只能使用变量统计，如果直接返回会少了同根下多个的情况
+            sums -= roots.val
+            count = 0
+            if not sums:
+                count += 1
+            # 统计左右两边
+            return judge_path(roots.left, sums) + judge_path(roots.right, sums) + count
+
+        # 递归统计
+        counts = judge_path(root, sum)
+        return counts + self.pathSum(root.left, sum) + self.pathSum(root.right, sum)
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -351,3 +396,9 @@ if __name__ == '__main__':
 
     # 257 二叉树的所有路径
     # print(show.binaryTreePaths(generate_tree([1,2,3,None,5], 0)))
+
+    # 404 左叶子之和
+    # print(show.sumOfLeftLeaves(generate_tree([3,9,20,None,None,15,7], 0)))
+
+    # 437 路径总和III
+    # print(show.pathSum(generate_tree([1,-2,-3,1,3,-2,None,-1]), -1))
