@@ -360,6 +360,79 @@ class Solution:
         counts = judge_path(root, sum)
         return counts + self.pathSum(root.left, sum) + self.pathSum(root.right, sum)
 
+    def findMode(self, root: TreeNode) -> List[int]:
+        # 思路有误，左侧子树不一定与当前根节点的值相等
+        """
+        if not root:
+            return []
+
+        cur_max = 0
+        max_list = []
+        while root:
+            cur_root, count = root, 1
+            while cur_root.left:
+                count ++= 1
+                cur_root = cur_root.left
+
+            if count >= cur_max:
+                cur_max = count
+                max_list.append([count, root.val])
+
+            root = root.right
+
+        com = max(max_list, key=lambda x: x[0])[0]
+        return [x[1] for x in max_list if x[0] == com]
+        """
+
+        arr = []
+
+        # 遍历获取结果
+        def get_list(roots: TreeNode):
+            if not roots:
+                return
+            get_list(roots.left)
+            arr.append(roots.val)
+            get_list(roots.right)
+
+        get_list(root)
+        if not arr:
+            return []
+
+        # 使用了内库Counter来构建字典
+        from collections import Counter
+        dic = Counter(arr)
+        com = max(dic.values())
+
+        # 列表推导式来生成结果
+        return [x[0] for x in dic.items() if x[1] == com]
+
+    def getMinimumDifference(self, root: TreeNode) -> int:
+        arr = []
+
+        # 遍历获取结果
+        def get_list(roots: TreeNode):
+            if not roots:
+                return
+            get_list(roots.left)
+            arr.append(roots.val)
+            get_list(roots.right)
+
+        get_list(root)
+        if not root:
+            return None
+
+        """
+        cur_min = arr[1] - arr[0]
+        
+        for i in range(1, len(arr)):
+            if cur_min > arr[i] - arr[i-1]:
+                cur_min = arr[i] - arr[i-1]
+
+        return cur_min
+        """
+        # 缩写
+        return min(map(lambda x, y: y - x, arr[:len(arr)], arr[1:]))
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -402,3 +475,9 @@ if __name__ == '__main__':
 
     # 437 路径总和III
     # print(show.pathSum(generate_tree([1,-2,-3,1,3,-2,None,-1]), -1))
+
+    # 501 二叉搜索树中的众数
+    # print(show.findMode(generate_tree([])))
+
+    # 530 二叉搜索树的最小绝对差
+    # print(show.getMinimumDifference(generate_tree([1,None,3,None,None,2,None])))
