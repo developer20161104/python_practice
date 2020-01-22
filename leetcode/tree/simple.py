@@ -56,6 +56,10 @@ def BFS(T: TreeNode):
 
 
 class Solution:
+    def __init__(self):
+        # 538 统计当前累加值
+        self.total = 0
+
     def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
         # 需要判断是否为None
         # 只有当两者都为None时，才为True
@@ -433,6 +437,46 @@ class Solution:
         # 缩写
         return min(map(lambda x, y: y - x, arr[:len(arr)], arr[1:]))
 
+    def convertBST(self, root: TreeNode) -> TreeNode:
+        # 遍历两遍慢出天际
+        """
+        if not root:
+            return None
+
+        arr = []
+
+        def get_lists(roots: TreeNode, choose: int):
+            if not roots:
+                return
+
+            get_lists(roots.left, choose)
+            if choose:
+                arr.append(roots.val)
+            else:
+                roots.val += sum(arr[arr.index(roots.val)+1:])
+            get_lists(roots.right, choose)
+
+        get_lists(root, 1)
+        get_lists(root, 0)
+        return root
+        """
+        # 遍历顺序：右中左
+        if not root:
+            return root
+        if root.right:
+            self.convertBST(root.right)
+            # 其他位置判别
+            self.total += root.val
+            root.val = self.total
+            self.convertBST(root.left)
+        else:
+            # 尾部（右子树位置）判别
+            root.val += self.total
+            # 注意到total起始为0，因此
+            self.total = root.val
+            self.convertBST(root.left)
+        return root
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -481,3 +525,6 @@ if __name__ == '__main__':
 
     # 530 二叉搜索树的最小绝对差
     # print(show.getMinimumDifference(generate_tree([1,None,3,None,None,2,None])))
+
+    # 538 把二叉搜索树转换为累加树
+    # print(travel(show.convertBST(generate_tree([5,2,13]))))
