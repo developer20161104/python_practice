@@ -60,6 +60,13 @@ class Solution:
         # 538 统计当前累加值
         self.total = 0
 
+        # 543 二叉树直径
+        # 取1时可将空节点也一并考虑
+        self.res = 1
+
+        # 563 二叉树坡度
+        self.total_degree = 0
+
     def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
         # 需要判断是否为None
         # 只有当两者都为None时，才为True
@@ -477,6 +484,40 @@ class Solution:
             self.convertBST(root.left)
         return root
 
+    def diameterOfBinaryTree(self, root: TreeNode) -> int:
+        # 题意可以转化为求最长左右子树长度
+        def get_len(roots: TreeNode) -> int:
+            if not roots:
+                return 0
+            L = get_len(roots.left)
+            R = get_len(roots.right)
+            # 在此处判断每个节点左右子树长度，求其最大值
+            self.res = max(self.res, L + R + 1)
+            return max(L, R) + 1
+
+        get_len(root)
+        # 由于最终返回的结果不一致，因此需要内嵌函数
+        return self.res - 1
+
+    def findTilt(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+
+        def get_degree(roots: TreeNode):
+            if not roots:
+                return 0
+
+            L = get_degree(roots.left)
+            R = get_degree(roots.right)
+            # 求取各个坡度
+            self.total_degree += abs(L-R)
+            # 错误之处在此，我用的是差值，真实结果应该是 相加
+            return L + R + roots.val
+
+        # 递归还是嘿麻烦
+        get_degree(root)
+        return self.total_degree
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -528,3 +569,9 @@ if __name__ == '__main__':
 
     # 538 把二叉搜索树转换为累加树
     # print(travel(show.convertBST(generate_tree([5,2,13]))))
+
+    # 543 二叉树的直径
+    # print(show.diameterOfBinaryTree(generate_tree([1,2,3,4,5])))
+
+    # 563 二叉树的坡度
+    # print(show.findTilt(generate_tree([1,2,None,3,4])))
