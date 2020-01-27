@@ -510,13 +510,68 @@ class Solution:
             L = get_degree(roots.left)
             R = get_degree(roots.right)
             # 求取各个坡度
-            self.total_degree += abs(L-R)
+            self.total_degree += abs(L - R)
             # 错误之处在此，我用的是差值，真实结果应该是 相加
             return L + R + roots.val
 
         # 递归还是嘿麻烦
         get_degree(root)
         return self.total_degree
+
+    def isSubtree(self, s: TreeNode, t: TreeNode) -> bool:
+        if not s or not t:
+            return False
+
+        # 逐一遍历
+        def trave(s1: TreeNode, t1: TreeNode):
+            if not s1 and not t1:
+                return True
+            if (not s1 or not t1) or s1.val != t1.val:
+                return False
+            return trave(s1.left, t1.left) and trave(s1.right, t1.right)
+
+        # 添加变量进行条件判断时间增长了一倍
+        """
+        res = False
+        if s.val == t.val:
+            res = trave(s, t)o
+        return self.isSubtree(s.left, t) or self.isSubtree(s.right, t) or res
+        """
+        return self.isSubtree(s.left, t) or self.isSubtree(s.right, t) or trave(s, t)
+
+    def mergeTrees(self, t1: TreeNode, t2: TreeNode) -> TreeNode:
+        # 通过创建一棵新二叉树来重新生成
+        """
+        if not t1 and not t2:
+            return None
+        t = TreeNode(0)
+
+        rep = [None]*4
+        if t1:
+            t.val += t1.val
+            rep[:2] = [t1.left, t1.right]
+        if t2:
+            t.val += t2.val
+            rep[2:] = [t2.left, t2.right]
+
+        t.left = self.mergeTrees(rep[0], rep[2])
+        t.right = self.mergeTrees(rep[1], rep[3])
+        return t
+        """
+
+        # 直接对一棵树进行修改即可？？？（难受，脑袋被门挤了，这都想不出来？）
+        # 直接返回当前存在的树节点
+        if not t1:
+            return t2
+        if not t2:
+            return t1
+        # 此时t2必含val
+        t1.val += t2.val
+
+        # 分别对左右节点赋值
+        t1.left = self.mergeTrees(t1.left, t2.left)
+        t1.right = self.mergeTrees(t1.right, t2.right)
+        return t1
 
 
 if __name__ == '__main__':
@@ -575,3 +630,9 @@ if __name__ == '__main__':
 
     # 563 二叉树的坡度
     # print(show.findTilt(generate_tree([1,2,None,3,4])))
+
+    # 572 另一个子树
+    # print(show.isSubtree(generate_tree([1,1]),generate_tree([1])))
+
+    # 617 合并二叉树 print(travel(show.mergeTrees(generate_tree([1, 3, 2, 5, None, None]), generate_tree([2, 1, 3, None,
+    # 4, 7, None]))))
