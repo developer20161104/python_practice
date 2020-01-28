@@ -434,7 +434,7 @@ class Solution:
 
         """
         cur_min = arr[1] - arr[0]
-        
+
         for i in range(1, len(arr)):
             if cur_min > arr[i] - arr[i-1]:
                 cur_min = arr[i] - arr[i-1]
@@ -573,6 +573,57 @@ class Solution:
         t1.right = self.mergeTrees(t1.right, t2.right)
         return t1
 
+    def averageOfLevels(self, root: TreeNode) -> List[float]:
+        # 显然使用 BFS 层次调用
+        from collections import deque
+        q = deque()
+        arr = []
+        # 还是需要条件判断
+        if not root:
+            return arr
+        q.append(root)
+
+        while q:
+            size = len(q)
+            cur_line = []
+            # 层次统计
+            for _ in range(size):
+                cur = q.popleft()
+                if cur:
+                    cur_line.append(cur.val)
+                    if cur.left:
+                        q.append(cur.left)
+                    if cur.right:
+                        q.append(cur.right)
+
+            # 直接添加即可
+            arr.append(sum(cur_line) / len(cur_line))
+        return arr
+
+    def findTarget(self, root: TreeNode, k: int) -> bool:
+        # 先用中序遍历得到列表
+        arr = []
+
+        def get_sort(roots: TreeNode):
+            if not roots:
+                return
+            get_sort(roots.left)
+            arr.append(roots.val)
+            get_sort(roots.right)
+
+        get_sort(root)
+
+        # 再对列表进行查找操作
+        total = set()
+        for ele in arr:
+            if k - ele in total:
+                return True
+            else:
+                # 对于两数和问题，使用set解决
+                total.add(ele)
+
+        return False
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -636,3 +687,9 @@ if __name__ == '__main__':
 
     # 617 合并二叉树 print(travel(show.mergeTrees(generate_tree([1, 3, 2, 5, None, None]), generate_tree([2, 1, 3, None,
     # 4, 7, None]))))
+
+    # 637 二叉树的层平均值
+    # print(show.averageOfLevels(generate_tree([3,9,20,15,7])))
+
+    # 653 两数之和-输入BST
+    # print(show.findTarget(generate_tree([5,3,6,2,4,None,7]), 9))
