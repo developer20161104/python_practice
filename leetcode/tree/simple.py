@@ -67,6 +67,9 @@ class Solution:
         # 563 二叉树坡度
         self.total_degree = 0
 
+        # 671 二叉树中第二小的节点
+        self.val = [100000] * 2
+
     def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
         # 需要判断是否为None
         # 只有当两者都为None时，才为True
@@ -624,6 +627,62 @@ class Solution:
 
         return False
 
+    # XX
+    def trimBST(self, root: TreeNode, L: int, R: int) -> TreeNode:
+        # 递归是真滴有点难想
+        if not root:
+            return root
+
+        # 如果当前的值比右边界还大，则删除该点，并返回左子节点（寻找小值中的max）
+        if root.val > R:
+            return self.trimBST(root.left, L, R)
+        # 如果当前的值比左边界还小，则删除该点，返回右子节点（寻找大值中的min）
+        if root.val < L:
+            return self.trimBST(root.right, L, R)
+
+        # 正常修剪
+        root.left = self.trimBST(root.left, L, R)
+        root.right = self.trimBST(root.right, L, R)
+        return root
+
+    def findSecondMinimumValue(self, root: TreeNode) -> int:
+        # 这个递归本质与列表下的无异
+        """
+        if not root:
+            return -1
+
+        if root.val < self.val[1]:
+            self.val[0], self.val[1] = self.val[1], root.val
+        if self.val[1] < root.val < self.val[0]:
+            self.val[0] = root.val
+
+        self.findSecondMinimumValue(root.left)
+        self.findSecondMinimumValue(root.right)
+
+        return self.val[0] if self.val[0] != 100000 else -1
+        """
+
+        # 神仙思路
+        # 利用树的特点，转化为求取左右子树的最小值，然后与根节点进行比较即可
+        def find_min(roots: TreeNode, val: int):
+            # 空节点一律为-1
+            if not roots:
+                return -1
+
+            # 保存最大值？？
+            if roots.val > val:
+                return roots.val
+
+            l = find_min(roots.left, val)
+            r = find_min(roots.right, val)
+            # 左右子树同时存在时返回其中的最小
+            if l > val and r > val:
+                return min(l, r)
+            # 否则只返回包含值的节点
+            return max(l, r)
+
+        return find_min(root, root.val)
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -693,3 +752,9 @@ if __name__ == '__main__':
 
     # 653 两数之和-输入BST
     # print(show.findTarget(generate_tree([5,3,6,2,4,None,7]), 9))
+
+    # 669 修建二叉搜索树
+    # print(travel(show.trimBST(generate_tree([1,0,2]), 1, 2)))
+
+    # 671 二叉树中第二小的节点
+    # print(show.findSecondMinimumValue(generate_tree([5,1,2])))
