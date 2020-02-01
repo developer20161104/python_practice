@@ -669,7 +669,7 @@ class Solution:
             if not roots:
                 return -1
 
-            # 保存最大值？？
+            # 提取比根节点大的值
             if roots.val > val:
                 return roots.val
 
