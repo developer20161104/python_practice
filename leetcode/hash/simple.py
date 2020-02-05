@@ -45,11 +45,11 @@ class Solution:
         # 时间复杂度为O(n)
         def get_centralstr(st: str) -> str:
             # 构建映射关系字典
-            maps = [0]*120
+            maps = [0]*126
             ans = ""
             count = 1
             for ch in st:
-                pos = ord(ch)-ord('a')
+                pos = ord(ch)
                 # 对未存在于其中的构建映射
                 if not maps[pos]:
                     maps[pos] = count
@@ -63,6 +63,23 @@ class Solution:
         return get_centralstr(s) == get_centralstr(t)
         # 相比之下直接映射似乎时间更短
 
+    def isAnagram(self, s: str, t: str) -> bool:
+        if len(s) != len(t):
+            return False
+
+        # 受制于hash表的长度
+        maps = [0]*126
+        for ch in s:
+            maps[ord(ch)] += 1
+
+        # 只要出现不存在的元素即可返回判断
+        for ch in t:
+            if not maps[ord(ch)]:
+                return False
+            maps[ord(ch)] -= 1
+
+        return True
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -72,3 +89,6 @@ if __name__ == '__main__':
 
     # 205 同构字符串
     # print(show.isIsomorphic("13", "42"))
+
+    # 242 有效的字母异位词
+    # print(show.isAnagram("rat", "car"))
