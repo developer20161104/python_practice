@@ -41,11 +41,12 @@ class Solution:
 
         return sorted(dict_1.values()) == sorted(dict_2.values())
         """
+
         # 其实只需要将其映射到数字排列即可
         # 时间复杂度为O(n)
         def get_centralstr(st: str) -> str:
             # 构建映射关系字典
-            maps = [0]*126
+            maps = [0] * 126
             ans = ""
             count = 1
             for ch in st:
@@ -68,7 +69,7 @@ class Solution:
             return False
 
         # 受制于hash表的长度
-        maps = [0]*126
+        maps = [0] * 126
         for ch in s:
             maps[ord(ch)] += 1
 
@@ -79,6 +80,29 @@ class Solution:
             maps[ord(ch)] -= 1
 
         return True
+
+    def wordPattern(self, pattern: str, strs: str) -> bool:
+        arr_list = strs.split()
+        if len(pattern) != len(arr_list):
+            return False
+
+        def judge_str(arr: List[str]) -> str:
+            count = 0
+
+            # 注意到映射的字符串每个都得一一打印
+            res = ""
+            # 存储映射
+            q = {}
+            for ch in arr:
+                if ch not in q:
+                    q[ch] = str(count)
+                    count += 1
+                res += q[ch]
+
+            return res
+
+        # 相互映射必须两边都要判断
+        return judge_str(list(pattern)) == judge_str(arr_list)
 
 
 if __name__ == '__main__':
@@ -92,3 +116,6 @@ if __name__ == '__main__':
 
     # 242 有效的字母异位词
     # print(show.isAnagram("rat", "car"))
+
+    # 290 单词规律
+    # print(show.wordPattern("aba", "dog cat cat"))
