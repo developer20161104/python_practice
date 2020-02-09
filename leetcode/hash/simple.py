@@ -82,10 +82,15 @@ class Solution:
         return True
 
     def wordPattern(self, pattern: str, strs: str) -> bool:
+        # 关键在于建立两者之间的映射
         arr_list = strs.split()
         if len(pattern) != len(arr_list):
             return False
 
+        # 此函数可以使用index内置函数来替换（妙）
+        # 实现的方法为使用数字来作为中间映射，而次内置方法使用的是第一次出现的下标
+        # 效果一致
+        # list(map(pattern.index, pattern))
         def judge_str(arr: List[str]) -> str:
             count = 0
 
@@ -104,6 +109,43 @@ class Solution:
         # 相互映射必须两边都要判断
         return judge_str(list(pattern)) == judge_str(arr_list)
 
+    def getHint(self, secret: str, guess: str) -> str:
+        pos = [0] * 10
+        count = [0] * 2
+        res = []
+        # 同时进行的话会有缺
+        """
+        for i in range(len(secret)):
+            pos[int(secret[i])] += 1
+
+            if pos[int(guess[i])]:
+                if secret[i] == guess[i]:
+                    count[0] += 1
+                else:
+                    count[1] += 1
+                pos[int(guess[i])] -= 1
+
+        return str(count[0])+'A'+str(count[1])+'B'
+        """
+        lens = len(secret)
+
+        # 隐含的优先级关系，先找公牛再重新找母牛
+        for i in range(lens):
+            if secret[i] == guess[i]:
+                count[0] += 1
+            else:
+                # 将不同位置的保留
+                pos[int(secret[i])] += 1
+                res.append(i)
+
+        for i in res:
+            # 查找母牛
+            if pos[int(guess[i])]:
+                count[1] += 1
+                pos[int(guess[i])] -= 1
+
+        return str(count[0]) + 'A' + str(count[1]) + 'B'
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -119,3 +161,6 @@ if __name__ == '__main__':
 
     # 290 单词规律
     # print(show.wordPattern("aba", "dog cat cat"))
+
+    # 299 猜数字游戏
+    # print(show.getHint("1123", "0111"))
