@@ -1,0 +1,5 @@
+friend1@123.com friend
+friend2@123.com friend
+family1@hello.com family
+family2@hello.com family
+prof@test.com professional

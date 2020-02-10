@@ -146,6 +146,10 @@ class Solution:
 
         return str(count[0]) + 'A' + str(count[1]) + 'B'
 
+    def intersection(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        # set集合处理
+        return list(set(nums1) & set(nums2))
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -164,3 +168,6 @@ if __name__ == '__main__':
 
     # 299 猜数字游戏
     # print(show.getHint("1123", "0111"))
+
+    # 349两个数组的交集
+    # print(show.intersection([1,2,2,1], [2,2]))
