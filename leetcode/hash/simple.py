@@ -150,6 +150,37 @@ class Solution:
         # set集合处理
         return list(set(nums1) & set(nums2))
 
+    def intersect(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        from collections import defaultdict
+
+        # 通过字典映射来计数，然后再逐一查询求取
+        dicts = defaultdict(int)
+        ans = []
+        # 先将值映射字典
+        for i in nums1:
+            dicts[i] += 1
+        for i in nums2:
+            # 再比对即可
+            if i in dicts and dicts[i] > 0:
+                dicts[i] -= 1
+                ans.append(i)
+
+        return ans
+
+    def findTheDifference(self, s: str, t: str) -> str:
+        from collections import defaultdict
+        dicts = defaultdict(int)
+        for e in s:
+            dicts[e] += 1
+
+        # 同样设置一个字典来查询即可
+        for e in t:
+            if e not in dicts or dicts[e] < 1:
+                return e
+            dicts[e] -= 1
+
+        return ''
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -171,3 +202,9 @@ if __name__ == '__main__':
 
     # 349两个数组的交集
     # print(show.intersection([1,2,2,1], [2,2]))
+
+    # 350 两个数组的交集II
+    # print(show.intersect([1,2], [1,1]))
+
+    # 389 找不同
+    # print(show.findTheDifference("abcd", "cdabw"))
