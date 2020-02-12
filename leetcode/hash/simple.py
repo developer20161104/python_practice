@@ -181,6 +181,40 @@ class Solution:
 
         return ''
 
+    def longestPalindrome(self, s: str) -> int:
+        from collections import defaultdict
+        dicts = defaultdict(int)
+        for ch in s:
+            dicts[ch] += 1
+
+        # 注意到当为奇数时，也需要加上其中的最大子偶数
+        ans, flag = 0, False
+        for value in dicts.values():
+            if not value % 2:
+                ans += value
+            else:
+                # 可包含一个奇数作为中间位
+                flag = True
+                # 增加当前数中的最大偶数
+                ans += value - 1
+
+        return ans + 1 if flag else ans
+
+    def numberOfBoomerangs(self, points: List[List[int]]) -> int:
+        # 自动构建字典
+        from collections import Counter
+
+        tot = 0
+        for p1 in points:
+            # 统计点与点之间的距离，注意必须要计算所有点！（错误之处）
+            count = Counter((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 for p2 in points)
+
+            # 使用组合来进行统计
+            for value in count.values():
+                tot += value * (value - 1) // 2
+
+        return tot * 2
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -208,3 +242,9 @@ if __name__ == '__main__':
 
     # 389 找不同
     # print(show.findTheDifference("abcd", "cdabw"))
+
+    # 409 最长回文串
+    # print(show.longestPalindrome('ccceeeeeabbadd'))
+
+    # 447 回旋镖的数量
+    # print(show.numberOfBoomerangs([[0,0],[1,0],[-1,0],[0,1],[0,-1]]))
