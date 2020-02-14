@@ -215,6 +215,39 @@ class Solution:
 
         return tot * 2
 
+    def islandPerimeter(self, grid: List[List[int]]) -> int:
+        move = [[0, -1], [0, 1], [-1, 0], [1, 0]]
+        all = 0
+        len_row, len_col = len(grid), len(grid[0])
+
+        # 方法一
+        # # 暴力查找四周来进行判断，时间感人
+        # for i in range(len_row):
+        #     for j in range(len_col):
+        #
+        #         for pos in move:
+        #             cur = [i+pos[0], j+pos[1]]
+        #             if grid[i][j] and not (0 <= cur[0] < len_row and 0 <= cur[1] < len_col and grid[cur[0]][cur[1]]):
+        #                 all += 1
+        #
+        # return all
+
+        # 考虑数学思想
+        # c统计方块数，l统计下方与右方边界情况
+        c, l = 0, 0
+        for i in range(len_row):
+            for j in range(len_col):
+                # 只需要对岛屿部分进行判断
+                if grid[i][j]:
+                    c += 1
+                    if i + 1 < len_row and grid[i + 1][j]:
+                        l += 1
+                    if j + 1 < len_col and grid[i][j + 1]:
+                        l += 1
+
+        # 利用对称性？
+        return 4 * c - 2 * l
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -248,3 +281,6 @@ if __name__ == '__main__':
 
     # 447 回旋镖的数量
     # print(show.numberOfBoomerangs([[0,0],[1,0],[-1,0],[0,1],[0,-1]]))
+
+    # 463 岛屿的周长
+    # print(show.islandPerimeter([[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]))
