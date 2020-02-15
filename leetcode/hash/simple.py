@@ -248,6 +248,36 @@ class Solution:
         # 利用对称性？
         return 4 * c - 2 * l
 
+    def findWords(self, words: List[str]) -> List[str]:
+        # 采用的是字典的映射
+        arr = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm']
+        dicts = {}
+        res = []
+
+        # 逐一更新字典
+        for i in range(3):
+            dicts.update(dict.fromkeys(arr[i], i))
+
+        for strs in words:
+            lens = len(strs)
+            # 判断是否为空
+            if not lens:
+                continue
+            pre = dicts[strs[0].lower()]
+
+            i = 0
+            while i < lens:
+                # 只要出现一个不同的即排除
+                if dicts[strs[i].lower()] != pre:
+                    break
+                pre = dicts[strs[i].lower()]
+                i += 1
+
+            if i == lens:
+                res.append(strs)
+
+        return res
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -284,3 +314,6 @@ if __name__ == '__main__':
 
     # 463 岛屿的周长
     # print(show.islandPerimeter([[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]))
+
+    # 500 键盘行
+    # print(show.findWords(["Hello", "Alaska", "Dad", "Peace"]))
