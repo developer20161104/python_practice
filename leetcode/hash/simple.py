@@ -278,6 +278,60 @@ class Solution:
 
         return res
 
+    def distributeCandies(self, candies: List[int]) -> int:
+        # 没必要用dict来存储，用set即可（妙啊）
+        # from collections import Counter
+        # tot = Counter(candies).values()
+        #
+        # return min(len(candies)//2, len(tot))
+        return min(len(candies) // 2, len(set(candies)))
+
+    def findLHS(self, nums: List[int]) -> int:
+        # 方法一：字典映射排序法 O(n*log n)
+        # from collections import Counter
+        # # 先找出键值对映射关系
+        # d = sorted(Counter(nums).items())
+        #
+        # cur_max, lens = 0, len(d)
+        # if lens < 2:
+        #     return cur_max
+        #
+        # # 再逐一比对，慢出天际
+        # for i in range(1, lens):
+        #     if abs(d[i][0] - d[i-1][0]) <= 1:
+        #         cur_max = max(cur_max, d[i][1] + d[i-1][1])
+        #
+        # return cur_max
+
+        # 方法二
+        # 只需要一次遍历即可，但是速度还是感人？？？
+        # from collections import defaultdict
+        # dicts = defaultdict(int)
+        #
+        # lens = len(nums)
+        # res = 0
+        # for i in range(lens):
+        #     此处小技巧，直接对结果进行查询即可
+        #     dicts[nums[i]] += 1
+        #     if dicts[nums[i]+1] != 0:
+        #         res = max(res, dicts[nums[i]+1]+dicts[nums[i]])
+        #     if dicts[nums[i]-1] != 0:
+        #         res = max(res, dicts[nums[i]-1]+dicts[nums[i]])
+        #
+        # return res
+
+        # 方法三
+        from collections import Counter
+        # 构建字典
+        d = Counter(nums)
+        res = 0
+        for item in d:
+            # 只需要查找差为1的是否在字典即可，O(n)
+            if item + 1 in d:
+                res = max(res, d[item] + d[item + 1])
+
+        return res
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -317,3 +371,9 @@ if __name__ == '__main__':
 
     # 500 键盘行
     # print(show.findWords(["Hello", "Alaska", "Dad", "Peace"]))
+
+    # 575 分糖果
+    # print(show.distributeCandies([1,1,2,2,2,3,3,3]))
+
+    # 594 最长和谐子序列
+    # print(show.findLHS([1,3,4,2]))
