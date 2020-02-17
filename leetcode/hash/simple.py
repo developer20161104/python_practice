@@ -332,6 +332,57 @@ class Solution:
 
         return res
 
+    def findRestaurant(self, list1: List[str], list2: List[str]) -> List[str]:
+        d = {}
+        for pos, add in enumerate(list1):
+            d[add] = pos
+
+        # 方法一：使用内库建立defaultdict存储后再查找min
+        # from collections import defaultdict
+        # save = defaultdict(list)
+        # for pos, ch in enumerate(list2):
+        #     if ch in d:
+        #         save[d[ch]+pos].append(ch)
+        #
+        # return save[min(save.keys())]
+
+        # 方法二，直接查找
+        cur_min = 10000
+        res = []
+        for pos, ch in enumerate(list2):
+            if ch in d:
+                tmp = d[ch] + pos
+                if tmp < cur_min:
+                    res.clear()
+                    res.append(ch)
+                    cur_min = tmp
+                elif tmp == cur_min:
+                    res.append(ch)
+
+        return res
+
+    def getImportance(self, employees, id: int) -> int:
+        from collections import defaultdict, deque
+        d = defaultdict(list)
+        q = deque()
+
+        # 先构建hash映射
+        for e in employees:
+            d[e[0]].append(e[1])
+            d[e[0]].append(e[2])
+
+        # 非递归的广度优先遍历（BFS）
+        q.append(d[id][1])
+        tot = d[id][0]
+        while q:
+            cur_list = q.popleft()
+            # 依次添加员工重要性以及下属id即可
+            for cur_id in cur_list:
+                q.append(d[cur_id][1])
+                tot += d[cur_id][0]
+
+        return tot
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -377,3 +428,9 @@ if __name__ == '__main__':
 
     # 594 最长和谐子序列
     # print(show.findLHS([1,3,4,2]))
+
+    # 599  两个列表的最小索引总和
+    # print(show.findRestaurant(["Shogun", "KFC", "Burger King", "Tapioca Express"], ["KFC", "Shogun", "Burger King"]))
+
+    # 690 员工重要性
+    # print(show.getImportance([[1, 5, [2, 3]], [2, 3, []], [3, 3, []]], 1))
