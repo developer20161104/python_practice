@@ -383,6 +383,63 @@ class Solution:
 
         return tot
 
+    def longestWord(self, words: List[str]) -> str:
+        # 方法一：暴力搜索
+        # # 暴力法查找
+        # dicts = set(words)
+        # cur_max = 0
+        # res = []
+        #
+        # for cur_str in words:
+        #     lens, i = len(cur_str), 0
+        #     # 逐一比对
+        #     while i < lens-1:
+        #         if cur_str[:i+1] not in dicts:
+        #             break
+        #         i += 1
+        #
+        #     # 截取最长字符串
+        #     if i == lens-1:
+        #         if lens > cur_max:
+        #             res.clear()
+        #             res.append(cur_str)
+        #             cur_max = lens
+        #         elif lens == cur_max:
+        #             res.append(cur_str)
+        #
+        # # 找出字典序最小
+        # return min(res)
+
+        # 方法二：trie树（前缀树）
+        from collections import defaultdict
+        from functools import reduce
+
+        # 构建迭代器
+        Trie = lambda: defaultdict(Trie)
+        trie = Trie()
+        END = True
+
+        # 神仙操作
+        for i, word in enumerate(words):
+            # 使用reduce对每个 word 中的 ch 建立字典，作为命名
+            # reduce实现迭代，实现字典中的嵌套字典，并在结尾字典设置key=END，value=i作为终止符
+            # 每个word单独嵌套，其顶层皆为trie的一个键，值依次迭代
+            reduce(dict.__getitem__, word, trie)[END] = i
+            # print(trie)
+
+        stack = list(trie.values())
+        ans = ""
+        # 由于嵌套本身已经有序，因此找出最长word即可
+        while stack:
+            cur = stack.pop()
+            if END in cur:
+                word = words[cur[END]]
+                if len(word) > len(ans) or len(word) == len(ans) and word < ans:
+                    ans = word
+                stack.extend([cur[letter] for letter in cur if letter != END])
+
+        return ans
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -434,3 +491,6 @@ if __name__ == '__main__':
 
     # 690 员工重要性
     # print(show.getImportance([[1, 5, [2, 3]], [2, 3, []], [3, 3, []]], 1))
+
+    # 720 词典中最长的单词
+    # print(show.longestWord(["k","lg","it","oidd","oid","oiddm","kfk","y","mw","kf","l","o","mwaqz","oi","ych","m","mwa"]))
