@@ -440,6 +440,36 @@ class Solution:
 
         return ans
 
+    def shortestCompletingWord(self, licensePlate: str, words: List[str]) -> str:
+        from collections import defaultdict
+        d = defaultdict(int)
+        count = 0
+        # 先建立字典映射
+        for ch in licensePlate:
+            if ch.isalpha():
+                d[ch.lower()] += 1
+                count += 1
+
+        cur_len = 10000
+        cur_word = ""
+        # 再逐一单词进行匹配
+        for word in words:
+            check = d.copy()
+            tot_len = count
+
+            lens = len(word)
+            for i in range(lens):
+                if check[word[i]] > 0:
+                    tot_len -= 1
+                    check[word[i]] -= 1
+
+            # 保留能够完全匹配的单词
+            if tot_len == 0 and cur_len > lens:
+                cur_len = lens
+                cur_word = word
+
+        return cur_word
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -494,3 +524,6 @@ if __name__ == '__main__':
 
     # 720 词典中最长的单词
     # print(show.longestWord(["k","lg","it","oidd","oid","oiddm","kfk","y","mw","kf","l","o","mwaqz","oi","ych","m","mwa"]))
+
+    # 748 最短完整词
+    # print(show.shortestCompletingWord("1s3 456", ["looks", "pest", "stew", "show"]))

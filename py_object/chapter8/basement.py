@@ -25,3 +25,29 @@ if __name__ == '__main__':
 
     print(template_2.format("MyClass", "print('hello world')"))
 
+    # 容器查询测试
+    emails = ('a@example.com', 'b@example.com')
+
+    message = {
+        'subject': "just a test",
+        'message': 'here is an email'
+    }
+
+    # 模板测试时注意赋值的书写方式
+    template_3 = """
+    From: <{0[0]}>
+    To: <{0[1]}>
+    Subject: {message[subject]}
+    ·{message[message]}"""
+
+    # 一个默认参数，一个指定参数
+    print(template_3.format(emails, message=message))
+
+    # 格式化输出
+    subtotal = 12.32
+    tax = 0.07 * subtotal
+    total = tax + subtotal
+
+    # 通过下标指定以及格式化输出以及指定参数名输出
+    # 0.2f表示如果小于1时，小数点左边含0，并保留小数点后两位输出浮点数
+    print("Sub: ${0:0.2f} Tax: ${1:0.2f} Total: ${total:0.2f}".format(subtotal, tax, total=total))
