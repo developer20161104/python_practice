@@ -51,3 +51,34 @@ if __name__ == '__main__':
     # 通过下标指定以及格式化输出以及指定参数名输出
     # 0.2f表示如果小于1时，小数点左边含0，并保留小数点后两位输出浮点数
     print("Sub: ${0:0.2f} Tax: ${1:0.2f} Total: ${total:0.2f}".format(subtotal, tax, total=total))
+
+    # 格式化输出2号
+    #
+    orders = [('burger', 2, 5),
+              ('fries', 3.5, 1),
+              ('cola', 1.75, 3)]
+
+    print("PRODUCT    QUANTITY    PRICE    SUBTOTAL")
+    for product, price, quantity in orders:
+        subtotal = price * quantity
+        # {0:10s}第一个变量是占据10个字符的字符串
+        # {1:^9d}第二个变量是占据9字符并且 居中 的数字，其余字符以空格输出
+        # {2: <8.2f}第三个变量按照长度为8保留两位小数左对齐
+        # {3: >7.2f}第四个变量按照长度为7保留两位小数右对齐
+        print("{0:10s}{1: ^9d}    ${2: <8.2f}${3: >7.2f}".format(product, quantity, price, subtotal))
+
+    # 字节转化为文本
+    # 使用bytes类中的.decode方法来进行解码
+
+    characters = b'\x63\x6c\x69\x63\x68\xe9'
+    print(characters)
+    # 输出解码
+    print(characters.decode("latin"))
+
+    # 将文本转化为字节
+    print("cliché".encode("latin"))
+
+    # 构造可变字节字符串
+    b = bytearray(b'abcdesf')
+    b[4:6] = b'\x15\xa3'
+    print(b)
