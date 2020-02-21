@@ -470,6 +470,119 @@ class Solution:
 
         return cur_word
 
+    def numJewelsInStones(self, J: str, S: str) -> int:
+        # 速度感人
+        # s = set(J)
+        # return len([x for x in S if x in s])
+        s = set(J)
+        count = 0
+        # 在set中逐一查找即可
+        for cur in S:
+            if cur in s:
+                count += 1
+
+        return count
+
+
+# 705 设计 hash 集合
+# 采用的是链表法解决hash冲突
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.next = None
+
+
+class MyHashSet:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.lens = 1000
+        # 设置头结点
+        self.arr = [Node(-1) for _ in range(self.lens)]
+
+    def add(self, key: int) -> None:
+        pos = head = self.arr[key % self.lens]
+
+        while pos.next is not None and pos.next.key != key:
+            pos = pos.next
+
+        # 用于判断是否要进行添加
+        if pos.next is None:
+            pos.next = Node(key)
+
+        # 注意在结尾需要将修改好的链表重新链接到头结点上
+        self.arr[key % self.lens] = head
+
+    def remove(self, key: int) -> None:
+        head = pos = self.arr[key % self.lens]
+        while pos.next is not None and pos.next.key != key:
+            pos = pos.next
+
+        # 判断是否含有需要删除的key
+        if pos.next is not None:
+            pos.next = pos.next.next
+        self.arr[key % self.lens] = head
+
+    def contains(self, key: int) -> bool:
+        """
+        Returns true if this set contains the specified element
+        """
+        pos = self.arr[key % self.lens]
+        while pos is not None and pos.key != key:
+            pos = pos.next
+
+        # 这句有点意思，判断言简意赅又没有漏掉各种条件
+        return pos is not None
+
+# except 版本（更加 pythonic）
+# class Node:
+#     def __init__(self, key):
+#         self.key = key
+#         self.next = None
+#
+#
+# class MyHashSet:
+#
+#     def __init__(self):
+#         """
+#         Initialize your data structure here.
+#         """
+#         self.lens = 1000
+#         self.arr = [Node(-1) for _ in range(self.lens)]
+#
+#     def add(self, key: int) -> None:
+#         pos = head = self.arr[key % self.lens]
+#
+#         try:
+#             while pos.next.key != key:
+#                 pos = pos.next
+#             # 当出现错误时pos指向的是倒数第二个值
+#         except:
+#             pos.next = Node(key)
+#             self.arr[key % self.lens] = head
+#
+#     def remove(self, key: int) -> None:
+#         head = pos = self.arr[key % self.lens]
+#         try:
+#             while pos.next.key != key:
+#                 pos = pos.next
+#             pos.next = pos.next.next
+#             # 移除时出现错误则说明当前无此值
+#         except:
+#             self.arr[key % self.lens] = head
+#
+#     def contains(self, key: int) -> bool:
+#         """
+#         Returns true if this set contains the specified element
+#         """
+#         pos = self.arr[key % self.lens]
+#         while pos is not None and pos.key != key:
+#             pos = pos.next
+#
+#         return pos is not None
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -527,3 +640,6 @@ if __name__ == '__main__':
 
     # 748 最短完整词
     # print(show.shortestCompletingWord("1s3 456", ["looks", "pest", "stew", "show"]))
+
+    # 771 宝石与石头
+    # print(show.numJewelsInStones("aA", "aAAbbbb"))
