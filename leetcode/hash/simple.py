@@ -584,6 +584,64 @@ class MyHashSet:
 #         return pos is not None
 
 
+# 706 设计hash映射
+# 同样可以采用链地址法解决冲突
+class Pair:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+        self.next = None
+
+
+class MyHashMap:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.lens = 2000
+        # 设置头链表
+        self.arr = [Pair(-1, -1) for _ in range(self.lens)]
+
+    def put(self, key: int, value: int) -> None:
+        """
+        value will always be non-negative.
+        """
+        head = cur_pos = self.arr[key % self.lens]
+        try:
+            while cur_pos.next.key != key:
+                cur_pos = cur_pos.next
+            cur_pos.next.value = value
+        except AttributeError:
+            cur_pos.next = Pair(key, value)
+            self.arr[key % self.lens] = head
+
+    def get(self, key: int) -> int:
+        """
+        Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key
+        """
+        cur_pos = self.arr[key % self.lens]
+        try:
+            while cur_pos.next.key != key:
+                cur_pos = cur_pos.next
+            return cur_pos.next.value
+        # 报错原因是找到尾部None值
+        except AttributeError:
+            return -1
+
+    def remove(self, key: int) -> None:
+        """
+        Removes the mapping of the specified value key if this map contains a mapping for the key
+        """
+        head = cur_pos = self.arr[key % self.lens]
+        try:
+            while cur_pos.next.key != key:
+                cur_pos = cur_pos.next
+            cur_pos.next = cur_pos.next.next
+        except AttributeError:
+            self.arr[key % self.lens] = head
+
+
 if __name__ == '__main__':
     show = Solution()
 
