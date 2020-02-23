@@ -483,6 +483,25 @@ class Solution:
 
         return count
 
+    def subdomainVisits(self, cpdomains: List[str]) -> List[str]:
+        from collections import defaultdict
+        dicts = defaultdict(int)
+
+        for ele in cpdomains:
+            # 先切分为计数值与网址
+            tot = ele.split()
+            # 再将网址细分
+            cur_net = tot[1].split('.')
+            count = int(tot[0])
+            # 共有部分
+            dicts[tot[1]] += count
+            dicts[cur_net[-1]] += count
+            # 由于只有两种网址，采用条件判断即可
+            if len(cur_net) == 3:
+                dicts[cur_net[1] + '.' + cur_net[2]] += count
+
+        return [str(value) + " " + key for key, value in dicts.items()]
+
 
 # 705 设计 hash 集合
 # 采用的是链表法解决hash冲突
@@ -535,6 +554,7 @@ class MyHashSet:
 
         # 这句有点意思，判断言简意赅又没有漏掉各种条件
         return pos is not None
+
 
 # except 版本（更加 pythonic）
 # class Node:
@@ -701,3 +721,6 @@ if __name__ == '__main__':
 
     # 771 宝石与石头
     # print(show.numJewelsInStones("aA", "aAAbbbb"))
+
+    # 811 子域名访问计数
+    # print(show.subdomainVisits(["900 google.mail.com", "50 yahoo.com", "1 intel.mail.com", "5 wiki.org"]))
