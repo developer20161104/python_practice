@@ -502,6 +502,18 @@ class Solution:
 
         return [str(value) + " " + key for key, value in dicts.items()]
 
+    def uncommonFromSentences(self, A: str, B: str) -> List[str]:
+        from collections import Counter
+        # 建立两个counter相互比较
+        # count_A, count_B = Counter(A.split()), Counter(B.split())
+        # return [x for x in count_A if count_A[x] == 1 and count_B[x] == 0] + \
+        #        [x for x in count_B if count_B[x] == 1 and count_A[x] == 0]
+
+        # 为什么不把它们合并呢？？？
+        # 只需要出现一次即可满足要求
+        count = Counter(A.split() + B.split())
+        return [x for x in count if count[x] == 1]
+
 
 # 705 设计 hash 集合
 # 采用的是链表法解决hash冲突
@@ -724,3 +736,6 @@ if __name__ == '__main__':
 
     # 811 子域名访问计数
     # print(show.subdomainVisits(["900 google.mail.com", "50 yahoo.com", "1 intel.mail.com", "5 wiki.org"]))
+
+    # 884 两句话中的不常见单词
+    # print(show.uncommonFromSentences("this apple is sweet", "this apple is sour"))
