@@ -1,6 +1,165 @@
 from typing import List
 
 
+# 705 设计 hash 集合
+# 采用的是链表法解决hash冲突
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.next = None
+
+
+class MyHashSet:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.lens = 1000
+        # 设置头结点
+        self.arr = [Node(-1) for _ in range(self.lens)]
+
+    def add(self, key: int) -> None:
+        pos = head = self.arr[key % self.lens]
+
+        while pos.next is not None and pos.next.key != key:
+            pos = pos.next
+
+        # 用于判断是否要进行添加
+        if pos.next is None:
+            pos.next = Node(key)
+
+        # 注意在结尾需要将修改好的链表重新链接到头结点上
+        self.arr[key % self.lens] = head
+
+    def remove(self, key: int) -> None:
+        head = pos = self.arr[key % self.lens]
+        while pos.next is not None and pos.next.key != key:
+            pos = pos.next
+
+        # 判断是否含有需要删除的key
+        if pos.next is not None:
+            pos.next = pos.next.next
+        self.arr[key % self.lens] = head
+
+    def contains(self, key: int) -> bool:
+        """
+        Returns true if this set contains the specified element
+        """
+        pos = self.arr[key % self.lens]
+        while pos is not None and pos.key != key:
+            pos = pos.next
+
+        # 这句有点意思，判断言简意赅又没有漏掉各种条件
+        return pos is not None
+
+
+# except 版本（更加 pythonic）
+# class Node:
+#     def __init__(self, key):
+#         self.key = key
+#         self.next = None
+#
+#
+# class MyHashSet:
+#
+#     def __init__(self):
+#         """
+#         Initialize your data structure here.
+#         """
+#         self.lens = 1000
+#         self.arr = [Node(-1) for _ in range(self.lens)]
+#
+#     def add(self, key: int) -> None:
+#         pos = head = self.arr[key % self.lens]
+#
+#         try:
+#             while pos.next.key != key:
+#                 pos = pos.next
+#             # 当出现错误时pos指向的是倒数第二个值
+#         except:
+#             pos.next = Node(key)
+#             self.arr[key % self.lens] = head
+#
+#     def remove(self, key: int) -> None:
+#         head = pos = self.arr[key % self.lens]
+#         try:
+#             while pos.next.key != key:
+#                 pos = pos.next
+#             pos.next = pos.next.next
+#             # 移除时出现错误则说明当前无此值
+#         except:
+#             self.arr[key % self.lens] = head
+#
+#     def contains(self, key: int) -> bool:
+#         """
+#         Returns true if this set contains the specified element
+#         """
+#         pos = self.arr[key % self.lens]
+#         while pos is not None and pos.key != key:
+#             pos = pos.next
+#
+#         return pos is not None
+
+
+# 706 设计hash映射
+# 同样可以采用链地址法解决冲突
+class Pair:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+        self.next = None
+
+
+class MyHashMap:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.lens = 2000
+        # 设置头链表
+        self.arr = [Pair(-1, -1) for _ in range(self.lens)]
+
+    def put(self, key: int, value: int) -> None:
+        """
+        value will always be non-negative.
+        """
+        head = cur_pos = self.arr[key % self.lens]
+        try:
+            while cur_pos.next.key != key:
+                cur_pos = cur_pos.next
+            cur_pos.next.value = value
+        except AttributeError:
+            cur_pos.next = Pair(key, value)
+            self.arr[key % self.lens] = head
+
+    def get(self, key: int) -> int:
+        """
+        Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key
+        """
+        cur_pos = self.arr[key % self.lens]
+        try:
+            while cur_pos.next.key != key:
+                cur_pos = cur_pos.next
+            return cur_pos.next.value
+        # 报错原因是找到尾部None值
+        except AttributeError:
+            return -1
+
+    def remove(self, key: int) -> None:
+        """
+        Removes the mapping of the specified value key if this map contains a mapping for the key
+        """
+        head = cur_pos = self.arr[key % self.lens]
+        try:
+            while cur_pos.next.key != key:
+                cur_pos = cur_pos.next
+            cur_pos.next = cur_pos.next.next
+        except AttributeError:
+            self.arr[key % self.lens] = head
+
+
 class Solution:
     def singleNumber(self, nums: List[int]) -> int:
         # 空间复杂度为O(n)，时间复杂度为O(n)
@@ -514,164 +673,29 @@ class Solution:
         count = Counter(A.split() + B.split())
         return [x for x in count if count[x] == 1]
 
+    def isAlienSorted(self, words: List[str], order: str) -> bool:
+        len_order, len_word = len(order), len(words)
+        dicts = {}
 
-# 705 设计 hash 集合
-# 采用的是链表法解决hash冲突
-class Node:
-    def __init__(self, key):
-        self.key = key
-        self.next = None
+        # 先有序存储
+        for i in range(len_order):
+            dicts[order[i]] = i
 
+        for i in range(1, len_word):
+            pre_len = len(words[i - 1])
 
-class MyHashSet:
+            # 再逐一比对
+            try:
+                for j in range(pre_len):
+                    if dicts[words[i - 1][j]] > dicts[words[i][j]]:
+                        return False
+                    elif dicts[words[i - 1][j]] < dicts[words[i][j]]:
+                        break
+            # 当下标越界时，表示前面的字符数量比后面还多，此时必为错误
+            except IndexError:
+                return False
 
-    def __init__(self):
-        """
-        Initialize your data structure here.
-        """
-        self.lens = 1000
-        # 设置头结点
-        self.arr = [Node(-1) for _ in range(self.lens)]
-
-    def add(self, key: int) -> None:
-        pos = head = self.arr[key % self.lens]
-
-        while pos.next is not None and pos.next.key != key:
-            pos = pos.next
-
-        # 用于判断是否要进行添加
-        if pos.next is None:
-            pos.next = Node(key)
-
-        # 注意在结尾需要将修改好的链表重新链接到头结点上
-        self.arr[key % self.lens] = head
-
-    def remove(self, key: int) -> None:
-        head = pos = self.arr[key % self.lens]
-        while pos.next is not None and pos.next.key != key:
-            pos = pos.next
-
-        # 判断是否含有需要删除的key
-        if pos.next is not None:
-            pos.next = pos.next.next
-        self.arr[key % self.lens] = head
-
-    def contains(self, key: int) -> bool:
-        """
-        Returns true if this set contains the specified element
-        """
-        pos = self.arr[key % self.lens]
-        while pos is not None and pos.key != key:
-            pos = pos.next
-
-        # 这句有点意思，判断言简意赅又没有漏掉各种条件
-        return pos is not None
-
-
-# except 版本（更加 pythonic）
-# class Node:
-#     def __init__(self, key):
-#         self.key = key
-#         self.next = None
-#
-#
-# class MyHashSet:
-#
-#     def __init__(self):
-#         """
-#         Initialize your data structure here.
-#         """
-#         self.lens = 1000
-#         self.arr = [Node(-1) for _ in range(self.lens)]
-#
-#     def add(self, key: int) -> None:
-#         pos = head = self.arr[key % self.lens]
-#
-#         try:
-#             while pos.next.key != key:
-#                 pos = pos.next
-#             # 当出现错误时pos指向的是倒数第二个值
-#         except:
-#             pos.next = Node(key)
-#             self.arr[key % self.lens] = head
-#
-#     def remove(self, key: int) -> None:
-#         head = pos = self.arr[key % self.lens]
-#         try:
-#             while pos.next.key != key:
-#                 pos = pos.next
-#             pos.next = pos.next.next
-#             # 移除时出现错误则说明当前无此值
-#         except:
-#             self.arr[key % self.lens] = head
-#
-#     def contains(self, key: int) -> bool:
-#         """
-#         Returns true if this set contains the specified element
-#         """
-#         pos = self.arr[key % self.lens]
-#         while pos is not None and pos.key != key:
-#             pos = pos.next
-#
-#         return pos is not None
-
-
-# 706 设计hash映射
-# 同样可以采用链地址法解决冲突
-class Pair:
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
-        self.next = None
-
-
-class MyHashMap:
-
-    def __init__(self):
-        """
-        Initialize your data structure here.
-        """
-        self.lens = 2000
-        # 设置头链表
-        self.arr = [Pair(-1, -1) for _ in range(self.lens)]
-
-    def put(self, key: int, value: int) -> None:
-        """
-        value will always be non-negative.
-        """
-        head = cur_pos = self.arr[key % self.lens]
-        try:
-            while cur_pos.next.key != key:
-                cur_pos = cur_pos.next
-            cur_pos.next.value = value
-        except AttributeError:
-            cur_pos.next = Pair(key, value)
-            self.arr[key % self.lens] = head
-
-    def get(self, key: int) -> int:
-        """
-        Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key
-        """
-        cur_pos = self.arr[key % self.lens]
-        try:
-            while cur_pos.next.key != key:
-                cur_pos = cur_pos.next
-            return cur_pos.next.value
-        # 报错原因是找到尾部None值
-        except AttributeError:
-            return -1
-
-    def remove(self, key: int) -> None:
-        """
-        Removes the mapping of the specified value key if this map contains a mapping for the key
-        """
-        head = cur_pos = self.arr[key % self.lens]
-        try:
-            while cur_pos.next.key != key:
-                cur_pos = cur_pos.next
-            cur_pos.next = cur_pos.next.next
-        except AttributeError:
-            self.arr[key % self.lens] = head
+        return True
 
 
 if __name__ == '__main__':
@@ -739,3 +763,6 @@ if __name__ == '__main__':
 
     # 884 两句话中的不常见单词
     # print(show.uncommonFromSentences("this apple is sweet", "this apple is sour"))
+
+    # 953 验证外星语词典
+    # print(show.isAlienSorted(["word","world","row"], "worldabcefghijkmnpqstuvxyz"))
