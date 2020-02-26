@@ -697,6 +697,33 @@ class Solution:
 
         return True
 
+    def repeatedNTimes(self, A: List[int]) -> int:
+        # error: [8323]
+        # arr = A[:2]
+        # for e in A:
+        #     if e == arr[1]:
+        #         arr[0] = e
+        #     else:
+        #         arr[1] = e
+        #
+        # return arr[0]
+
+        # 数学方法比较耗时
+        # lens = len(A)
+        # return (sum(A)-sum(set(A)))//(lens//2-1)
+
+        # 有点意思
+        # 要求的元素出现了N次，代表其它的只出现一次，这是关键
+        lens = len(A)
+        for i in range(lens-2):
+            # 由于有N个，代表此元素必在两个或者一个之间相邻
+            if A[i] == A[i+1] or A[i] == A[i+2]:
+                return A[i]
+
+        # 如果不满足以上情况，则必在末端
+        # example：8238
+        return A[-1]
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -766,3 +793,6 @@ if __name__ == '__main__':
 
     # 953 验证外星语词典
     # print(show.isAlienSorted(["word","world","row"], "worldabcefghijkmnpqstuvxyz"))
+
+    # 961 重复N次的元素
+    # print(show.repeatedNTimes([5, 1, 5, 2, 5, 3, 5, 4, 5, 2]))
