@@ -715,14 +715,25 @@ class Solution:
         # 有点意思
         # 要求的元素出现了N次，代表其它的只出现一次，这是关键
         lens = len(A)
-        for i in range(lens-2):
+        for i in range(lens - 2):
             # 由于有N个，代表此元素必在两个或者一个之间相邻
-            if A[i] == A[i+1] or A[i] == A[i+2]:
+            if A[i] == A[i + 1] or A[i] == A[i + 2]:
                 return A[i]
 
         # 如果不满足以上情况，则必在末端
         # example：8238
         return A[-1]
+
+    def findOcurrences(self, text: str, first: str, second: str) -> List[str]:
+        arr = text.split()
+        lens = len(arr)
+        res = []
+        # 直接找就行，此处可以过滤尾部下标出界的问题
+        for i in range(lens - 2):
+            if arr[i] == first and arr[i + 1] == second:
+                res.append(arr[i + 2])
+
+        return res
 
 
 if __name__ == '__main__':
@@ -796,3 +807,6 @@ if __name__ == '__main__':
 
     # 961 重复N次的元素
     # print(show.repeatedNTimes([5, 1, 5, 2, 5, 3, 5, 4, 5, 2]))
+
+    # 1078 Bigram分词
+    print(show.findOcurrences("we will we will rock you", "we", "will"))
