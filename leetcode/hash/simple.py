@@ -735,6 +735,12 @@ class Solution:
 
         return res
 
+    def uniqueOccurrences(self, arr: List[int]) -> bool:
+        # 调用内库的话会多次遍历
+        from collections import Counter
+        times = Counter(arr).values()
+        return len(set(times)) == len(times)
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -809,4 +815,7 @@ if __name__ == '__main__':
     # print(show.repeatedNTimes([5, 1, 5, 2, 5, 3, 5, 4, 5, 2]))
 
     # 1078 Bigram分词
-    print(show.findOcurrences("we will we will rock you", "we", "will"))
+    # print(show.findOcurrences("we will we will rock you", "we", "will"))
+
+    # 1207 独一无二的出现次数
+    # print(show.uniqueOccurrences([3, 5, -2, -3, -6, -6]))
