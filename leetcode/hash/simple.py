@@ -741,6 +741,21 @@ class Solution:
         times = Counter(arr).values()
         return len(set(times)) == len(times)
 
+    def canPermutePalindrome(self, s: str) -> bool:
+        from collections import Counter
+        dicts = Counter(s).values()
+        # 判断出现奇数的次数
+        count = 0
+
+        for i in dicts:
+            if i % 2:
+                # 最多允许出现一次
+                if count:
+                    return False
+                count += 1
+
+        return True
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -819,3 +834,6 @@ if __name__ == '__main__':
 
     # 1207 独一无二的出现次数
     # print(show.uniqueOccurrences([3, 5, -2, -3, -6, -6]))
+
+    # 面试题0104 回文排列
+    # print(show.canPermutePalindrome("tactcoa"))
