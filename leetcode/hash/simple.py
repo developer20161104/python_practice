@@ -756,6 +756,17 @@ class Solution:
 
         return True
 
+    def findRepeatNumber(self, nums: List[int]) -> int:
+        col = set()
+
+        # 对于重复元素的判断，使用set集合进行保存即可
+        for i in nums:
+            if i in col:
+                return i
+            col.add(i)
+
+        return -1
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -837,3 +848,6 @@ if __name__ == '__main__':
 
     # 面试题0104 回文排列
     # print(show.canPermutePalindrome("tactcoa"))
+
+    # 面试题03 数组中重复的数字
+    # print(show.findRepeatNumber([2, 3, 1, 0, 2, 5, 3]))
