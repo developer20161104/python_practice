@@ -767,6 +767,44 @@ class Solution:
 
         return -1
 
+    def smallerNumbersThanCurrent(self, nums: List[int]) -> List[int]:
+        # 调用内库方法，先排序再逐一查找
+        sort_nums = sorted(nums)
+        return [sort_nums.index(x) for x in nums]
+
+    def firstUniqChar(self, s: str) -> str:
+        # 跟暴力破解无异了
+        # for ch in s:
+        #     if s.count(ch) == 1:
+        #         return ch
+        #
+        # return ' '
+
+        # 速度大大提高，理论为O(n)，但是实际效果好像还是不行
+        # d = dict()
+        #
+        # # 先建立一个字典列表存储下标与出现数量
+        # for index, ch in enumerate(s):
+        #     if ch not in d:
+        #         d[ch] = [index, 0]
+        #     d[ch][1] += 1
+        #
+        # # 寻找最小下标
+        # col = [x[0] for x in d.values() if x[1] == 1]
+        # return s[min(col)] if len(col) else ' '
+
+        # 更优解法，直接设置映射列表即可
+        d = [0] * 126
+        for ch in s:
+            d[ord(ch)] += 1
+
+        # key: 按顺序查找即可（不能优化为set，会乱序）
+        for ch in s:
+            if d[ord(ch)] == 1:
+                return ch
+
+        return ' '
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -851,3 +889,9 @@ if __name__ == '__main__':
 
     # 面试题03 数组中重复的数字
     # print(show.findRepeatNumber([2, 3, 1, 0, 2, 5, 3]))
+
+    # 1365 有多少小于当前数字的数字
+    # print(show.smallerNumbersThanCurrent([8, 1, 2, 2, 3]))
+
+    # 面试50 第一个只出现一次的字符
+    # print(show.firstUniqChar("letcode"))
