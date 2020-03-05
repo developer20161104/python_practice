@@ -64,21 +64,21 @@ class Solution:
                 return res
 
             # 过滤重复
-            if i > 0 and nums[i] == nums[i-1]:
+            if i > 0 and nums[i] == nums[i - 1]:
                 continue
 
             # 初值设置
-            L = i+1
-            R = lens-1
+            L = i + 1
+            R = lens - 1
             # 每次查找的思路不同：
             while L < R:
                 if nums[i] + nums[L] + nums[R] == 0:
                     res.append([nums[i], nums[L], nums[R]])
 
                     # 内部虑重
-                    while L < R and nums[L] == nums[L+1]:
+                    while L < R and nums[L] == nums[L + 1]:
                         L += 1
-                    while L < R and nums[R] == nums[R-1]:
+                    while L < R and nums[R] == nums[R - 1]:
                         R -= 1
                     # 需要两边都增加，过滤掉当前满足的两个值
                     L += 1
@@ -92,6 +92,31 @@ class Solution:
 
         return res
 
+    def threeSumClosest(self, nums: List[int], target: int) -> int:
+        # 跟三数和的思想很像，但是更简单，不需要滤重
+        lens = len(nums)
+        nums.sort()
+
+        res = sum(nums[:3])
+
+        # 设置首位以及双指针，分别表示三个值
+        for i in range(lens-2):
+            left, right = i+1, lens-1
+
+            while left < right:
+                cur_res = nums[i] + nums[left] + nums[right]
+                # 注意比较的是绝对值
+                if abs(res-target) > abs(cur_res-target):
+                    res = cur_res
+                if cur_res-target == 0:
+                    return res
+                elif cur_res-target < 0:
+                    left += 1
+                else:
+                    right -= 1
+
+        return res
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -101,3 +126,6 @@ if __name__ == '__main__':
 
     # 15 三数之和
     # print(show.threeSum([-4, -2, -2, -2, 0, 1, 2, 2, 2, 3, 3, 4, 4, 6, 6]))
+
+    # 16 最接近的三数之和
+    # print(show.threeSumClosest([1,2,4,8,16,32,64,128], 82))
