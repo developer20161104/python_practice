@@ -100,20 +100,71 @@ class Solution:
         res = sum(nums[:3])
 
         # 设置首位以及双指针，分别表示三个值
-        for i in range(lens-2):
-            left, right = i+1, lens-1
+        for i in range(lens - 2):
+            left, right = i + 1, lens - 1
 
             while left < right:
                 cur_res = nums[i] + nums[left] + nums[right]
                 # 注意比较的是绝对值
-                if abs(res-target) > abs(cur_res-target):
+                if abs(res - target) > abs(cur_res - target):
                     res = cur_res
-                if cur_res-target == 0:
+                if cur_res - target == 0:
                     return res
-                elif cur_res-target < 0:
+                elif cur_res - target < 0:
                     left += 1
                 else:
                     right -= 1
+
+        return res
+
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        # 使用双重循环来拓展三数和
+        nums.sort()
+        res, lens = [], len(nums)
+
+        for i in range(lens - 3):
+            # 注意此处也需要滤重
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue
+
+            # 这个剪枝没想到
+            # 当前最小的部分进行判别
+            if nums[i] + nums[i + 1] + nums[i + 2] + nums[i + 3] > target:
+                break
+            # 当前最大的部分进行判别
+            if nums[i] + nums[lens - 1] + nums[lens - 2] + nums[lens - 3] < target:
+                continue
+
+            for j in range(i + 1, lens - 2):
+
+                # 过滤条件：参照三数和
+                if j > i + 1 and nums[j] == nums[j - 1]:
+                    continue
+                # 当前最小判断
+                if nums[i] + nums[j] + nums[j + 2] + nums[j + 1] > target:
+                    break
+                # 当前最大判断
+                if nums[i] + nums[j] + nums[lens - 1] + nums[lens - 2] < target:
+                    continue
+
+                left, right = j + 1, lens - 1
+
+                # 双指针法压缩时间
+                while left < right:
+                    cur_sum = nums[i] + nums[j] + nums[left] + nums[right]
+                    if cur_sum == target:
+                        res.append([nums[i], nums[j], nums[left], nums[right]])
+                        while left < right and nums[left + 1] == nums[left]:
+                            left += 1
+                        while left < right and nums[right - 1] == nums[right]:
+                            right -= 1
+
+                        left += 1
+                        right -= 1
+                    elif cur_sum < target:
+                        left += 1
+                    else:
+                        right -= 1
 
         return res
 
@@ -129,3 +180,6 @@ if __name__ == '__main__':
 
     # 16 最接近的三数之和
     # print(show.threeSumClosest([1,2,4,8,16,32,64,128], 82))
+
+    # 18 四数之和
+    # print(show.fourSum([5, 5, 3, 5, 1, -5, 1, -2], 4))
