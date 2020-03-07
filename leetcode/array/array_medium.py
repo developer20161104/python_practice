@@ -168,6 +168,40 @@ class Solution:
 
         return res
 
+    def nextPermutation(self, nums: List[int]) -> None:
+        # 经典字典序法
+        i, j, k = 0, 0, 0
+        lens = len(nums)
+        # 边界判断
+        if lens < 2:
+            return
+
+        # 从右到左寻找顺序下标
+        flag = True
+        for i in range(lens - 1, 0, -1):
+            if nums[i] > nums[i - 1]:
+                j, flag = i - 1, False
+                break
+
+        # 如果一次都没出现过表示已经是最终序
+        if flag:
+            nums.sort()
+            return
+
+        k = j + 1
+        for i in range(j + 2, lens):
+            # 注意在出现相同的字符时，需要选择最后一个字符
+            if nums[j] < nums[i] <= nums[k]:
+                k = i
+
+        # 交换位置
+        nums[j], nums[k] = nums[k], nums[j]
+        # 翻转j+1后的字符，完成一次字典序
+        for i in range(1, (lens - j - 1) // 2 + 1):
+            nums[j + i], nums[lens - i] = nums[lens - i], nums[i + j]
+
+        return
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -183,3 +217,6 @@ if __name__ == '__main__':
 
     # 18 四数之和
     # print(show.fourSum([5, 5, 3, 5, 1, -5, 1, -2], 4))
+
+    # 31 下一个排列
+    # print(show.nextPermutation([4,2,0,2,3,2,0]))
