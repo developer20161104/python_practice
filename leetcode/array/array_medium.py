@@ -202,6 +202,90 @@ class Solution:
 
         return
 
+    def search(self, nums: List[int], target: int) -> int:
+        # error: 案例[4,5,6,7,8,1,2,3], target=8
+        # left, right = 0, len(nums)-1
+        #
+        # # 错误二：边界判断
+        # if not nums:
+        #     return -1
+        #
+        # while left < right:
+        #     mid = left + (right-left)//2
+        #
+        #     if nums[mid] == target:
+        #         return mid
+        #     else:
+        #         if target < min(nums[left], nums[right]):
+        #             left = mid+1
+        #         elif target > max(nums[left], nums[right]):
+        #             right = mid-1
+        #         else:
+        #             # 中间逻辑问题
+        #             # if nums[left] != target and nums[right] != target:
+        #             #     return -1
+        #             # return left if nums[left] == target else right
+        #             if nums[left] != target and nums[right] != target:
+        #                 if nums[mid] > target:
+        #                     if nums[right] < nums[left]:
+        #                         left = mid+1
+        #                     else:
+        #                         right = mid-1
+        #                 elif nums[mid] < target:
+        #                     if nums[right] < nums[left]:
+        #                         right = mid-1
+        #                     else:
+        #                         left = mid +1
+        #                 else:
+        #                     return mid
+        #             else:
+        #                 return left if nums[left] == target else right
+        #
+        # # 错误一：单点判断
+        # return left if nums[left] == target else -1
+
+        # 把握关键点：如果一边无序，则另一边必为有序，而且是升序
+        # 理解有问题，注意是围着某个点旋转，而不是部分或整体转置
+        left, right = 0, len(nums)-1
+
+        # 由于需要进行压缩，所以必须判断左边与右边相等的情况
+        while left <= right:
+            mid = left + (right-left)//2
+
+            if nums[mid] == target:
+                return mid
+            # 左边首尾是升序时
+            elif nums[left] <= nums[mid]:
+                # 当出现相等时不断压缩
+                # 寻找较优判断条件，其余丢到else里面即可
+                if nums[left] <= target <= nums[mid]:
+                    right = mid-1
+                else:
+                    left = mid+1
+            else:
+                # 否则就是右边升序！（围点旋转）
+                if nums[mid] <= target <= nums[right]:
+                    left = mid+1
+                else:
+                    right = mid-1
+
+        return -1
+
+
+# 二分查找最优方法，保留左闭右开原则
+def binary_search(arr: List[int], target: int) -> int:
+    left, right = 0, len(arr)
+
+    # 无需判断相等的情况，只需要在最后判别结果是否真正存在即可
+    while left < right:
+        mid = left + (right-left)//2
+        if arr[mid] < target:
+            left = mid+1
+        else:
+            right = mid
+
+    return left if left < len(arr) and arr[left] == target else -1
+
 
 if __name__ == '__main__':
     show = Solution()
@@ -220,3 +304,6 @@ if __name__ == '__main__':
 
     # 31 下一个排列
     # print(show.nextPermutation([4,2,0,2,3,2,0]))
+
+    # 33 搜索旋转排序数组
+    # print(show.search([6,5,4,3,2,1,0], 2))
