@@ -246,11 +246,13 @@ class Solution:
 
         # 把握关键点：如果一边无序，则另一边必为有序，而且是升序
         # 理解有问题，注意是围着某个点旋转，而不是部分或整体转置
-        left, right = 0, len(nums)-1
+        # 取左闭右开 right = len(nums)
+        left, right = 0, len(nums) - 1
 
         # 由于需要进行压缩，所以必须判断左边与右边相等的情况
+        # 更通用写法： left < right
         while left <= right:
-            mid = left + (right-left)//2
+            mid = left + (right - left) // 2
 
             if nums[mid] == target:
                 return mid
@@ -259,17 +261,84 @@ class Solution:
                 # 当出现相等时不断压缩
                 # 寻找较优判断条件，其余丢到else里面即可
                 if nums[left] <= target <= nums[mid]:
-                    right = mid-1
+                    # right = mid
+                    right = mid - 1
                 else:
-                    left = mid+1
+                    left = mid + 1
             else:
                 # 否则就是右边升序！（围点旋转）
+                # 由于右指针需要判断，因此此处的判断应该为 right-1
                 if nums[mid] <= target <= nums[right]:
-                    left = mid+1
+                    left = mid + 1
                 else:
-                    right = mid-1
+                    # right = mid
+                    right = mid - 1
 
         return -1
+
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        # 最基本的二分加上线性搜索
+        # left, right = 0, len(nums)
+        #
+        # if not nums:
+        #     return [-1]*2
+        #
+        # while left < right:
+        #     mid = left + (right-left)//2
+        #     if nums[mid] == target:
+        #         l, r = mid, mid
+        #         # 在添加了线性搜索后，时间复杂度会退化为O(n)
+        #         while l > -1 and nums[l] == target:
+        #             l -= 1
+        #         while r < len(nums) and nums[r] == target:
+        #             r += 1
+        #         return [l+1, r-1]
+        #
+        #     elif nums[mid] < target:
+        #         left = mid+1
+        #     else:
+        #         right = mid
+        #
+        # return [-1]*2
+
+        # 方法二：查找边界的二分
+        def binary_search_left(nums: List[int], target: int) -> int:
+            left, right = 0, len(nums)
+
+            while left < right:
+                mid = left + (right - left) // 2
+
+                if nums[mid] < target:
+                    left = mid + 1
+                else:
+                    # key：当找到元素位置时，不立即返回，而是继续收缩右边区间，
+                    # 直到找到最左边目标值
+                    right = mid
+
+            # 由于当查找不到元素时，会返回插入下标，因此需要进行范围判断
+            return left if len(nums) > left > -1 and nums[left] == target else -1
+
+        def binary_search_right(nums: List[int], target: int) -> int:
+            left, right = 0, len(nums)
+
+            while left < right:
+                mid = left + (right - left) // 2
+
+                if nums[mid] > target:
+                    right = mid
+                else:
+                    # key：当找到元素位置时，不立即返回，而是继续收缩左侧区间，
+                    # 直到找到最右边目标值
+                    left = mid + 1
+
+            # 还是需要进行边界判断
+            return left - 1 if len(nums) >= left > 0 and nums[left - 1] == target else -1
+
+        if not nums:
+            return [-1] * 2
+
+        # 关键点：在找到目标值后，并不急于返回，而是压缩左（右）区间来寻找右（左）边界
+        return [binary_search_left(nums, target), binary_search_right(nums, target)]
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -278,9 +347,9 @@ def binary_search(arr: List[int], target: int) -> int:
 
     # 无需判断相等的情况，只需要在最后判别结果是否真正存在即可
     while left < right:
-        mid = left + (right-left)//2
+        mid = left + (right - left) // 2
         if arr[mid] < target:
-            left = mid+1
+            left = mid + 1
         else:
             right = mid
 
@@ -307,3 +376,6 @@ if __name__ == '__main__':
 
     # 33 搜索旋转排序数组
     # print(show.search([6,5,4,3,2,1,0], 2))
+
+    # 34 在排序数组中查找元素的第一个和最后一个位置
+    # print(show.searchRange([2,2], 6))
