@@ -260,6 +260,7 @@ class Solution:
             elif nums[left] <= nums[mid]:
                 # 当出现相等时不断压缩
                 # 寻找较优判断条件，其余丢到else里面即可
+                # 由于需要压缩左右空间，因此在相等时依然进行压缩，直到返回结果
                 if nums[left] <= target <= nums[mid]:
                     # right = mid
                     right = mid - 1
@@ -340,6 +341,60 @@ class Solution:
         # 关键点：在找到目标值后，并不急于返回，而是压缩左（右）区间来寻找右（左）边界
         return [binary_search_left(nums, target), binary_search_right(nums, target)]
 
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        # error:仅能处理两个数组合
+        # if not candidates:
+        #     return []
+        #
+        # res = set()
+        # value_set = set(candidates)
+        # for n in candidates:
+        #     cur_mod = target % n
+        #     while cur_mod <= target:
+        #         if cur_mod in value_set:
+        #             res.add(tuple(sorted([n] * ((target-cur_mod) // n) + [cur_mod])))
+        #         cur_mod += n
+        #
+        # return list(res)
+
+        # 需要用到回溯加上DFS（超出当前能力范围）
+        if not candidates:
+            return []
+
+        # 排序可以去掉重复路径
+        candidates.sort()
+        cur_path = []
+        res = []
+
+        self._dfs(candidates, target, 0, cur_path, res)
+
+        return res
+
+    def _dfs(self, candidates: List[int], target: int, begin: int, path: List[int], res: List[int]):
+        # python 传参如果是可更改变量（list,dict），则相当于引用
+        # 在内部函数修改后，会直接改变原始变量
+        # 不可变变量有（number，tuple，string）
+        if target == 0:
+            # 由于总是更改原始变量，因此需要复制保留当前的可变变量（path）
+            # 所以需要使用path[:] 或者 path.copy() 来进行处理
+            res.append(path[:])
+            return
+
+        lens = len(candidates)
+        for i in range(begin, lens):
+
+            # 剪枝：如果当前目标值已经过小
+            # 则直接结束回溯
+            if target - candidates[i] < 0:
+                return
+
+            path.append(candidates[i])
+            # 通过i来表示可重复，设置搜索起点，去除重复项，并缩小范围向下递归寻找
+            self._dfs(candidates, target - candidates[i], i, path, res)
+
+            # 回溯：弹出当前的值
+            path.pop()
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -379,3 +434,6 @@ if __name__ == '__main__':
 
     # 34 在排序数组中查找元素的第一个和最后一个位置
     # print(show.searchRange([2,2], 6))
+
+    # 39 组合总和
+    # print(show.combinationSum([2,3,7], 18))
