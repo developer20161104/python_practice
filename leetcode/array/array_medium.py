@@ -395,6 +395,43 @@ class Solution:
             # 回溯：弹出当前的值
             path.pop()
 
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+        # 基本思想与上一题一致，但死活想不出过滤条件。。
+        if not candidates:
+            return []
+
+        candidates.sort()
+        path = []
+        res = []
+        self._dfs2(candidates, target, path, res, 0)
+        return list(res)
+
+    def _dfs2(self, candidates: List[int], target: int, path: List[int], res: List[int], start: int):
+        if target == 0:
+            res.append(path[:])
+            return
+
+        for i in range(start, len(candidates)):
+            if target - candidates[i] < 0:
+                return
+
+            # 过滤不完全：一直以整体进行考虑
+            # # 过滤了起始相同项
+            # if not path and candidates[i] == pre[0]:
+            #     continue
+
+            # 放到部分中进行考虑：当前的值如果在首位之后并且又跟首位相同时，必会重复
+            # 此时后面的序列遍历前面序列的子集合，因此可以删去
+            if i > start and candidates[i-1] == candidates[i]:
+                continue
+
+            path.append(candidates[i])
+
+            # 在进行递归的时候以下一个点为起始值
+            self._dfs2(candidates, target - candidates[i], path, res, i+1)
+            # 回溯模板
+            path.pop()
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -437,3 +474,6 @@ if __name__ == '__main__':
 
     # 39 组合总和
     # print(show.combinationSum([2,3,7], 18))
+
+    # 40 组合总和II
+    # print(show.combinationSum2([4,2,5,2,5,3,1,5,2,2], 9))
