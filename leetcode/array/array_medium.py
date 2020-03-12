@@ -422,15 +422,54 @@ class Solution:
 
             # 放到部分中进行考虑：当前的值如果在首位之后并且又跟首位相同时，必会重复
             # 此时后面的序列遍历前面序列的子集合，因此可以删去
-            if i > start and candidates[i-1] == candidates[i]:
+            if i > start and candidates[i - 1] == candidates[i]:
                 continue
 
             path.append(candidates[i])
 
             # 在进行递归的时候以下一个点为起始值
-            self._dfs2(candidates, target - candidates[i], path, res, i+1)
+            self._dfs2(candidates, target - candidates[i], path, res, i + 1)
             # 回溯模板
             path.pop()
+
+    def rotate(self, matrix: List[List[int]]) -> None:
+        # 整体思路没问题，就是多了过多中间步骤
+        # lens = len(matrix)
+        # if lens < 2:
+        #     return
+        #
+        # times = lens // 2
+        # move = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+        # # 负责轮次
+        # for i in range(times):
+        #     cur_pos = [[i, i], [i, lens - 1 - i], [lens - i - 1, lens - i - 1], [lens - i - 1, i]]
+        #     # 旋转次数为n-1
+        #     for k in range(i, lens - i - 1):
+        #         # 通过循环进行数值传输,没必要存储
+        #         cur_val = [matrix[x[0]][x[1]] for x in cur_pos]
+        #         for j in range(1, 5):
+        #             matrix[cur_pos[j % 4][0]][cur_pos[j % 4][1]] = cur_val[j - 1]
+        #
+        #         cur_pos = list(map(lambda x, y: [x[0] + y[0], x[1] + y[1]], cur_pos, move))
+        #
+        # return
+
+        # 考虑矩阵基本操作：转置与翻转
+        lens = len(matrix)
+
+        # 转置操作
+        for i in range(lens):
+            for j in range(i, lens):
+                matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+
+        # 翻转操作
+        for i in range(lens):
+            # 错误之处：转回来了
+            for j in range(lens//2):
+                matrix[i][j], matrix[i][lens-1-j] = matrix[i][lens-1-j], matrix[i][j]
+
+        print(matrix)
+        return
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -477,3 +516,9 @@ if __name__ == '__main__':
 
     # 40 组合总和II
     # print(show.combinationSum2([4,2,5,2,5,3,1,5,2,2], 9))
+
+    # 48 旋转图像
+    # print(show.rotate([[5, 1, 9, 11],
+    #                    [2, 4, 8, 10],
+    #                    [13, 3, 6, 7],
+    #                    [15, 14, 12, 16]]))

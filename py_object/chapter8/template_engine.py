@@ -5,6 +5,7 @@ from pathlib import Path
 
 
 # 匹配诸如 /** operate name **/ 格式
+# ()表示其中的表达式为一个分组（groups）
 DIRECTIVE_RE = re.compile(
     r'/\*\*\s*(include|loopover|variable|endloop|loopvar)'
     r'\s*([^ *]*)\s*\*\*/')
