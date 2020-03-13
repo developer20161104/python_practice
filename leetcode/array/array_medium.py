@@ -465,11 +465,41 @@ class Solution:
         # 翻转操作
         for i in range(lens):
             # 错误之处：转回来了
-            for j in range(lens//2):
-                matrix[i][j], matrix[i][lens-1-j] = matrix[i][lens-1-j], matrix[i][j]
+            for j in range(lens // 2):
+                matrix[i][j], matrix[i][lens - 1 - j] = matrix[i][lens - 1 - j], matrix[i][j]
 
         print(matrix)
         return
+
+    def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+        # 图遍历常用技巧：设置位移数组
+        move = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+        res = []
+        flag = -10
+        if not matrix:
+            return res
+
+        len_m, len_n = len(matrix), len(matrix[0])
+
+        row, col, i = 0, 0, 0
+        # 可将条件判断优化为无需最后一次判断，因为已经知道了需要进行多少次遍历
+        # while matrix[row][col] != flag:
+        for _ in range(len_m * len_n):
+            res.append(matrix[row][col])
+            # 设置标志位防止重复遍历
+            matrix[row][col] = flag
+
+            if not (0 <= row + move[i][0] < len_m and 0 <= col + move[i][1] < len_n) \
+                    or matrix[row + move[i][0]][col + move[i][1]] == flag:
+                i += 1
+
+            # 注意方向调转时的下标
+            i = i % 4
+            row, col = row + move[i][0], col + move[i][1]
+            # if not (0 <= row < len_m and 0 <= col < len_n):
+            #     break
+
+        return res
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -522,3 +552,10 @@ if __name__ == '__main__':
     #                    [2, 4, 8, 10],
     #                    [13, 3, 6, 7],
     #                    [15, 14, 12, 16]]))
+
+    # 54 螺旋矩阵
+    # print(show.spiralOrder([
+    #     [1, 2, 3, 4],
+    #     [5, 6, 7, 8],
+    #     [9, 10, 11, 12]
+    # ]))
