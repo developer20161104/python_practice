@@ -501,6 +501,26 @@ class Solution:
 
         return res
 
+    def canJump(self, nums: List[int]) -> bool:
+        # 贪心算法，有很多小细节
+        lens = len(nums)
+        if lens < 2:
+            return True
+        # 使用一个变量记录当前能到达的最大距离即可
+        cur_max = -1
+
+        for i in range(lens):
+            # 出现0时进行判断
+            if not nums[i]:
+                # 能够跳到最后一个位置即为成功
+                if cur_max <= i != lens - 1:
+                    return False
+                continue
+
+            cur_max = max(cur_max, i + nums[i])
+
+        return True
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -559,3 +579,6 @@ if __name__ == '__main__':
     #     [5, 6, 7, 8],
     #     [9, 10, 11, 12]
     # ]))
+
+    # 55 跳跃游戏
+    # print(show.canJump([3,2,1,0,4]))
