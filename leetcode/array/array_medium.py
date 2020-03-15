@@ -521,6 +521,26 @@ class Solution:
 
         return True
 
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        if len(intervals) < 2:
+            return intervals
+        res = []
+        # 排序了以后会减少很多麻烦
+        intervals.sort()
+
+        cur_min, cur_max = intervals[0][0], intervals[0][1]
+        for cur in intervals[1:]:
+            # 如果当前出现的下界比原来的上界还大，则需要重新开辟新区间
+            if cur[0] > cur_max:
+                res.append([cur_min, cur_max])
+                cur_min = cur[0]
+            # 错误一：不考虑大区间并子区间不用更改两边的情况
+            # 错误案例：[[1,4],[2,3]]
+            cur_max = max(cur_max, cur[1])
+
+        res.append([cur_min, cur_max])
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -582,3 +602,6 @@ if __name__ == '__main__':
 
     # 55 跳跃游戏
     # print(show.canJump([3,2,1,0,4]))
+
+    # 56 合并区间
+    # print(show.merge([[1,5],[2,3]]))
