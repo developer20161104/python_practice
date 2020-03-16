@@ -541,6 +541,29 @@ class Solution:
         res.append([cur_min, cur_max])
         return res
 
+    def generateMatrix(self, n: int) -> List[List[int]]:
+        # 使用列表推导来生成
+        matrix = [[0] * n for _ in range(n)]
+        move_row = [0, 1, 0, -1]
+        move_col = [1, 0, -1, 0]
+        pos = 0
+        cur_row, cur_col = 0, 0
+        # 整体思路是先构建空矩阵，然后按照要求逐一填充即可
+        for i in range(n * n):
+            matrix[cur_row][cur_col] = i + 1
+
+            temp_row, temp_col = cur_row + move_row[pos], cur_col + move_col[pos]
+            if not (0 <= temp_row < n and 0 <= temp_col < n) \
+                    or matrix[temp_row][temp_col]:
+                # 郁闷得一批，余数搞错了可还行
+                pos = (pos + 1) % 4
+                cur_row += move_row[pos]
+                cur_col += move_col[pos]
+            else:
+                cur_row, cur_col = temp_row, temp_col
+
+        return matrix
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -605,3 +628,6 @@ if __name__ == '__main__':
 
     # 56 合并区间
     # print(show.merge([[1,5],[2,3]]))
+
+    # 59 螺旋矩阵II
+    # print(show.generateMatrix(10))
