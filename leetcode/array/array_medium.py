@@ -564,6 +564,49 @@ class Solution:
 
         return matrix
 
+    def uniquePaths(self, m: int, n: int) -> int:
+        # 动态规划来解决
+        # 还能优化空间复杂度
+        # mat = [[1]*n] + [[0] * n for _ in range(m-1)]
+        #
+        # for i in range(1, m):
+        #     for j in range(n):
+        #         # 边界条件都为1
+        #         if not j:
+        #             mat[i][j] = 1
+        #         # 中间部分的需要加上两种路径的数量
+        #         else:
+        #             mat[i][j] = mat[i - 1][j] + mat[i][j - 1]
+        #
+        # # 最后返回最终结果
+        # return mat[m - 1][n - 1]
+
+        # 由于当前行仅需要上一行与当前行的前一个值，因此用两个列表保存即可
+        # 空间优化为2*n
+        # pre, cur = [1]*n, [1]*n
+        # for i in range(1, m):
+        #     for j in range(1, n):
+        #         # 优化空间
+        #         cur[j] = pre[j] + cur[j-1]
+        #
+        #     # 保存上一行的结果
+        #     pre = cur[:]
+        #
+        # return cur[-1]
+
+        # 由于当前列表中已经保存了上一次的所有结果
+        # 因此无需再构建一个列表
+        # 优化空间复杂度为 n
+        cur = [1]*n
+
+        # 每次递进一行
+        for i in range(1, m):
+            # 每次计算得到当前列的结果
+            for j in range(1, n):
+                cur[j] += cur[j-1]
+
+        return cur[-1]
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -631,3 +674,6 @@ if __name__ == '__main__':
 
     # 59 螺旋矩阵II
     # print(show.generateMatrix(10))
+
+    # 62 不同路径
+    # print(show.uniquePaths(7, 3))
