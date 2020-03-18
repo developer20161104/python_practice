@@ -597,15 +597,73 @@ class Solution:
         # 由于当前列表中已经保存了上一次的所有结果
         # 因此无需再构建一个列表
         # 优化空间复杂度为 n
-        cur = [1]*n
+        cur = [1] * n
 
         # 每次递进一行
         for i in range(1, m):
             # 每次计算得到当前列的结果
             for j in range(1, n):
-                cur[j] += cur[j-1]
+                cur[j] += cur[j - 1]
 
         return cur[-1]
+
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        # if not obstacleGrid:
+        #     return 0
+        # len_m, len_n = len(obstacleGrid), len(obstacleGrid[0])
+        #
+        # # 寻找第一行中的障碍
+        # cur = []
+        # for i in range(len_n):
+        #     if obstacleGrid[0][i]:
+        #         break
+        #     cur.append(1)
+        # cur += [0]*(len_n-len(cur))
+        #
+        # # 寻找第一列中的障碍
+        # row_pos = len_m + 1
+        # for i in range(len_m):
+        #     if obstacleGrid[i][0]:
+        #         row_pos = i
+        #         break
+        #
+        # for i in range(1, len_m):
+        #     for j in range(1, len_n):
+        #         if obstacleGrid[i][j]:
+        #             cur[j] = 0
+        #         # row_pos仅用于第一个判断
+        #         elif j > 1 or i < row_pos:
+        #             cur[j] += cur[j-1]
+        #
+        # # 如果出现障碍并且列宽为1，则必为0
+        # return 0 if row_pos < len_m and len_n == 1 else cur[-1]
+
+        # 可优化空间至1，使用矩阵来保存当前的规划值
+        if not obstacleGrid or obstacleGrid[0][0]:
+            return 0
+
+        len_m, len_n = len(obstacleGrid), len(obstacleGrid[0])
+        obstacleGrid[0][0] = 1
+
+        # travel row
+        for i in range(1, len_m):
+            # 巧妙利用与或条件进行判断
+            obstacleGrid[i][0] = int(obstacleGrid[i - 1][0] == 1 and obstacleGrid[i][0] == 0)
+
+        # travel column
+        for j in range(1, len_n):
+            obstacleGrid[0][j] = int(obstacleGrid[0][j] == 0 and obstacleGrid[0][j - 1] == 1)
+
+        # 在前面已经进行了行列遍历后，只需要逐步相加即可得到结果
+        # 相比自己创造单一变量来判断更好理解
+        for i in range(1, len_m):
+            for j in range(1, len_n):
+                if obstacleGrid[i][j]:
+                    obstacleGrid[i][j] = 0
+                else:
+                    obstacleGrid[i][j] = obstacleGrid[i - 1][j] + obstacleGrid[i][j - 1]
+
+        return obstacleGrid[len_m - 1][len_n - 1]
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -677,3 +735,6 @@ if __name__ == '__main__':
 
     # 62 不同路径
     # print(show.uniquePaths(7, 3))
+
+    # 63 不同路径II
+    # print(show.uniquePathsWithObstacles([[0]]))
