@@ -665,6 +665,27 @@ class Solution:
 
         return obstacleGrid[len_m - 1][len_n - 1]
 
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        if not grid:
+            return 0
+
+        len_m, len_n = len(grid), len(grid[0])
+
+        # 首行路径求和
+        for i in range(1, len_m):
+            grid[i][0] += grid[i - 1][0]
+
+        # 首列路径求和
+        for j in range(1, len_n):
+            grid[0][j] += grid[0][j - 1]
+
+        # 选取两者的最短路径
+        for i in range(1, len_m):
+            for j in range(1, len_n):
+                grid[i][j] += min(grid[i - 1][j], grid[i][j - 1])
+
+        return grid[len_m - 1][len_n - 1]
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -738,3 +759,6 @@ if __name__ == '__main__':
 
     # 63 不同路径II
     # print(show.uniquePathsWithObstacles([[0]]))
+
+    # 64 最小路径和
+    # print(show.minPathSum([[1,3,1],[1,5,1],[4,2,1]]))
