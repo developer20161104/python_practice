@@ -686,6 +686,67 @@ class Solution:
 
         return grid[len_m - 1][len_n - 1]
 
+    def setZeroes(self, matrix: List[List[int]]) -> None:
+        # # 先尝试m+n额外空间
+        # if not matrix:
+        #     return
+        # len_m, len_n = len(matrix), len(matrix[0])
+        # row_pos, col_pos = [0] * len_m, [0] * len_n
+        #
+        # # 先找出零元素行列坐标
+        # for i in range(len_m):
+        #     for j in range(len_n):
+        #         if not matrix[i][j]:
+        #             row_pos[i], col_pos[j] = 1, 1
+        #
+        # # 对行进行置零
+        # for index, pos in enumerate(row_pos):
+        #     if pos:
+        #         matrix[index][:] = [0] * len_n
+        #
+        # # 对列进行置零
+        # for index, pos in enumerate(col_pos):
+        #     if pos:
+        #         for i in range(len_m):
+        #             matrix[i][index] = 0
+        #
+        # print(matrix)
+        # return
+
+        # 尝试常数空间算法
+        # 利用列表自身来进行存储
+        if not matrix:
+            return
+        len_m, len_n = len(matrix), len(matrix[0])
+
+        # 两个标记用于判别第一行第一列是否置零
+        row_flag, col_flag = False, False
+
+        # 将每个零元位置的起始行位置，起始列位置置零，用于标记
+        for i in range(len_m):
+            for j in range(len_n):
+                if not matrix[i][j]:
+                    if not i:
+                        row_flag = True
+                    if not j:
+                        col_flag = True
+                    matrix[0][j], matrix[i][0] = 0, 0
+
+        # 先将非第一行，第一列元素置零
+        for i in range(1, len_m):
+            for j in range(1, len_n):
+                if not matrix[i][0] or not matrix[0][j]:
+                    matrix[i][j] = 0
+
+        # 最后再置零第一行第一列
+        if row_flag:
+            matrix[0][:] = [0]*len_n
+        if col_flag:
+            for i in range(len_m):
+                matrix[i][0] = 0
+
+        print(matrix)
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -762,3 +823,9 @@ if __name__ == '__main__':
 
     # 64 最小路径和
     # print(show.minPathSum([[1,3,1],[1,5,1],[4,2,1]]))
+
+    # 73 矩阵置零
+    # print(show.setZeroes([
+    #     [0, 1, 2, 0],
+    #     [3, 4, 5, 2],
+    #     [1, 3, 1, 5]]))
