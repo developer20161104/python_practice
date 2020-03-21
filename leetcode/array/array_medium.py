@@ -740,12 +740,45 @@ class Solution:
 
         # 最后再置零第一行第一列
         if row_flag:
-            matrix[0][:] = [0]*len_n
+            matrix[0][:] = [0] * len_n
         if col_flag:
             for i in range(len_m):
                 matrix[i][0] = 0
 
         print(matrix)
+
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        if not matrix:
+            return False
+
+        len_m, len_n = len(matrix), len(matrix[0])
+        row_pos = 0
+        for i in range(1, len_m):
+            # 边界取值有问题:不能用大于进行推断
+            # 在边界会有各种情况
+            if matrix[i][0] <= target:
+                row_pos = i
+            else:
+                break
+
+        # 判断是否在矩阵中
+        if row_pos < 0:
+            return False
+
+        # 二分法判断具体位置
+        left, right = 0, len_n
+        while left < right:
+            mid = left + (right - left) // 2
+            if matrix[row_pos][mid] == target:
+                return True
+            elif target > matrix[row_pos][mid]:
+                left = mid + 1
+            else:
+                right = mid
+
+        return True if 0 <= left < len_n and matrix[row_pos][left] == target else False
+
+        # 也可以直接使用二分法，然后对下标进行转化即可
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -829,3 +862,10 @@ if __name__ == '__main__':
     #     [0, 1, 2, 0],
     #     [3, 4, 5, 2],
     #     [1, 3, 1, 5]]))
+
+    # 74 搜索二维矩阵
+    # print(show.searchMatrix([
+    #     [1, 3, 5, 7],
+    #     [10, 11, 16, 20],
+    #     [23, 30, 34, 50]
+    # ], 3))
