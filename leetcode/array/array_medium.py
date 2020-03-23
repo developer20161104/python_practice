@@ -780,6 +780,117 @@ class Solution:
 
         # 也可以直接使用二分法，然后对下标进行转化即可
 
+    def sortColors(self, nums: List[int]) -> None:
+        # 使用计数排序，消耗o(3)空间
+        # counts = [0]*3
+        # for num in nums:
+        #     counts[num] += 1
+        #
+        # nums = []
+        # for index, count in enumerate(counts):
+        #     nums += [index]*count
+        #
+        # print(nums)
+
+        # 三指针法，定义两个边界来处理
+        # 在指针前进上遇到问题，还需要好好想想
+        if not nums:
+            return
+        cur, left, right = 0, 0, len(nums) - 1
+        # 类似于二分法，注意指针的判断
+        while cur <= right:
+            if not nums[cur]:
+                # 注意需要交换
+                nums[cur], nums[left] = nums[left], nums[cur]
+                # 指针的移动需要仔细斟酌
+                # 左边必定全都扫描过
+                left += 1
+                cur += 1
+            elif nums[cur] == 1:
+                # 位于中间就不用管
+                cur += 1
+            else:
+                nums[cur], nums[right] = nums[right], nums[cur]
+                # 此处仅需移动右指针，因为不知道右指针上个指向的元素大小
+                right -= 1
+
+        print(nums)
+
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        # error:还是没有领悟回溯的精髓
+        # 关键错误：递归的下标选择有问题
+        # res = [[]]
+        # if not nums:
+        #     return res
+        #
+        # nums.sort()
+        # path = []
+        # visit = [0]*len(nums)
+        #
+        # def findall(index: int):
+        #     if index == len(nums) or visit[index]:
+        #         return
+        #
+        #     for i in range(index, len(nums)):
+        #         if not visit[i]:
+        #             visit[i] = 1
+        #             path.append(nums[i])
+        #
+        #             res.append(path[:])
+        #             findall(index+1)
+        #             path.pop()
+        #             visit[i] = 0
+        #
+        # findall(0)
+        # return res
+
+        # 方法一：回溯
+        # if not nums:
+        #     return [[]]
+        #
+        # res = []
+        # lens = len(nums)
+        #
+        # def backtrace(index, path):
+        #     if len(path) == k:
+        #         res.append(path[:])
+        #
+        #     else:
+        #         for i in range(index, lens):
+        #             # 内部中的下标选择的是当前下标
+        #             # 不是index！！
+        #             path.append(nums[i])
+        #             # 回溯的下标是i，不是index
+        #             # 被这里坑了1小时，还是不扎实
+        #             backtrace(i + 1, path)
+        #             path.pop()
+        #
+        # # 终止条件：长度从1次选到lens即可
+        # for k in range(lens+1):
+        #     backtrace(0, [])
+        #
+        # return res
+
+        # 方法二：大神思路
+        # 每次遍历一个元素，就将此元素添加到所有子集元素中
+        import copy
+        res = [[]]
+        if not nums:
+            return res
+
+        lens = len(nums)
+        res.append([nums[0]])
+        for i in range(1, lens):
+            # 此处需要用到深拷贝
+            # 由于此处的复制为嵌套列表（高维），因此需要深拷贝
+            # 如果待拷贝列表内部为普通类型时，深浅拷贝几乎一致
+            cur = copy.deepcopy(res)
+            for j in range(len(res)):
+                res[j].append(nums[i])
+            res += cur
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -869,3 +980,9 @@ if __name__ == '__main__':
     #     [10, 11, 16, 20],
     #     [23, 30, 34, 50]
     # ], 3))
+
+    # 75 颜色分类
+    # print(show.sortColors([2,0,1]))
+
+    # 78 子集
+    # print(show.subsets([1,2,3]))
