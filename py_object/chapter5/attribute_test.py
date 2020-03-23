@@ -21,8 +21,8 @@ class Color:
 
 
 class Silly:
-    # 看起来还有点迷
     # 使用装饰器来设置getter setter与deleter 方法
+    # 首先使用装饰器来将一个取值函数转化为属性
     @property
     def silly(self):
         """This is a silly property"""
