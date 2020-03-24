@@ -891,6 +891,46 @@ class Solution:
 
         return res
 
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        # 一个经典的二维平面
+        len_row, len_col = len(board), len(board[0])
+        # 位置移动
+        move_row, move_col = [0, -1, 0, 1], [-1, 0, 1, 0]
+        len_t = len(word)
+        # 访问数组
+        visit = [[0]*len_col for _ in range(len_row)]
+
+        def travel_arround(cur_row: int, cur_col: int, word_index: int):
+            # 截止条件是访问完成
+            if word_index == len_t:
+                return True
+
+            for k in range(4):
+                temp_row, temp_col = cur_row + move_row[k], cur_col + move_col[k]
+                # BFS遍历
+                if 0 <= temp_row < len_row and 0 <= temp_col < len_col and \
+                        board[temp_row][temp_col] == word[word_index] and not visit[temp_row][temp_col]:
+                    visit[temp_row][temp_col] = 1
+                    res = travel_arround(temp_row, temp_col, word_index + 1)
+                    # 回溯
+                    visit[temp_row][temp_col] = 0
+                    # 一旦出现满足的情况，则立即返回结果
+                    if res:
+                        return True
+
+            return False
+
+        for i in range(len_row):
+            for j in range(len_col):
+                if board[i][j] == word[0]:
+                    # 外部回溯
+                    visit[i][j] = 1
+                    if travel_arround(i, j, 1):
+                        return True
+                    visit[i][j] = 0
+
+        return False
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -986,3 +1026,10 @@ if __name__ == '__main__':
 
     # 78 子集
     # print(show.subsets([1,2,3]))
+
+    # 79 单词搜索
+    # print(show.exist([
+    #     ['A', 'B', 'C', 'E'],
+    #     ['S', 'F', 'C', 'S'],
+    #     ['A', 'D', 'E', 'E']
+    # ], 'SECCS'))
