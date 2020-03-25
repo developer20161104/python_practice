@@ -898,7 +898,7 @@ class Solution:
         move_row, move_col = [0, -1, 0, 1], [-1, 0, 1, 0]
         len_t = len(word)
         # 访问数组
-        visit = [[0]*len_col for _ in range(len_row)]
+        visit = [[0] * len_col for _ in range(len_row)]
 
         def travel_arround(cur_row: int, cur_col: int, word_index: int):
             # 截止条件是访问完成
@@ -930,6 +930,77 @@ class Solution:
                     visit[i][j] = 0
 
         return False
+
+    def removeDuplicates(self, nums: List[int]) -> int:
+        # 此方式无法保证有序
+        # if not nums:
+        #     return 0
+        # lens = len(nums)
+        # pos, cur, time = lens - 1, nums[0], 0
+        #
+        # for i in range(lens):
+        #     if nums[i] == cur:
+        #         time += 1
+        #     else:
+        #         if time > 2:
+        #             for j in range(time - 2):
+        #                 nums[i - j -1], nums[pos - j] = nums[pos - j], nums[i -j-1]
+        #             pos -= time - 2
+        #
+        #         cur, time = nums[i], 1
+        #
+        # print(nums)
+        # return pos+1
+
+        # 时间复杂度为O(n**2)，可以优化
+        # if not nums:
+        #     return 0
+        # # 添加末尾判断符号
+        # nums.append(-1)
+        #
+        # lens = len(nums)
+        # cur, time = nums[0], 0
+        # count, i = lens, 0
+        #
+        # # 问题1，末尾判断
+        # while i < count:
+        #     if cur == nums[i]:
+        #         time += 1
+        #         i += 1
+        #     else:
+        #         if time > 2:
+        #             # 将有效长度全体左移，过于耗时
+        #             for j in range(i, count):
+        #                 nums[j-time+2] = nums[j]
+        #             count -= time - 2
+        #             i = i-time+2
+        #         cur, time = nums[i], 0
+        #
+        # print(nums)
+        # return count-1
+
+        # 大神思路：快慢指针 O(n)
+        # 思想是逐一移动，就不需要多余的重复移动次数
+        lens = len(nums)
+        if lens < 3:
+            return lens
+
+        # 使用j作为慢指针
+        time, j, cur = 0, 0, nums[0]
+        for i in range(lens):
+            if nums[i] == cur:
+                time += 1
+            else:
+                # 新元素重新计数
+                cur, time = nums[i], 1
+
+            # 当前仅当当前元素出现次数少于3时，慢指针才会递增
+            if time < 3:
+                nums[j] = nums[i]
+                j += 1
+
+        print(nums)
+        return j
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -1033,3 +1104,6 @@ if __name__ == '__main__':
     #     ['S', 'F', 'C', 'S'],
     #     ['A', 'D', 'E', 'E']
     # ], 'SECCS'))
+
+    # 80 删除排序数组中的重复项II
+    # print(show.removeDuplicates([0, 0, 1, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 4]))
