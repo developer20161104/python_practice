@@ -1002,6 +1002,47 @@ class Solution:
         print(nums)
         return j
 
+    def search(self, nums: List[int], target: int) -> bool:
+        # 经典案例 ：1 3 1 1 与 1 1 3 1
+        left, right = 0, len(nums)
+        # 前面是二分的改版
+        while left < right:
+            mid = left + (right-left)//2
+            if nums[mid] == target:
+                return True
+            # 先判断有序的一方
+            elif nums[left] < nums[mid]:
+                if nums[left] <= target < nums[mid]:
+                    right = mid
+                else:
+                    left = mid+1
+            # 由于两边可能相同，因此需要单独进行考虑
+            elif nums[mid] < nums[right-1]:
+                if nums[mid] < target <= nums[right-1]:
+                    left = mid+1
+                else:
+                    right = mid
+            # 特别针对两边相等的情况
+            else:
+                # 后面其实只需要优化为左指针右移一位即可（有些冗余）
+                # 如果出现重复元素，则退化为逐步搜索
+                if nums[left] == target:
+                    return True
+                i = left+1
+                while i < mid:
+                    if nums[i] != nums[left]:
+                        break
+                    i += 1
+
+                # 典型的打补丁式算法
+                if i == mid:
+                    left = mid+1
+                else:
+                    right = mid
+
+        return False if not nums or not( 0 <= left < len(nums)) or \
+            nums[left] != target else True
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -1107,3 +1148,6 @@ if __name__ == '__main__':
 
     # 80 删除排序数组中的重复项II
     # print(show.removeDuplicates([0, 0, 1, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 4]))
+
+    # 81 搜索旋转排序数组II
+    # print(show.search([1,2,1,1], 2))
