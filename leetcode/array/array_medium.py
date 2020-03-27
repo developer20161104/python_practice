@@ -1043,6 +1043,41 @@ class Solution:
         return False if not nums or not( 0 <= left < len(nums)) or \
             nums[left] != target else True
 
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        if not nums:
+            return [[]]
+
+        lens = len(nums)
+        res = []
+        cur_count = []
+        nums.sort()
+
+        def get_all(index=0):
+            if len(cur_count) == k:
+                res.append(cur_count[:])
+                return
+
+            for i in range(index, lens):
+                # 在剪枝上还是有小问题
+                # 此处选为index是为了让每次的起始部分能够顺利加入集合中
+                # 需要排除的是同一层级上的多余部分，
+                # 对于不同层级不需要排除（因此不能使用i>0来进行判断）
+                if i > index and nums[i] == nums[i-1]:
+                    continue
+                # if i > 0 and not len(cur_count) and nums[i] == nums[i-1]:
+                #     continue
+
+                cur_count.append(nums[i])
+                get_all(i+1)
+                # 回溯
+                cur_count.pop()
+
+        # 长度是个变数
+        for k in range(lens+1):
+            get_all()
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -1151,3 +1186,6 @@ if __name__ == '__main__':
 
     # 81 搜索旋转排序数组II
     # print(show.search([1,2,1,1], 2))
+
+    # 90 子集II
+    # print(show.subsetsWithDup([1,2,2]))
