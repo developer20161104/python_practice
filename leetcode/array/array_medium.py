@@ -1,7 +1,17 @@
 from typing import List
 
 
+class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+
 class Solution:
+    def __init__(self):
+        self.order = 0
+
     def maxArea(self, height: List[int]) -> int:
         # 转化为求取最大面积，长度可变，宽度为两边的min
         left, right = 0, len(height) - 1
@@ -1007,7 +1017,7 @@ class Solution:
         left, right = 0, len(nums)
         # 前面是二分的改版
         while left < right:
-            mid = left + (right-left)//2
+            mid = left + (right - left) // 2
             if nums[mid] == target:
                 return True
             # 先判断有序的一方
@@ -1015,11 +1025,11 @@ class Solution:
                 if nums[left] <= target < nums[mid]:
                     right = mid
                 else:
-                    left = mid+1
+                    left = mid + 1
             # 由于两边可能相同，因此需要单独进行考虑
-            elif nums[mid] < nums[right-1]:
-                if nums[mid] < target <= nums[right-1]:
-                    left = mid+1
+            elif nums[mid] < nums[right - 1]:
+                if nums[mid] < target <= nums[right - 1]:
+                    left = mid + 1
                 else:
                     right = mid
             # 特别针对两边相等的情况
@@ -1028,7 +1038,7 @@ class Solution:
                 # 如果出现重复元素，则退化为逐步搜索
                 if nums[left] == target:
                     return True
-                i = left+1
+                i = left + 1
                 while i < mid:
                     if nums[i] != nums[left]:
                         break
@@ -1036,12 +1046,12 @@ class Solution:
 
                 # 典型的打补丁式算法
                 if i == mid:
-                    left = mid+1
+                    left = mid + 1
                 else:
                     right = mid
 
-        return False if not nums or not( 0 <= left < len(nums)) or \
-            nums[left] != target else True
+        return False if not nums or not (0 <= left < len(nums)) or \
+                        nums[left] != target else True
 
     def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
         if not nums:
@@ -1062,21 +1072,71 @@ class Solution:
                 # 此处选为index是为了让每次的起始部分能够顺利加入集合中
                 # 需要排除的是同一层级上的多余部分，
                 # 对于不同层级不需要排除（因此不能使用i>0来进行判断）
-                if i > index and nums[i] == nums[i-1]:
+                if i > index and nums[i] == nums[i - 1]:
                     continue
                 # if i > 0 and not len(cur_count) and nums[i] == nums[i-1]:
                 #     continue
 
                 cur_count.append(nums[i])
-                get_all(i+1)
+                get_all(i + 1)
                 # 回溯
                 cur_count.pop()
 
         # 长度是个变数
-        for k in range(lens+1):
+        for k in range(lens + 1):
             get_all()
 
         return res
+
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        lens = len(preorder)
+        if not lens:
+            return None
+
+        # 错误一：下标指向问题
+        # 错误二：局部变量引起的下标问题
+        # 每次使用后必须将下标增加，
+        # 使用局部变量会在栈保存的时候保留原始值，造成下标问题
+        # 有分治法的思想
+        def build(left: int, right: int) -> TreeNode:
+            T = TreeNode(None)
+
+            if self.order < lens:
+                # 如果当前值存在则新建节点
+                T.val = preorder[self.order]
+                # 利用先序与中序的特点进行构造
+                cur_mid = inorder.index(preorder[self.order])
+                # 注意先增加下标再进行添加
+                if left < cur_mid:
+                    self.order += 1
+                    T.left = build(left, cur_mid - 1)
+                if right > cur_mid:
+                    # 如果没有左指针，直接加2会溢出
+                    # T.right = build(order + 2, cur_mid + 1, right)
+                    self.order += 1
+                    T.right = build(cur_mid + 1, right)
+            return T
+
+        return build(0, lens-1)
+
+    def travel_tree_bfs(self, T: TreeNode):
+        from collections import deque
+        q = deque()
+        if T:
+            q.append(T)
+        level = 0
+        while q:
+            lens = len(q)
+            level += 1
+            # 弹出位置搞错了，尴尬
+            for i in range(lens):
+                cur_T = q.popleft()
+                print('level ', level, ': ', cur_T.val)
+                if cur_T:
+                    if cur_T.left:
+                        q.append(cur_T.left)
+                    if cur_T.right:
+                        q.append(cur_T.right)
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -1189,3 +1249,6 @@ if __name__ == '__main__':
 
     # 90 子集II
     # print(show.subsetsWithDup([1,2,2]))
+
+    # 105 从前序与中序遍历序列构造二叉树
+    # show.travel_tree_bfs(show.buildTree([3,1,2,4], [1,2,3,4]))
