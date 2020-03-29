@@ -1117,7 +1117,7 @@ class Solution:
                     T.right = build(cur_mid + 1, right)
             return T
 
-        return build(0, lens-1)
+        return build(0, lens - 1)
 
     def travel_tree_bfs(self, T: TreeNode):
         from collections import deque
@@ -1137,6 +1137,32 @@ class Solution:
                         q.append(cur_T.left)
                     if cur_T.right:
                         q.append(cur_T.right)
+
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> TreeNode:
+        if not inorder or not postorder:
+            return None
+
+        lens = len(inorder)
+        self.order = lens - 1
+
+        # 中序与后序建立二叉树的话需要先创建右子树再生成左子树
+        # 其他的内容与前序中序生成一样
+        def create_tree(left: int, right: int):
+            T = TreeNode(None)
+            if self.order >= 0:
+                T.val = postorder[self.order]
+                cur_mid = inorder.index(postorder[self.order])
+                # 先右后左
+                if right > cur_mid:
+                    self.order -= 1
+                    T.right = create_tree(cur_mid + 1, right)
+                if left < cur_mid:
+                    self.order -= 1
+                    T.left = create_tree(left, cur_mid - 1)
+
+            return T
+
+        return create_tree(0, lens - 1)
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -1252,3 +1278,6 @@ if __name__ == '__main__':
 
     # 105 从前序与中序遍历序列构造二叉树
     # show.travel_tree_bfs(show.buildTree([3,1,2,4], [1,2,3,4]))
+
+    # 106 从中序与后序遍历序列构造二叉树
+    # show.travel_tree_bfs(show.buildTree([1,2], [2,1]))
