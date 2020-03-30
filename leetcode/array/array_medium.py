@@ -1164,6 +1164,25 @@ class Solution:
 
         return create_tree(0, lens - 1)
 
+    def minimumTotal(self, triangle: List[List[int]]) -> int:
+        # 直接在给定列表中操作，算不算是O(1)/doge
+        if not triangle:
+            return 0
+
+        lens = len(triangle)
+        for i in range(1, lens):
+            len_cur = len(triangle[i])
+
+            # 处理边界情况
+            triangle[i][0] += triangle[i-1][0]
+            triangle[i][-1] += triangle[i-1][-1]
+
+            # 动态规划思想
+            for j in range(1, len_cur-1):
+                triangle[i][j] += min(triangle[i-1][j], triangle[i-1][j-1])
+
+        return min(triangle[-1])
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -1281,3 +1300,11 @@ if __name__ == '__main__':
 
     # 106 从中序与后序遍历序列构造二叉树
     # show.travel_tree_bfs(show.buildTree([1,2], [2,1]))
+
+    # 120 三角形最小路径和
+    # print(show.minimumTotal([
+    #     [2],
+    #     [3, 4],
+    #     [6, 5, 7],
+    #     [4, 1, 8, 3]
+    # ]))
