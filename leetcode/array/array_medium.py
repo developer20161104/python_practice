@@ -1183,6 +1183,62 @@ class Solution:
 
         return min(triangle[-1])
 
+    def maxProduct(self, nums: List[int]) -> int:
+        # 保留状态后续处理的思想完全不行
+
+        # if not nums:
+        #     return 0
+        # cur_res = nums[0]
+        # state = []
+        # nums.append(0)
+        # res = nums[0]
+        #
+        # for num in nums[1:]:
+        #     if num > 0:
+        #         if not cur_res:
+        #             cur_res = num
+        #         else:
+        #             cur_res *= num
+        #     elif num < 0:
+        #         state.append([cur_res, num])
+        #         cur_res = 0
+        #     else:
+        #         len_st = len(state)
+        #         if len_st > 1:
+        #             res = state[0][0]*state[0][1]
+        #             for d in state[1:len_st-len_st%2]:
+        #                 res *= d[0]*d[1]
+        #         else:
+        #             # 只出现一次的时候进行此处判断
+        #             if state:
+        #                 res = max(res, state[0][0])
+        #
+        #         res = max(res, cur_res)
+        #         # 遇到0需要清空所有状态
+        #         state = []
+        #
+        # return res
+
+        # 死都想不出来
+        # 关键点：由于负数的存在，会造成最大值变成最小，最小值变成最大，因此还需要保存当前最小值
+        # 典型的动态规划，但是是双层的
+        max_d = -20000
+        # imax为以当前点作为最后一个点时的最大值
+        # imin为以当前点作为最后一个点时的最小值
+        imax, imin = 1, 1
+        for num in nums:
+            if num < 0:
+                imax, imin = imin, imax
+
+            # 此处有点类似于最大子序列的递推
+            imax = max(num, imax*num)
+            imin = min(num, imin*num)
+
+            # 保留整体的最大值
+            max_d = max(max_d, imax)
+
+        return max_d
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -1308,3 +1364,6 @@ if __name__ == '__main__':
     #     [6, 5, 7],
     #     [4, 1, 8, 3]
     # ]))
+
+    # 152 乘积最大子数组
+    # print(show.maxProduct([-2,1,0, -3,1,2,-1]))
