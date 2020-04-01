@@ -1239,6 +1239,40 @@ class Solution:
 
         return max_d
 
+    def findMin(self, nums: List[int]) -> int:
+        # 每次需要比较，有点耗时
+        # import sys
+        # if not nums:
+        #     return 0
+        # lens = len(nums)
+        # left, right = 0, lens
+        # min_val = sys.maxsize
+        # while left < right:
+        #     mid = left + (right-left)//2
+        #     if nums[left] < nums[mid]:
+        #         min_val = min(min_val, nums[left])
+        #         left = mid+1
+        #     else:
+        #         min_val = min(nums[mid], min_val)
+        #         right = mid
+        #
+        # return min_val
+
+        # 大神思路
+        # 首先进行分析，发现有两种情况会收缩右边界
+        # 因此只能从左边界下手
+        # 右边为开区间时不方便判断右端值
+        left, right = 0, len(nums)-1
+        while left < right:
+            mid = left + (right-left)//2
+            if nums[mid] > nums[right]:
+                left = mid+1
+            else:
+                # 此处可能会将最终值过滤掉
+                right = mid
+
+        return nums[left]
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -1367,3 +1401,6 @@ if __name__ == '__main__':
 
     # 152 乘积最大子数组
     # print(show.maxProduct([-2,1,0, -3,1,2,-1]))
+
+    # 153 寻找旋转排序数组中的最小值
+    # print(show.findMin([5,1,2,3,4]))
