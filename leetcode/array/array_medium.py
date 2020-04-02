@@ -1273,6 +1273,48 @@ class Solution:
 
         return nums[left]
 
+    def findPeakElement(self, nums: List[int]) -> int:
+        # 实质还是暴力破解
+        # lens = len(nums)
+        # if lens < 2:
+        #     return 0
+        #
+        # # 递归二分查找
+        # def judge(left:int, right:int):
+        #     if left < right:
+        #         mid = (right-left)//2 + left
+        #         if (not mid and nums[mid] > nums[mid+1]) \
+        #             or (mid == lens-1 and nums[mid] > nums[mid-1]) \
+        #                 or (nums[mid] > nums[mid-1] and nums[mid] > nums[mid+1]):
+        #                     return mid
+        #
+        #         left_j = judge(left, mid)
+        #         right_j = judge(mid+1, right)
+        #
+        #         # 找到就退出
+        #         if left_j != -1:
+        #             return left_j
+        #         if right_j != -1:
+        #             return right_j
+        #     return -1
+        #
+        # res = judge(0, lens)
+        # return res if res != -1 else 0
+
+        # 大神思路
+        # 比较m处与m+1处的值，如果m处较大，说明中点处于下坡段，则峰值在左侧
+        # 反之则在右侧
+        left, right = 0, len(nums)-1
+        while left < right:
+            mid = left+(right-left)//2
+            # 看来还是有选择的空间的，只是没想到。。
+            # 由于此处用到了mid+1，因此必须保持左闭右闭
+            if nums[mid] > nums[mid+1]:
+                right = mid
+            else:
+                left = mid+1
+        return left
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -1404,3 +1446,6 @@ if __name__ == '__main__':
 
     # 153 寻找旋转排序数组中的最小值
     # print(show.findMin([5,1,2,3,4]))
+
+    # 162 寻找峰值
+    # print(show.findPeakElement([1,2,1,3,5,6,4]))
