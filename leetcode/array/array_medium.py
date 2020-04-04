@@ -1174,12 +1174,12 @@ class Solution:
             len_cur = len(triangle[i])
 
             # 处理边界情况
-            triangle[i][0] += triangle[i-1][0]
-            triangle[i][-1] += triangle[i-1][-1]
+            triangle[i][0] += triangle[i - 1][0]
+            triangle[i][-1] += triangle[i - 1][-1]
 
             # 动态规划思想
-            for j in range(1, len_cur-1):
-                triangle[i][j] += min(triangle[i-1][j], triangle[i-1][j-1])
+            for j in range(1, len_cur - 1):
+                triangle[i][j] += min(triangle[i - 1][j], triangle[i - 1][j - 1])
 
         return min(triangle[-1])
 
@@ -1231,8 +1231,8 @@ class Solution:
                 imax, imin = imin, imax
 
             # 此处有点类似于最大子序列的递推
-            imax = max(num, imax*num)
-            imin = min(num, imin*num)
+            imax = max(num, imax * num)
+            imin = min(num, imin * num)
 
             # 保留整体的最大值
             max_d = max(max_d, imax)
@@ -1262,11 +1262,11 @@ class Solution:
         # 首先进行分析，发现有两种情况会收缩右边界
         # 因此只能从左边界下手
         # 右边为开区间时不方便判断右端值
-        left, right = 0, len(nums)-1
+        left, right = 0, len(nums) - 1
         while left < right:
-            mid = left + (right-left)//2
+            mid = left + (right - left) // 2
             if nums[mid] > nums[right]:
-                left = mid+1
+                left = mid + 1
             else:
                 # 此处可能会将最终值过滤掉
                 right = mid
@@ -1304,16 +1304,64 @@ class Solution:
         # 大神思路
         # 比较m处与m+1处的值，如果m处较大，说明中点处于下坡段，则峰值在左侧
         # 反之则在右侧
-        left, right = 0, len(nums)-1
+        left, right = 0, len(nums) - 1
         while left < right:
-            mid = left+(right-left)//2
+            mid = left + (right - left) // 2
             # 看来还是有选择的空间的，只是没想到。。
             # 由于此处用到了mid+1，因此必须保持左闭右闭
-            if nums[mid] > nums[mid+1]:
+            if nums[mid] > nums[mid + 1]:
                 right = mid
             else:
-                left = mid+1
+                left = mid + 1
         return left
+
+    def minSubArrayLen(self, s: int, nums: List[int]) -> int:
+        # 每个数最多访问两遍，时间复杂度为O(n)
+        lens = len(nums)
+        min_len = lens
+        # 左右指针标识当前满足的子序列左右界
+        left, right, cur_sum = 0, 0, 0
+        for i in range(lens):
+            cur_sum += nums[i]
+            right += 1
+            # 一旦已经满足条件，则尝试缩小左指针
+            while cur_sum - nums[left] >= s:
+                cur_sum -= nums[left]
+                left += 1
+
+            if cur_sum >= s:
+                min_len = min(min_len, right - left)
+
+        # 注意到如果要求目标过大，则直接返回零
+        return min_len if cur_sum >= s else 0
+
+    def combinationSum3(self, k: int, n: int) -> List[List[int]]:
+        res = []
+        cur_path = []
+
+        def findall(index: int, cur_n: int):
+            if len(cur_path) == k and cur_n == n:
+                # 浅拷贝
+                res.append(cur_path[:])
+                return
+
+            for i in range(index, 10):
+                # 剪去无用组合
+                if cur_n != n and len(cur_path) == k:
+                    return
+
+                cur_path.append(i)
+                # 直接添加由于栈的原因，在回溯时会有错误
+                # 因此回溯时需要清理
+                cur_n += i
+                findall(i + 1, cur_n)
+                # 如果直接在递归函数中修改则系统自动清理，无需回溯
+                # findall(i + 1, cur_n+i)
+                cur_path.pop()
+                cur_n -= i
+
+        findall(1, 0)
+        return res
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -1449,3 +1497,9 @@ if __name__ == '__main__':
 
     # 162 寻找峰值
     # print(show.findPeakElement([1,2,1,3,5,6,4]))
+
+    # 209 长度最短的子数组
+    # print(show.minSubArrayLen(5, [2, 3, 1, 2, 4, 3]))
+
+    # 216 组合总和III
+    # print(show.combinationSum3(3, 9))
