@@ -1363,6 +1363,33 @@ class Solution:
         findall(1, 0)
         return res
 
+    def summaryRanges(self, nums: List[int]) -> List[str]:
+        res = []
+        if not nums:
+            return res
+
+        # 尾数添加
+        nums.append(-1)
+
+        # 使用双指针，一个负责上一个值的保存，一个负责当前区间的左边部分的保存
+        pre, left = nums[0], nums[0]
+        for cur_val in nums[1:]:
+            # 当前差值为1时，加入当前区间
+            # 为了防止溢出，需要将此处优化为 cur_val-1 == pre
+            # 当然，py没有这个问题
+            if cur_val - pre == 1:
+                pre = cur_val
+            else:
+                # 否则判别当前区间是否只有一个值
+                res.append(str(left))
+                if left != pre:
+                    res[-1] += '->' + str(pre)
+
+                # 更新两个指针
+                left = pre = cur_val
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_search(arr: List[int], target: int) -> int:
@@ -1503,3 +1530,6 @@ if __name__ == '__main__':
 
     # 216 组合总和III
     # print(show.combinationSum3(3, 9))
+
+    # 228 汇总区间
+    # print(show.summaryRanges([0, 2, 3, 4, 6, 8, 9]))
