@@ -1390,9 +1390,119 @@ class Solution:
 
         return res
 
+    def majorityElement(self, nums: List[int]) -> List[int]:
+        # 空间复杂度为O(n)的方法：使用字典
+        # lens = len(nums)
+        # from collections import Counter
+        # count = Counter(nums).items()
+        # res = []
+        #
+        # for key, value in count:
+        #     if value * 3 > lens:
+        #         res.append(key)
+        #
+        # return res
+
+        # 摩尔投票法：用于选择列表中超过半数的元素
+        # 解决思路：出现相同的次数增一，不同的减一，如果减为0，则更换元素，并将次数置一
+
+        # 此处需要对摩尔投票法进行改良，可以找出列表中超过1/（m+1）的元素，其中列表长为m
+        # 抵消阶段
+        # 自己写的存在问题 [1,1,1,2,3,4,5,6] 无法通过
+        # if not nums:
+        #     return []
+        # temp = [[nums[0], 1]]
+        # for cur in nums[1:]:
+        #     if cur == temp[0][0]:
+        #         temp[0][1] += 1
+        #     else:
+        #         if len(temp) == 1:
+        #             temp.append([cur, 1])
+        #         elif cur == temp[1][0]:
+        #             temp[1][1] += 1
+        #         else:
+        #             for i in range(2):
+        #                 if not temp[i][1]:
+        #                     temp[i][0], temp[i][1] = cur, 1
+        #                     break
+        #                 else:
+        #                     temp[i][1] -= 1
+        #
+        # # 还有计数阶段
+        # lens = len(nums)
+        # return [x[0] for x in temp if nums.count(x[0])*3 > lens]
+
+        lens = len(nums)
+        if not lens:
+            return []
+
+        # 消除阶段
+        temp = [[0, 0], [-1, 0]]
+        for cur in nums:
+            # 当前元素在第一块
+            if temp[0][0] == cur:
+                temp[0][1] += 1
+                continue
+
+            # 当前元素在第二块
+            if temp[1][0] == cur:
+                temp[1][1] += 1
+                continue
+
+            # 第二块的次数为0时进行更换
+            if not temp[1][1]:
+                temp[1][0], temp[1][1] = cur, 1
+                continue
+
+            # 第一块的次数为0时进行更换
+            if not temp[0][1]:
+                temp[0][0], temp[0][1] = cur, 1
+                continue
+
+            # 两个块都不为0时，同时将各自次数减去1
+            temp[0][1] -= 1
+            temp[1][1] -= 1
+
+        # 计数阶段
+        # 最多遍历两遍
+        return [x[0] for x in temp if nums.count(x[0]) * 3 > lens]
+
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
+        # 左右子数组的方法，有点类似于分而治之
+        # lens = len(nums)
+        # # 将最终的结果转化为先求取左右两边的结果
+        # left, right = [1] + [0] * (lens - 1), [0] * (lens - 1) + [1]
+        # for i in range(1, lens):
+        #     left[i] = left[i - 1] * nums[i - 1]
+        #
+        # for i in range(lens - 2, -1, -1):
+        #     right[i] = right[i + 1] * nums[i + 1]
+        #
+        # # 最后再相乘即可
+        # return [left[t] * right[t] for t in range(lens)]
+
+        # 将空间复杂度降为O(1)的技巧：使用结果列表
+        # 有点动态规划的感觉
+        lens = len(nums)
+        res = [1]+[0]*(lens-1)
+
+        # 先算左边
+        for i in range(1, lens):
+            res[i] = res[i-1]*nums[i-1]
+
+        # print(res)
+        # 再算右边，右边需要进行统计
+        # 关键点：变量统计当前的累积，没想到
+        right = 1
+        for j in range(lens-1, -1, -1):
+            res[j] *= right
+            right *= nums[j]
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
-def binary_search(arr: List[int], target: int) -> int:
+def binary_sarch(arr: List[int], target: int) -> int:
     left, right = 0, len(arr)
 
     # 无需判断相等的情况，只需要在最后判别结果是否真正存在即可
@@ -1533,3 +1643,9 @@ if __name__ == '__main__':
 
     # 228 汇总区间
     # print(show.summaryRanges([0, 2, 3, 4, 6, 8, 9]))
+
+    # 229 求众数II
+    # print(show.majorityElement([1,1,1,2,3,4,5,6]))
+
+    # 238 除自身外数组的乘积
+    # print(show.productExceptSelf([1, 2, 3, 4]))
