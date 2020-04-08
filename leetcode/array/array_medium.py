@@ -1484,21 +1484,46 @@ class Solution:
         # 将空间复杂度降为O(1)的技巧：使用结果列表
         # 有点动态规划的感觉
         lens = len(nums)
-        res = [1]+[0]*(lens-1)
+        res = [1] + [0] * (lens - 1)
 
         # 先算左边
         for i in range(1, lens):
-            res[i] = res[i-1]*nums[i-1]
+            res[i] = res[i - 1] * nums[i - 1]
 
         # print(res)
         # 再算右边，右边需要进行统计
         # 关键点：变量统计当前的累积，没想到
         right = 1
-        for j in range(lens-1, -1, -1):
+        for j in range(lens - 1, -1, -1):
             res[j] *= right
             right *= nums[j]
 
         return res
+
+    def findDuplicate(self, nums: List[int]) -> int:
+        # 只能想到暴力法
+        # 类比于查找环状链表的入环节点
+        # 由于重复元素的存在，因此造成沿着列表中的值递归向下查找会陷入一个循环
+        # 对于案例：1,3,4,2,2 可以得到路径 1-3-2-4-2-4-2...
+        # 因此可以使用快慢指针来分别指向，直到两个指针指向相同值时停止
+        #
+
+        slow, quick = nums[0], nums[0]
+        # 此时两者相对距离：乌龟i,兔子2i, i-ks(s为环大小)
+        while True:
+            slow = nums[slow]
+            quick = nums[nums[quick]]
+
+            if slow == quick:
+                break
+
+        # 此时让另一个乌龟从起点开始走，当走了i步以后，两个乌龟同时走回圈起始点
+        repeat = nums[0]
+        while repeat != slow:
+            repeat = nums[repeat]
+            slow = nums[slow]
+
+        return slow
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -1649,3 +1674,6 @@ if __name__ == '__main__':
 
     # 238 除自身外数组的乘积
     # print(show.productExceptSelf([1, 2, 3, 4]))
+
+    # 287 寻找重复数***（弗洛伊德的乌龟和兔子，也称为循环检测）
+    # print(show.findDuplicate([3, 1, 3, 4, 2]))
