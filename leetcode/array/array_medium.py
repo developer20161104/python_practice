@@ -1525,6 +1525,51 @@ class Solution:
 
         return slow
 
+    def gameOfLife(self, board: List[List[int]]) -> None:
+        if not board:
+            return
+        len_row, len_col = len(board), len(board[0])
+
+        # 八个方向
+        ways = [[0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1]]
+        # change = []
+        for i in range(len_row):
+            for j in range(len_col):
+                cur_sum = 0
+                for way in ways:
+                    # 累加周边细胞
+                    temp_row, temp_col = i + way[0], j + way[1]
+                    if 0 <= temp_row < len_row and 0 <= temp_col < len_col\
+                            and abs(board[temp_row][temp_col]) == 1:
+                        cur_sum += abs(board[temp_row][temp_col])
+
+                # 需要用额外列表保存当前的变化位置（可优化）
+                # if (board[i][j] and (cur_sum < 2 or cur_sum > 3)
+                #         or (not board[i][j] and cur_sum == 3)):
+                #      change.append([i, j])
+                # way2 add status
+                if board[i][j] and (cur_sum < 2 or cur_sum > 3):
+                    # 过去是活的，现在挂了
+                    board[i][j] = -1
+
+                if not board[i][j] and cur_sum == 3:
+                    # 过去挂了，现在活的
+                    board[i][j] = 2
+
+        # 最后进行异或即可
+        # for pos in change:
+        #     board[pos[0]][pos[1]] ^= 1
+
+        # 直接对状态进行更改
+        for i in range(len_row):
+            for j in range(len_col):
+                if board[i][j] == -1:
+                    board[i][j] = 0
+                if board[i][j] == 2:
+                    board[i][j] = 1
+
+        print(board)
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -1677,3 +1722,11 @@ if __name__ == '__main__':
 
     # 287 寻找重复数***（弗洛伊德的乌龟和兔子，也称为循环检测）
     # print(show.findDuplicate([3, 1, 3, 4, 2]))
+
+    # 289 生命游戏
+    # print(show.gameOfLife([
+    #     [0, 1, 0],
+    #     [0, 0, 1],
+    #     [1, 1, 1],
+    #     [0, 0, 0]
+    # ]))
