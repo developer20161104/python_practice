@@ -8,6 +8,59 @@ class TreeNode:
         self.right = None
 
 
+# 380 常数时间插入删除与获取元素
+class RandomizedSet:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.array = []
+        self.dicts = {}
+        # 长度是动态变化的，而元素位置是静态的有问题
+        # self.lens = 0
+
+    def insert(self, val: int) -> bool:
+        """
+        Inserts a value to the set. Returns true if the set did not already contain the specified element.
+        """
+        if val not in self.dicts:
+            self.array.append(val)
+            # self.lens += 1
+            self.dicts[val] = len(self.array)-1
+            return True
+
+        return False
+
+    def remove(self, val: int) -> bool:
+        """
+        Removes a value from the set. Returns true if the set contained the specified element.
+        """
+        if val in self.dicts:
+            index = self.dicts[val]
+            # 此处交换有问题
+            # self.array[index], self.array[-1] = self.array[-1], self.array[index]
+            last_e = self.array[-1]
+            # 一开始完全没想到的问题！！！1
+            # 先将待删除元素与尾部元素交换，再将尾部元素下标修改
+            self.array[index], self.dicts[last_e] = last_e, index
+
+            self.array.pop()
+            # 注意还要弹出dict中的元素
+            del self.dicts[val]
+
+            return True
+
+        return False
+
+    def getRandom(self) -> int:
+        """
+        Get a random element from the set.
+        """
+        import random
+        return self.array[random.randint(0, len(self.array)-1)]
+
+
 class Solution:
     def __init__(self):
         self.order = 0
@@ -1730,3 +1783,12 @@ if __name__ == '__main__':
     #     [1, 1, 1],
     #     [0, 0, 0]
     # ]))
+
+    # 380 常数时间插入删除和获取随机元素
+    # randomset = RandomizedSet()
+    # print(randomset.insert(0))
+    # print(randomset.insert(1))
+    # print(randomset.remove(0))
+    # print(randomset.insert(2))
+    # print(randomset.remove(1))
+    # print(randomset.getRandom())
