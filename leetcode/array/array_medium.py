@@ -27,7 +27,7 @@ class RandomizedSet:
         if val not in self.dicts:
             self.array.append(val)
             # self.lens += 1
-            self.dicts[val] = len(self.array)-1
+            self.dicts[val] = len(self.array) - 1
             return True
 
         return False
@@ -58,7 +58,7 @@ class RandomizedSet:
         Get a random element from the set.
         """
         import random
-        return self.array[random.randint(0, len(self.array)-1)]
+        return self.array[random.randint(0, len(self.array) - 1)]
 
 
 class Solution:
@@ -1592,7 +1592,7 @@ class Solution:
                 for way in ways:
                     # 累加周边细胞
                     temp_row, temp_col = i + way[0], j + way[1]
-                    if 0 <= temp_row < len_row and 0 <= temp_col < len_col\
+                    if 0 <= temp_row < len_row and 0 <= temp_col < len_col \
                             and abs(board[temp_row][temp_col]) == 1:
                         cur_sum += abs(board[temp_row][temp_col])
 
@@ -1622,6 +1622,22 @@ class Solution:
                     board[i][j] = 1
 
         print(board)
+
+    def findDuplicates(self, nums: List[int]) -> List[int]:
+        # 字典法
+        # from collections import Counter
+        # res = Counter(nums).items()
+        #
+        # return [key for key,value in res if value == 2]
+
+        # 下标余数法
+        # 对于每一个值指向的下标位置增加整体长度n，然后找出超过2n的即可
+        # 想不出来（死记死记）
+        lens = len(nums)
+        for i in range(lens):
+            nums[(nums[i] - 1) % lens] += lens
+
+        return [index + 1 for index, value in enumerate(nums) if value > 2 * lens]
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -1792,3 +1808,6 @@ if __name__ == '__main__':
     # print(randomset.insert(2))
     # print(randomset.remove(1))
     # print(randomset.getRandom())
+
+    # 442 数组中的重复数据
+    # print(show.findDuplicates([4, 3, 2, 7, 8, 2, 3, 1]))
