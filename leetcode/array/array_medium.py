@@ -1639,6 +1639,59 @@ class Solution:
 
         return [index + 1 for index, value in enumerate(nums) if value > 2 * lens]
 
+    def circularArrayLoop(self, nums: List[int]) -> bool:
+        # 想到快慢指针，但是对其的用法知之甚少
+        # 遇到环的问题优先考虑快慢指针
+        lens = len(nums)
+        if not lens:
+            return False
+
+        # 将不在环中的点置零
+        def set_zero(i: int):
+            while True:
+                j = (i + nums[i] + 5000 * lens) % lens
+                # 若下一位为0或者两者异号则停止
+                if nums[j] == 0 or nums[j] ^ nums[i]:
+                    nums[i] = 0
+                    break
+                # 否则一直向下递推
+                nums[i] = 0
+                i = j
+
+        for k in range(lens):
+            # 剪枝
+            if nums[k] == 0:
+                continue
+
+            # 快指针走两步，慢指针走一步，如果有环，则一定会重合，否则全体都被置零
+            slow, quick = k, k
+            while True:
+                pre_slow = slow
+                slow = (slow + nums[slow] + 5000 * lens) % lens
+                # 出现当前点与之前点重合（表示环长度为1），两点异号或者当前点为0时，
+                # 说明这一系列都不在环中，需要递归置零
+                if pre_slow == slow or nums[slow] ^ nums[pre_slow]<0 or nums[slow] == 0:
+                    set_zero(k)
+                    break
+
+                pre_quick = quick
+                quick = (quick + nums[quick] + 5000 * lens) % lens
+                if pre_quick == quick or nums[quick] ^ nums[pre_quick]<0 or nums[quick] == 0:
+                    set_zero(k)
+                    break
+
+                pre_quick = quick
+                quick = (quick + nums[quick] + 5000 * lens) % lens
+                if pre_quick == quick or nums[quick] ^ nums[pre_quick] < 0 or nums[quick] == 0:
+                    set_zero(k)
+                    break
+
+                # 两指针重合
+                if quick == slow:
+                    return True
+
+        return False
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -1811,3 +1864,6 @@ if __name__ == '__main__':
 
     # 442 数组中的重复数据
     # print(show.findDuplicates([4, 3, 2, 7, 8, 2, 3, 1]))
+
+    # 457 环形数组循环
+    # print(show.circularArrayLoop([3,1,2]))
