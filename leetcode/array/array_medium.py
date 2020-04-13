@@ -1670,13 +1670,13 @@ class Solution:
                 slow = (slow + nums[slow] + 5000 * lens) % lens
                 # 出现当前点与之前点重合（表示环长度为1），两点异号或者当前点为0时，
                 # 说明这一系列都不在环中，需要递归置零
-                if pre_slow == slow or nums[slow] ^ nums[pre_slow]<0 or nums[slow] == 0:
+                if pre_slow == slow or nums[slow] ^ nums[pre_slow] < 0 or nums[slow] == 0:
                     set_zero(k)
                     break
 
                 pre_quick = quick
                 quick = (quick + nums[quick] + 5000 * lens) % lens
-                if pre_quick == quick or nums[quick] ^ nums[pre_quick]<0 or nums[quick] == 0:
+                if pre_quick == quick or nums[quick] ^ nums[pre_quick] < 0 or nums[quick] == 0:
                     set_zero(k)
                     break
 
@@ -1691,6 +1691,26 @@ class Solution:
                     return True
 
         return False
+
+    def findPoisonedDuration(self, timeSeries: List[int], duration: int) -> int:
+        # 贪心思想
+        sum_time = 0
+        lens = len(timeSeries)
+        # 边界判断
+        if not lens:
+            return 0
+        i = 0
+        while i < lens - 1:
+            # 可优化为一句
+            sum_time += min(duration, timeSeries[i + 1] - timeSeries[i])
+            # if cur_pos < timeSeries[i+1]:
+            #     sum_time += duration
+            # else:
+            #     sum_time += timeSeries[i+1]-timeSeries[i]
+
+            i += 1
+
+        return sum_time + duration
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -1867,3 +1887,6 @@ if __name__ == '__main__':
 
     # 457 环形数组循环
     # print(show.circularArrayLoop([3,1,2]))
+
+    # 495 提莫攻击
+    # print(show.findPoisonedDuration([1, 2, 4, 8], 3))
