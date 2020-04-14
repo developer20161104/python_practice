@@ -1712,6 +1712,69 @@ class Solution:
 
         return sum_time + duration
 
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        # 方法一：暴力法
+        # 显然超时
+        # count = 0
+        # lens = len(nums)
+        # for i in range(lens):
+        #     for j in range(i, lens):
+        #         if sum(nums[i:j+1]) == k:
+        #             count += 1
+        #
+        # return count
+
+        # 方法二：使用额外空间存储中间计算（使用累计和列表保存计算）
+        # 还是超时，还需要进一步优化
+        # lens = len(nums)
+        # count = 0
+        # sub_arr = [nums[0]] + [0]*(lens-2)
+        # # 此处会漏掉第一个解
+        # if sub_arr[0] == k:
+        #     count += 1
+        # # 由于此循环仅在sub_arr长度超过1时才进入
+        # for i in range(lens-1):
+        #     if not i:
+        #         sub_arr[i] = sub_arr[i]+nums[i+1]
+        #     else:
+        #         sub_arr[i] = sub_arr[i-1]+nums[i+1]
+        #     # 第一步
+        #     if sub_arr[i] == k:
+        #         count += 1
+        # # 此处还是很耗时
+        # for i in range(lens):
+        #     for j in range(i, lens-1):
+        #         sub_arr[j] -= nums[i]
+        #         if sub_arr[j] == k:
+        #             count += 1
+        #
+        # return count
+
+        # 方法三 哈希法(完全想不到) ***
+        # 前缀和思想
+        # 关键点：利用等式sum[r]-sum[l]=k进行变形
+        # 利用sum[r]-sum[l]即为l到r区间的和值来处理
+        # 若出现 sum[r]-sum[l]=k，说明含有和为k的子数组
+        count, cur_sum, lens = 0, 0, len(nums)
+        # 初始值有可能为k
+        # 字典中的key存储前缀和，value存储的是前缀和出现的次数
+        dicts = {0: 1}
+
+        for i in range(lens):
+            # 统计当前的和
+            cur_sum += nums[i]
+            # 实质为 sum[i]-k == sum[pre]
+            if cur_sum - k in dicts:
+                count += dicts[cur_sum - k]
+
+            # 累计前缀和次数
+            if cur_sum in dicts:
+                dicts[cur_sum] += 1
+            else:
+                dicts[cur_sum] = 1
+
+        return count
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -1890,3 +1953,6 @@ if __name__ == '__main__':
 
     # 495 提莫攻击
     # print(show.findPoisonedDuration([1, 2, 4, 8], 3))
+
+    # 560 和为k的子数组
+    # print(show.subarraySum([1,1],1))
