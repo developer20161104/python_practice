@@ -1775,6 +1775,48 @@ class Solution:
 
         return count
 
+    def arrayNesting(self, nums: List[int]) -> int:
+        # 标记法：时间复杂度为O(n)，每个元素最多访问两次
+        # 空间复杂度为O(n)，需要一个访问列表
+        # lens = len(nums)
+        # if not lens:
+        #     return 0
+        #
+        # visit = [0] * lens
+        # count_max, cur_count = 0, 0
+        # for i in range(lens):
+        #     # 向下递归遍历
+        #     while not visit[i]:
+        #         cur_count += 1
+        #         visit[i] = 1
+        #         i = nums[i]
+        #
+        #     # 选取其中的最大值即可
+        #     count_max = max(count_max, cur_count)
+        #     # 剪枝效果不是很理想
+        #     # if cur_count >= lens//2+1:
+        #     #     break
+        #     cur_count = 0
+        #
+        # return count_max
+
+        # 方法二：直接标记：无需标记列表
+        lens = len(nums)
+        if not lens:
+            return 0
+
+        count_max, cur_max = 0, 0
+        for i in range(lens):
+            while nums[i] > -1:
+                cur_max += 1
+                temp = i
+                i = nums[i]
+                nums[temp] = -1
+
+            count_max = max(count_max, cur_max)
+            cur_max = 0
+
+        return count_max
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -1956,3 +1998,6 @@ if __name__ == '__main__':
 
     # 560 和为k的子数组
     # print(show.subarraySum([1,1],1))
+
+    # 565 数组嵌套
+    # print(show.arrayNesting([5, 4, 0, 3, 1, 6, 2]))
