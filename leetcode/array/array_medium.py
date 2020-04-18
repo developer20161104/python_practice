@@ -1825,19 +1825,37 @@ class Solution:
             arr[ord(ch)-ord('A')] += 1
 
         arr.sort(reverse=True)
-        max_work, same = arr[0], 0
-        # 统计出现最多次数任务的数量
-        for cur in arr:
-            if max_work == cur:
-                same += 1
-            else:
-                break
+        # 方法一：公式法
+        # max_work, same = arr[0], 0
+        # # 统计出现最多次数任务的数量
+        # for cur in arr:
+        #     if max_work == cur:
+        #         same += 1
+        #     else:
+        #         break
+        #
+        # # 最终结果等于
+        # # 1 最多数量任务-1的n+1倍（自身也需要计算时间）
+        # # 2 最多数量任务的数量（可能有任务A,B都出现4次），此项直接置于后方
+        # # 3 剩余工作总量-剩余位置，出现负数时表示有待命状态
+        # return (n+1)*(max_work-1)+same+max(0, len(tasks)-max_work-n*(max_work-1)-same+1)
 
-        # 最终结果等于
-        # 1 最多数量任务-1的n+1倍（自身也需要计算时间）
-        # 2 最多数量任务的数量（可能有任务A,B都出现4次），此项直接置于后方
-        # 3 剩余工作总量-剩余位置，出现负数时表示有待命状态
-        return (n+1)*(max_work-1)+same+max(0, len(tasks)-max_work-n*(max_work-1)-same+1)
+        # 方法二：演示法
+        count = 0
+        while arr[0] > 0:
+            for i in range(n+1):
+                # 执行完成则结束
+                if not arr[0]:
+                    break
+                # 如果一次可以执行的任务数量较多，则用于待命状态
+                if i<26 and arr[i] > 0:
+                    arr[i] -= 1
+                count += 1
+
+            # 保证每次都从当前剩余最多任务数量处开始处理
+            arr.sort(reverse=True)
+
+        return count
 
 
 # 二分查找最优方法，保留左闭右开原则
