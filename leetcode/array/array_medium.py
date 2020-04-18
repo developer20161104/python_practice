@@ -1818,6 +1818,28 @@ class Solution:
 
         return count_max
 
+    def leastInterval(self, tasks: List[str], n: int) -> int:
+        # 使用列表来存储当前出现的任务次数
+        arr = [0]*26
+        for ch in tasks:
+            arr[ord(ch)-ord('A')] += 1
+
+        arr.sort(reverse=True)
+        max_work, same = arr[0], 0
+        # 统计出现最多次数任务的数量
+        for cur in arr:
+            if max_work == cur:
+                same += 1
+            else:
+                break
+
+        # 最终结果等于
+        # 1 最多数量任务-1的n+1倍（自身也需要计算时间）
+        # 2 最多数量任务的数量（可能有任务A,B都出现4次），此项直接置于后方
+        # 3 剩余工作总量-剩余位置，出现负数时表示有待命状态
+        return (n+1)*(max_work-1)+same+max(0, len(tasks)-max_work-n*(max_work-1)-same+1)
+
+
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
     left, right = 0, len(arr)
@@ -2001,3 +2023,6 @@ if __name__ == '__main__':
 
     # 565 数组嵌套
     # print(show.arrayNesting([5, 4, 0, 3, 1, 6, 2]))
+
+    # 621 任务调度器
+    # print(show.leastInterval(["A","A","A","B","B","V","V","C","C"], 2))
