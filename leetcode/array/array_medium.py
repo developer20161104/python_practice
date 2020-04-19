@@ -65,6 +65,9 @@ class Solution:
     def __init__(self):
         self.order = 0
 
+        # 611
+        # self.count = 0
+
     def maxArea(self, height: List[int]) -> int:
         # 转化为求取最大面积，长度可变，宽度为两边的min
         left, right = 0, len(height) - 1
@@ -1820,9 +1823,9 @@ class Solution:
 
     def leastInterval(self, tasks: List[str], n: int) -> int:
         # 使用列表来存储当前出现的任务次数
-        arr = [0]*26
+        arr = [0] * 26
         for ch in tasks:
-            arr[ord(ch)-ord('A')] += 1
+            arr[ord(ch) - ord('A')] += 1
 
         arr.sort(reverse=True)
         # 方法一：公式法
@@ -1843,17 +1846,87 @@ class Solution:
         # 方法二：演示法
         count = 0
         while arr[0] > 0:
-            for i in range(n+1):
+            for i in range(n + 1):
                 # 执行完成则结束
                 if not arr[0]:
                     break
                 # 如果一次可以执行的任务数量较多，则用于待命状态
-                if i<26 and arr[i] > 0:
+                if i < 26 and arr[i] > 0:
                     arr[i] -= 1
                 count += 1
 
             # 保证每次都从当前剩余最多任务数量处开始处理
             arr.sort(reverse=True)
+
+        return count
+
+    def triangleNumber(self, nums: List[int]) -> int:
+        # 回溯法：不剪枝会超时，能想到的剪枝中也会超时
+        # lens = len(nums)
+        # if lens < 3:
+        #     return 0
+        #
+        # nums.sort()
+        # elems = []
+        #
+        # def find_tuple(index:int):
+        #     if len(elems) == 3:
+        #         if elems[0]+elems[1] > elems[2]:
+        #             self.count += 1
+        #         return
+        #
+        #     for i in range(index, lens):
+        #         if len(elems) == 2 and elems[0]+elems[1] <= nums[i]:
+        #             return
+        #
+        #         elems.append(nums[i])
+        #         find_tuple(i+1)
+        #         elems.pop()
+        #
+        # find_tuple(0)
+        # return self.count
+
+        # 方法二：循环解决:还是没想到点子上O(n3)
+        # lens = len(nums)
+        # if lens < 3:
+        #     return 0
+        # count = 0
+        # nums.sort()
+        # for i in range(lens-2):
+        #     if nums[i] == 0:
+        #         continue
+        #     for j in range(i+1, lens-1):
+        #         if nums[j] == 0:
+        #             continue
+        #
+        #         # 将k从右向左取
+        #         k = lens-1
+        #         while nums[k] >= nums[i]+nums[j]:
+        #             k -= 1
+        #         count += k-j
+        #         # k = j+1
+        #         # while k < lens and nums[i]+nums[j] > nums[k]:
+        #         #     count += 1
+        #         #     k += 1
+        #
+        # return count
+
+        # 方法三：双指针法
+        nums.sort()
+        lens = len(nums)
+        count = 0
+
+        # 充分利用从大取到小的思想
+        for i in range(lens - 1, 1, -1):
+            l, r = 0, i - 1
+            while l < r:
+                # 两小端最小值处都满足条件，说明r-l处的皆满足条件
+                if nums[l] + nums[r] > nums[i]:
+                    count += r - l
+                    r -= 1
+                # 说明两小端过小，需要增大最小端
+                else:
+                    l += 1
 
         return count
 
@@ -2044,3 +2117,6 @@ if __name__ == '__main__':
 
     # 621 任务调度器
     # print(show.leastInterval(["A","A","A","B","B","V","V","C","C"], 2))
+
+    # 611 有效三角形个数
+    # print(show.triangleNumber([0, 1, 0, 1, 2, 2, 3, 4, 5]))
