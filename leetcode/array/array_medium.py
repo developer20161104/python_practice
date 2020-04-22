@@ -68,6 +68,10 @@ class Solution:
         # 611
         # self.count = 0
 
+        # 695
+        # self.max_area = 0
+        # self.cur_area = 1
+
     def maxArea(self, height: List[int]) -> int:
         # 转化为求取最大面积，长度可变，宽度为两边的min
         left, right = 0, len(height) - 1
@@ -1930,6 +1934,141 @@ class Solution:
 
         return count
 
+    def maximumSwap(self, num: int) -> int:
+        # 无法通过的案例：99901
+        # res = []
+        # while num:
+        #     res.append(num % 10)
+        #     num //= 10
+        #
+        # lens = len(res)
+        # exc = [0, 0]
+        #
+        # 先从后向前找出当前最大的值
+        # for i in range(lens-1, 0, -1):
+        #     if res[i-1] >= res[i] and res[i-1]>=exc[0]:
+        #         exc = [res[i-1], i-1]
+        # 再从右向前找出第一个比最大值小的数，并且该数下标要更大
+        # for i in range(lens-1, -1, -1):
+        #     if res[i] < exc[0] and i > exc[1]:
+        #         res[i], res[exc[1]] = res[exc[1]], res[i]
+        #         break
+        #
+        # result = 0
+        # for i in range(lens):
+        #     result += (10**i)*res[i]
+        #
+        # return result
+
+        # 自己的算法根本考虑不到这么多情况
+        # 排序法简单明了
+
+        res = []
+        while num:
+            res.append(num % 10)
+            num //= 10
+
+        lens = len(res)
+        res_sort = sorted(res)
+        swap_pos, value = lens, -1
+        # 与排序序列比较，第一个不相同的位置必为交换位，并且有序序列的该位置为交换的值
+        for i in range(lens):
+            if res[i] != res_sort[i]:
+                swap_pos, value = i, res_sort[i]
+
+        # 从左向右查找值的位置，然后进行交换即可
+        for i in range(lens):
+            if value == res[i]:
+                res[i], res[swap_pos] = res[swap_pos], res[i]
+
+        # 累加
+        result = 0
+        for i in range(lens):
+            result += (10 ** i) * res[i]
+
+        return result
+
+    def constructArray(self, n: int, k: int) -> List[int]:
+        # 使用一个set来判断该值是否使用
+        # 时间复杂度为O(n)，空间复杂度为O(n)
+        arr_set = set(i for i in range(2, n + 1))
+        cur_pos = 0
+        res = [1]
+        while k != 1:
+            # 绝对值添加最好是加减交替进行
+            # 防止出现跨度过大的值
+            temp = res[cur_pos] + k
+            if cur_pos % 2:
+                temp = res[cur_pos] - k
+
+            res.append(temp)
+            cur_pos += 1
+            k -= 1
+            arr_set.remove(temp)
+
+        # 顺序添加剩余值即可
+        while arr_set:
+            res.append(arr_set.pop())
+
+        return res
+
+    def maxAreaOfIsland(self, grid: List[List[int]]) -> int:
+        # 又一次被变量的作用域给坑死，注意吸取教训啊
+        # 将全局变量替换为局部变量更好（使用递归的返回）
+        # 说明在细节方面还有待提高
+        # 常规解法，遇到能遍历的直接bfs即可
+        if not grid:
+            return 0
+
+        len_row, len_col = len(grid), len(grid[0])
+        visit = [[0] * len_col for _ in range(len_row)]
+        directions = [[-1, 0], [0, 1], [1, 0], [0, -1]]
+        # 由于不需要在内部函数中使用，因此可以不使用 __init__函数
+        max_area = 0
+
+        def dfs(pos_x: int, pos_y: int):
+            for k in range(4):
+                temp_x, temp_y = pos_x + directions[k][0], pos_y + directions[k][1]
+                if 0 <= temp_x < len_row and 0 <= temp_y < len_col \
+                        and not visit[temp_x][temp_y] and grid[temp_x][temp_y]:
+                    visit[temp_x][temp_y] = 1
+                    self.cur_area += 1
+                    dfs(temp_x, temp_y)
+                else:
+                    # 此处应该能优化
+                    self.max_area = max(self.max_area, self.cur_area)
+
+        def dfs_2(pos_x: int, pos_y: int) -> int:
+            if not (0 <= pos_x < len_row and 0 <= pos_y < len_col) or visit[pos_x][pos_y] \
+                    or not grid[pos_x][pos_y]:
+                return 0
+
+            # 直接对原始矩阵置零，省去了访问列表的构建（妙啊）
+            grid[pos_x][pos_y] = 0
+            cur_area = 1
+            for i in range(4):
+                temp_x, temp_y = pos_x + directions[i][0], pos_y + directions[i][1]
+                cur_area += dfs_2(temp_x, temp_y)
+
+            return cur_area
+
+        # 方法一：使用构造器
+        # for i in range(len_row):
+        #     for j in range(len_col):
+        #         if grid[i][j] and not visit[i][j]:
+        #             self.cur_area = 1
+        #             visit[i][j] = 1
+        #             dfs(i, j)
+
+        # 方法二：局部变量的使用（更好）
+        for i in range(len_row):
+            for j in range(len_col):
+                if grid[i][j]:
+                    # 逐个求取即可
+                    max_area = max(max_area, dfs_2(i, j))
+
+        return max_area
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2120,3 +2259,12 @@ if __name__ == '__main__':
 
     # 611 有效三角形个数
     # print(show.triangleNumber([0, 1, 0, 1, 2, 2, 3, 4, 5]))
+
+    # 670 最大交换
+    # print(show.maximumSwap(99901))
+
+    # 667 优美的排列
+    # print(show.constructArray(3, 1))
+
+    # 695 岛屿的最大面积
+    # print(show.maxAreaOfIsland([[1, 1, 1], [1, 0, 0]]))
