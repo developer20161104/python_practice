@@ -2069,6 +2069,31 @@ class Solution:
 
         return max_area
 
+    def maxProfit(self, prices: List[int], fee: int) -> int:
+        # 动态规划思想
+        # 使用变量描述状态（状态机）：是个很好的技巧，还是得多用
+        # 第一个状态为天数，第二个状态为是否持有股票
+        # lens = len(prices)
+        # dp = [[0, 0] for _ in range(lens)]
+        # dp[0][1] = -prices[0]
+        #
+        # for i in range(1, lens):
+        #     dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i] - fee)
+        #     dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i])
+        #
+        # return dp[-1][0]
+
+        # 在进行基本实现后可以考虑空间优化
+        lens = len(prices)
+        own, not_own = -prices[0], 0
+        for i in range(1, lens):
+            # 注意变量的替换即可
+            temp = own
+            own = max(own, not_own - prices[i])
+            not_own = max(not_own, temp + prices[i]-fee)
+
+        return not_own
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2268,3 +2293,6 @@ if __name__ == '__main__':
 
     # 695 岛屿的最大面积
     # print(show.maxAreaOfIsland([[1, 1, 1], [1, 0, 0]]))
+
+    # 714 买卖股票的最佳时机含手续费
+    # print(show.maxProfit([1, 5, 2, 9, 2, 6, 5, 7], 2))
