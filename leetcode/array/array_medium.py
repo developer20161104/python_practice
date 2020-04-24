@@ -2090,9 +2090,34 @@ class Solution:
             # 注意变量的替换即可
             temp = own
             own = max(own, not_own - prices[i])
-            not_own = max(not_own, temp + prices[i]-fee)
+            not_own = max(not_own, temp + prices[i] - fee)
 
         return not_own
+
+    def numSubarrayProductLessThanK(self, nums: List[int], k: int) -> int:
+        # 最开始的时候想过前缀和，但是感觉会溢出，因此考虑双指针
+        # 尝试双指针, perfect
+        # 左右指针之间的为当前累积小于k的最长子列表
+        # 有点类似于动态规划的思想，每次加入一个元素再进行调整
+        left, right = 0, 0
+        count, lens, cur_mul = 0, len(nums), 1
+        while right < lens:
+            if nums[right] < k:
+                cur_mul *= nums[right]
+                # 如果累乘后结果过大，则需要移动左指针
+                while cur_mul >= k:
+                    cur_mul //= nums[left]
+                    left += 1
+                # 可以推导，每次加入一个元素时所能产生满足条件的子列表数为下式，包含自身
+                count += right - left + 1
+            else:
+                # 如果当前单值都比k大，则整体右移
+                cur_mul = 1
+                left = right + 1
+            # 在不超过k时，仅需要移动右指针
+            right += 1
+
+        return count
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -2296,3 +2321,6 @@ if __name__ == '__main__':
 
     # 714 买卖股票的最佳时机含手续费
     # print(show.maxProfit([1, 5, 2, 9, 2, 6, 5, 7], 2))
+
+    # 713 乘积小于k的子数组
+    # print(show.numSubarrayProductLessThanK([10, 5, 2, 12, 1], 11))
