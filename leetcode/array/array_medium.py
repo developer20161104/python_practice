@@ -2119,6 +2119,45 @@ class Solution:
 
         return count
 
+    def findLength(self, A: List[int], B: List[int]) -> int:
+        # 思路一：用字典存储下标再进行查找
+        # 跟暴力差不多了，超时
+        # dicts = {}
+        # for index, e in enumerate(A):
+        #     if e in dicts:
+        #         dicts[e].append(index)
+        #     else:
+        #         dicts[e] = [index]
+        #
+        # len_A, len_B = len(A), len(B)
+        # max_len = 0
+        # for index, e in enumerate(B):
+        #     if e in dicts:
+        #         for pos in dicts[e]:
+        #             i = 0
+        #             while pos + i < len_A and index + i < len_B and A[pos + i] == B[index + i]:
+        #                 i += 1
+        #             max_len = max(max_len, i)
+        #
+        # return max_len
+
+        # 经典的动态规划问题：？？？（以前都没听说过）
+        # 状态量为子数组的长度
+        len_A, len_B = len(A), len(B)
+        # 需要增加一行一列作为起始，因为转移方程中初始需要-1
+        dp = [[0]*(len_B+1) for _ in range(len_A+1)]
+
+        max_len = 0
+        for i in range(1, len_A+1):
+            for j in range(1, len_B+1):
+                # 对应方式为下标+1
+                if A[i-1] == B[j-1]:
+                    # 状态转移方程：当前的最长长度为前一段的长度加上当前长度
+                    dp[i][j] = dp[i-1][j-1]+1
+
+                max_len = max(max_len, dp[i][j])
+        return max_len
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2324,3 +2363,6 @@ if __name__ == '__main__':
 
     # 713 乘积小于k的子数组
     # print(show.numSubarrayProductLessThanK([10, 5, 2, 12, 1], 11))
+
+    # 718 最长重复子数组
+    # print(show.findLength([1,2,4,5], [2,3,1,2,4,5]))
