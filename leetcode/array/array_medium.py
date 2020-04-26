@@ -61,6 +61,35 @@ class RandomizedSet:
         return self.array[random.randint(0, len(self.array) - 1)]
 
 
+# 729 我的日程安排表I
+class MyCalendar:
+
+    def __init__(self):
+        self.time_arr = []
+
+    def book(self, start: int, end: int) -> bool:
+        # 使用二分法保持列表有序，由于日程无法重叠，因此最终结果以st或ed排序皆为相同
+        # 以end进行排序
+        left, right = 0, len(self.time_arr)
+        # 通过二分查找找到待插入位置，判断标准为 end 与 mid 的 st
+        # 找到右边界
+        while left < right:
+            mid = left + (right-left)//2
+            if end > self.time_arr[mid][0]:
+                left = mid+1
+            else:
+                right = mid
+
+        # 判断标准为上一个日程的end与当前待插入的st
+        # 如果st较小说明此日程与上一个日程重叠
+        if left > 0 and self.time_arr[left-1][1] > start:
+            return False
+        else:
+            # 否则直接插入位置即可
+            self.time_arr.insert(left, [start, end])
+            return True
+
+
 class Solution:
     def __init__(self):
         self.order = 0
@@ -2366,3 +2395,12 @@ if __name__ == '__main__':
 
     # 718 最长重复子数组
     # print(show.findLength([1,2,4,5], [2,3,1,2,4,5]))
+
+    # 729 我的日程安排表I
+    # test = MyCalendar()
+    # print(test.book(10, 20))
+    # print(test.book(15, 25))
+    # print(test.book(20, 30))
+    # print(test.book(2, 10))
+    # print(test.book(1, 3))
+
