@@ -74,15 +74,15 @@ class MyCalendar:
         # 通过二分查找找到待插入位置，判断标准为 end 与 mid 的 st
         # 找到右边界
         while left < right:
-            mid = left + (right-left)//2
+            mid = left + (right - left) // 2
             if end > self.time_arr[mid][0]:
-                left = mid+1
+                left = mid + 1
             else:
                 right = mid
 
         # 判断标准为上一个日程的end与当前待插入的st
         # 如果st较小说明此日程与上一个日程重叠
-        if left > 0 and self.time_arr[left-1][1] > start:
+        if left > 0 and self.time_arr[left - 1][1] > start:
             return False
         else:
             # 否则直接插入位置即可
@@ -2174,18 +2174,69 @@ class Solution:
         # 状态量为子数组的长度
         len_A, len_B = len(A), len(B)
         # 需要增加一行一列作为起始，因为转移方程中初始需要-1
-        dp = [[0]*(len_B+1) for _ in range(len_A+1)]
+        dp = [[0] * (len_B + 1) for _ in range(len_A + 1)]
 
         max_len = 0
-        for i in range(1, len_A+1):
-            for j in range(1, len_B+1):
+        for i in range(1, len_A + 1):
+            for j in range(1, len_B + 1):
                 # 对应方式为下标+1
-                if A[i-1] == B[j-1]:
+                if A[i - 1] == B[j - 1]:
                     # 状态转移方程：当前的最长长度为前一段的长度加上当前长度
-                    dp[i][j] = dp[i-1][j-1]+1
+                    dp[i][j] = dp[i - 1][j - 1] + 1
 
                 max_len = max(max_len, dp[i][j])
         return max_len
+
+    def maxChunksToSorted(self, arr: List[int]) -> int:
+        # 求环的数量？ wrong : 3 2 4 0 1 5
+        # count = 0
+        # if not arr:
+        #     return count
+        #
+        # lens = len(arr)
+        # cur_pos = arr.index(0)
+        # if cur_pos == lens-1:
+        #     return 1
+        #
+        # while cur_pos < lens:
+        #     while arr[cur_pos] != -1:
+        #         temp = cur_pos
+        #         arr[cur_pos], cur_pos = -1, arr[temp]
+        #     count += 1
+        #     cur_pos += 1
+        #
+        # return count
+
+        # 采用字典来存储每个列表元素对应的下标
+        # 贪心思想，时间复杂度为O(n)
+        # dicts = {}
+        # for index, e in enumerate(arr):
+        #     dicts[e] = index
+        #
+        # # cur_max 保存当前子块的最短长度
+        # # i 为当前元素值，一直遍历到cur_max停止
+        # count, i, cur_max = 0, 1, dicts[0]
+        # while cur_max < len(arr):
+        #     while i <= cur_max:
+        #         # 如果当前块中出现的元素下标超出当前最短长度，则向后延伸
+        #         if dicts[i] > cur_max:
+        #             cur_max = dicts[i]
+        #         i += 1
+        #     count += 1
+        #     # 完成一个子块的构造
+        #     cur_max += 1
+        #
+        # return count
+
+        # 思路二：判断当前最大元素值与下标是否相等即可（这个没有想到）
+        count = cur_max = 0
+        for index, e in enumerate(arr):
+            cur_max = max(cur_max, e)
+            # 若当前最大值已经与下标相等时，说明子块已经构成（相当于我自己思路的逆向）
+            if cur_max == index:
+                count += 1
+
+        return count
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -2404,3 +2455,5 @@ if __name__ == '__main__':
     # print(test.book(2, 10))
     # print(test.book(1, 3))
 
+    # 769 最多能完成排序的块
+    # print(show.maxChunksToSorted([3, 2, 4, 0, 1, 6, 5]))
