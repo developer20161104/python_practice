@@ -2238,6 +2238,70 @@ class Solution:
 
         return count
 
+    def isIdealPermutation(self, A: List[int]) -> bool:
+        # 全局的计算方式有问题： 2,1,0
+        # wrong：在全局倒置计算上有问题
+        # local_count, global_count = 0, 0
+        # if len(A) < 2:
+        #     return True
+        # for index, e in enumerate(A):
+        #     if index > 0 and A[index] - A[index - 1] < 0:
+        #         local_count += 1
+        #     if A[index] - index > 0:
+        #         global_count += A[index] - index
+        #
+        # return global_count == local_count
+
+        # 如果第i个数距离本身应在位置（顺序排列）大于1时，全局倒置一定大于局部倒置
+        # 根本不知道这个玩意
+        for index, e in enumerate(A):
+            if abs(e - index) > 1:
+                return False
+
+        return True
+
+    def numMatchingSubseq(self, S: str, words: List[str]) -> int:
+        # 逐个搜索不知道什么原因有问题
+        # from collections import Counter
+        # dicts = Counter(S)
+        # count = 0
+        # for word in words:
+        #     compare = dicts.copy()
+        #     flag = True
+        #     for ch in word:
+        #         if ch in compare and compare[ch] > 0:
+        #             compare[ch] -= 1
+        #         else:
+        #             flag = False
+        #             break
+        #
+        #     if flag:
+        #         count += 1
+        # return count
+
+        # 桶排序：学到老活到老
+        # 将每个word置于首字符所在桶中，然后每次删减第一个字符，并将删除后的字符重新分配
+        # 注意，需要在删除前将先前的桶进行清空，防止因为相同字符产生重复计数
+        count = 0
+        arr = [[] for _ in range(26)]
+        # 桶数量设置为26，分别对应26个字母
+        for word in words:
+            # 先将各word放入对应的桶中
+            arr[ord(word[0]) - ord('a')].append(word)
+
+        for ch in S:
+            # 须先将原始桶位置清空，防止出现相同字符时重复判断
+            # 预防诸如 dd 此类情况，这一点有点没想到
+            temp = arr[ord(ch) - ord('a')]
+            arr[ord(ch) - ord('a')] = []
+            for value in temp:
+                if len(value) == 1:
+                    count += 1
+                else:
+                    arr[ord(value[1]) - ord('a')].append(value[1:])
+
+        return count
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2457,3 +2521,9 @@ if __name__ == '__main__':
 
     # 769 最多能完成排序的块
     # print(show.maxChunksToSorted([3, 2, 4, 0, 1, 6, 5]))
+
+    # 775 全局倒置与局部倒置
+    # print(show.isIdealPermutation([6,4,2,1,0,3,5]))
+
+    # 792 匹配子序列的单词数
+    # print(show.numMatchingSubseq('abcde', ["a", "bb", "acd", "ace", 'def']))
