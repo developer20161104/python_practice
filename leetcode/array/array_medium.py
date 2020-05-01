@@ -2302,6 +2302,55 @@ class Solution:
 
         return count
 
+    def numSubarrayBoundedMax(self, A: List[int], L: int, R: int) -> int:
+        # 整体思路一还是有问题，无法考虑完全
+        # count = 0
+        # A.append(R+1)
+        # left, right, lens = 0, 0, len(A)
+        # while right < lens:
+        #     if L <= A[right] <= R:
+        #         count += 1
+        #     elif A[right] > R:
+        #         # 从右向左判别
+        #         temp_right = right
+        #         while left <= temp_right and not L <= A[temp_right] <= R:
+        #             temp_right -= 1
+        #         while temp_right >= left:
+        #             count += right-temp_right-1
+        #             temp_right -= 1
+        #         left = right+1
+        #     right += 1
+        #
+        # return count
+
+        # 网上思路，逆向思维法
+        # 时间复杂度为O(n)，空间复杂度为O(1)
+        # 既然题目要求只需要包含范围内的数字，而不能存在大于范围的数字，则可以考虑
+        # 即ans = 包含元素 <= R 的区间 - 包含元素 <L 的区间
+        lens = len(A)
+        lower_R, lower_L = 0, 0
+        left, right = 0, 0
+        # 统计最大元素<=R的子数组个数
+        while right < lens:
+            if A[right] <= R:
+                right += 1
+                lower_R += right - left
+            else:
+                right += 1
+                left = right
+
+        left = right = 0
+        # 统计最大元素<L的子数组个数
+        while right < lens:
+            if A[right] < L:
+                right += 1
+                lower_L += right - left
+            else:
+                right += 1
+                left = right
+
+        return lower_R - lower_L
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2527,3 +2576,6 @@ if __name__ == '__main__':
 
     # 792 匹配子序列的单词数
     # print(show.numMatchingSubseq('abcde', ["a", "bb", "acd", "ace", 'def']))
+
+    # 795 区间子数组个数
+    # print(show.numSubarrayBoundedMax([73, 55, 36, 5, 55, 14, 9, 7, 72, 52], 32, 69))
