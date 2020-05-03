@@ -2351,6 +2351,27 @@ class Solution:
 
         return lower_R - lower_L
 
+    def numFriendRequests(self, ages: List[int]) -> int:
+        arr = [0] * 121
+        count = 0
+        # 范围约束
+        for age in ages:
+            arr[age] += 1
+
+        for age_a in range(1, 121):
+            for age_b in range(1, 121):
+                # 第三个条件貌似没什么用
+                if age_b <= 0.5 * age_a + 7 or age_b > age_a:
+                    # or age_b > 100 and age_a < 100:
+                    continue
+
+                count += arr[age_a] * arr[age_b]
+                # 不能给自己发请求
+                if age_a == age_b:
+                    count -= arr[age_a]
+
+        return count
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2579,3 +2600,6 @@ if __name__ == '__main__':
 
     # 795 区间子数组个数
     # print(show.numSubarrayBoundedMax([73, 55, 36, 5, 55, 14, 9, 7, 72, 52], 32, 69))
+
+    # 825 适龄的朋友
+    # print(show.numFriendRequests([20, 30, 100, 110, 120]))
