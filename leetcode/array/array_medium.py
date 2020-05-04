@@ -2372,6 +2372,30 @@ class Solution:
 
         return count
 
+    def largestOverlap(self, A: List[List[int]], B: List[List[int]]) -> int:
+        # 这个题目完全不会***
+        # 将两个图像的重叠部分找出来，可以转化为对偏移量的枚举，然后再进行计数
+        # 但是实质还是暴力计算
+        # 枚举出现1的位置，并记录行列坐标
+        A_2 = [complex(r, c) for r, row in enumerate(A) for c, v in enumerate(row) if v]
+        B_2 = [complex(r, c) for r, row in enumerate(B) for c, v in enumerate(row) if v]
+
+        B_set = set(B_2)
+        seen = set()
+        res = 0
+        for a in A_2:
+            for b in B_2:
+                # 首先获取当前点的偏移量
+                offset = b - a
+                # 对于已经存在的偏移量，内部遍历会进行过滤
+                if offset not in seen:
+                    seen.add(offset)
+                    # 遍历A中的坐标与偏移量之和出现在B中的数量，当然也包括自身
+                    # 这句话很 pythonic
+                    res = max(res, sum(x + offset in B_set for x in A_2))
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2603,3 +2627,6 @@ if __name__ == '__main__':
 
     # 825 适龄的朋友
     # print(show.numFriendRequests([20, 30, 100, 110, 120]))
+
+    # 835 图像重叠
+    # print(show.largestOverlap([[1, 1, 0], [0, 1, 0], [0, 1, 0]], [[0, 0, 0], [0, 1, 1], [0, 0, 1]]))
