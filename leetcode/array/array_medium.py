@@ -2396,6 +2396,36 @@ class Solution:
 
         return res
 
+    def advantageCount(self, A: List[int], B: List[int]) -> List[int]:
+        # 排序加二分查找，时间复杂度为O(nlogn)，空间复杂度为O(n)
+        # 包含了贪心的思想
+        # 也可以采用双排，但是定位原位置需要消耗额外空间，思路应该差不多
+        A.sort()
+        res = []
+        for value in B:
+            cur_len = len(A)
+            left, right = 0, cur_len
+            # 二分查找右边界
+            while left < right:
+                mid = left + (right - left) // 2
+                if A[mid] <= value:
+                    left = mid + 1
+                else:
+                    right = mid
+
+            # # 移动到较大元素位
+            # while left < cur_len and A[left] <= value:
+            #     left += 1
+
+            # 最多只需要移动一位即可
+            if left < cur_len and A[left] <= value:
+                left += 1
+
+            res.append(A[left%cur_len])
+            A.pop(left%cur_len)
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2630,3 +2660,6 @@ if __name__ == '__main__':
 
     # 835 图像重叠
     # print(show.largestOverlap([[1, 1, 0], [0, 1, 0], [0, 1, 0]], [[0, 0, 0], [0, 1, 1], [0, 0, 1]]))
+
+    # 870 优势洗牌
+    # print(show.advantageCount([2, 0, 4, 1, 2], [1, 3, 0, 0, 2]))
