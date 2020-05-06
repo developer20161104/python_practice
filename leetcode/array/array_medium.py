@@ -2421,10 +2421,61 @@ class Solution:
             if left < cur_len and A[left] <= value:
                 left += 1
 
-            res.append(A[left%cur_len])
-            A.pop(left%cur_len)
+            res.append(A[left % cur_len])
+            A.pop(left % cur_len)
 
         return res
+
+    def lenLongestFibSubseq(self, A: List[int]) -> int:
+        # 暴力法：能通过就很神奇
+        # 用set保存待查询数字
+        # find_sort = set(A)
+        # max_len = 0
+        # for st, cur_e in enumerate(A):
+        #     for next_e in A[st+1:]:
+        #         cur_len, cur_sum = 2, cur_e+next_e
+        #         temp = next_e
+        #         # 每次进行迭代查找下一位
+        #         while cur_sum in find_sort:
+        #             temp1 = cur_sum
+        #             cur_sum += temp
+        #             temp = temp1
+        #             cur_len += 1
+        #
+        #         if cur_len < 3:
+        #             cur_len = 0
+        #         max_len = max(max_len, cur_len)
+        #
+        # return max_len
+
+        # 动态规划思想完全想不出来（实质也是暴力），只不过是保存了中间状态，比较聪明的暴力
+        # 定义 状态dp[i][j]表示以A[i]A[j]结尾的斐波拉契数列
+        # 得到方程 dp[i][j] = max(dp[k][i]+1) , A[k]+A[i]=A[j]
+        # 并且需要建立值到索引的映射
+        lens = len(A)
+        max_len = 0
+
+        # 建立值到下标的映射，减少查找时间
+        dicts = {e: index for index, e in enumerate(A)}
+        dp = [[0] * lens for _ in range(lens)]
+
+        # 初始化长度
+        for i in range(lens):
+            for j in range(i + 1, lens):
+                dp[i][j] = 2
+
+        for i in range(lens):
+            for j in range(i + 1, lens):
+                # 查找A[k]是否存在，并且k应该要小于i才合理
+                # 有了状态转移方程，代码就很好解决了
+                ak = A[j] - A[i]
+                if ak in dicts and dicts[ak] < i:
+                    dp[i][j] = dp[dicts[ak]][i] + 1
+
+                max_len = max(max_len, dp[i][j])
+
+        # 注意满足的长度至少为3
+        return 0 if max_len < 3 else max_len
 
 
 # 二分查找最优方法，保留左闭右开原则
@@ -2663,3 +2714,6 @@ if __name__ == '__main__':
 
     # 870 优势洗牌
     # print(show.advantageCount([2, 0, 4, 1, 2], [1, 3, 0, 0, 2]))
+
+    # 873 最长的斐波那契子序列的长度
+    # print(show.lenLongestFibSubseq([2, 4, 7, 8, 9, 10, 14, 15, 18, 23, 32, 50]))
