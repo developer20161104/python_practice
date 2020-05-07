@@ -90,6 +90,55 @@ class MyCalendar:
             return True
 
 
+# 900 RLE迭代器
+class RLEIterator:
+    # 直接按照题目要求进行保存内存会爆炸，因此需要其他的办法
+    # wrong：内存溢出
+    # def __init__(self, A: List[int]):
+    #     self.arr = []
+    #     self.pos = -1
+    #
+    #     for i in range(0, len(A) - 1, 2):
+    #         self.arr += [A[i + 1]] * A[i]
+    #     self.lens = len(self.arr)
+    #
+    # def next(self, n: int) -> int:
+    #     self.pos += n
+    #     if self.pos >= self.lens:
+    #         return -1
+    #     return self.arr[self.pos]
+
+    # 主要思想：使用下标来标记当前使用到的位置，
+    # 并在原始列表中修改使用后的剩余值，减少额外开销
+    def __init__(self, A: List[int]):
+        self.A = A
+        self.pos = 0
+
+    def next(self, n: int) -> int:
+        if not self.A or self.pos >= len(self.A):
+            return -1
+        temp = self.A[self.pos] - n
+
+        if temp >= 0:
+            self.A[self.pos] = temp
+            return self.A[self.pos + 1]
+        else:
+            # 此处的循环真滴难整
+            self.pos += 2
+            # 两者的结束条件位置是不一样的
+            while self.pos < len(self.A):
+                temp += self.A[self.pos]
+                if temp >= 0:
+                    break
+                self.pos += 2
+
+            if self.pos < len(self.A):
+                self.A[self.pos] = temp
+                return self.A[self.pos + 1]
+            else:
+                return -1
+
+
 class Solution:
     def __init__(self):
         self.order = 0
@@ -2717,3 +2766,9 @@ if __name__ == '__main__':
 
     # 873 最长的斐波那契子序列的长度
     # print(show.lenLongestFibSubseq([2, 4, 7, 8, 9, 10, 14, 15, 18, 23, 32, 50]))
+
+    # 900 RLE迭代器
+    # obj = RLEIterator([3, 8, 0, 9, 2, 5])
+    # print(obj.next(2))
+    # print(obj.next(1))
+    # print(obj.next(1))
