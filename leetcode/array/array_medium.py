@@ -2526,6 +2526,59 @@ class Solution:
         # 注意满足的长度至少为3
         return 0 if max_len < 3 else max_len
 
+    def sumSubarrayMins(self, A: List[int]) -> int:
+        # 当前状态加dp，超时
+        # st = [A[0]]
+        # cur_min, lens = 30001, len(A)
+        # dp = [A[0]] + [0] * (lens - 1)
+        #
+        # for i in range(1, lens):
+        #     if A[i] < st[i-1]:
+        #         for j in range(i):
+        #             if A[i] < st[j]:
+        #                 st[j] = A[i]
+        #
+        #     st.append(A[i])
+        #     dp[i] = (dp[i - 1] + sum(st)) % (10 ** 9 + 7)
+        #
+        # return dp[-1]
+
+        # 单调栈？？？（新玩意）
+        # 思路：维护两个列表，一个表示左边第一个小于当前值的下标，
+        # 一个维护右边第一个小于当前值的下标，
+        # 最终收益为（i-left）*（right-i）*A[i]， 分别表示左右两边的选择数量（皆包含自身）
+        # 总体思想：求取以A[i]为最小元素时的子列表的个数
+        lens = len(A)
+        left, right = [0] * lens, [0] * lens
+
+        stack = []
+        for i in range(lens):
+            # 单调栈来保存过去的值所在下标，并与当前进行比较
+            while stack and A[stack[-1]] > A[i]:
+                stack.pop()
+
+            if not stack:
+                left[i] = -1
+            else:
+                # 栈中存在下标时，说明当前值左边第一个比其小的下标出现
+                left[i] = stack[-1]
+            stack.append(i)
+
+        stack = []
+        for i in range(lens - 1, -1, -1):
+            # 对于相同的最小值，只需要取一次，因此只需使用一次严格大于
+            while stack and A[stack[-1]] >= A[i]:
+                stack.pop()
+
+            if not stack:
+                right[i] = lens
+            else:
+                right[i] = stack[-1]
+
+            stack.append(i)
+
+        return sum((i - left[i]) * (right[i] - i) * A[i] for i in range(lens)) % (10 ** 9 + 7)
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2772,3 +2825,6 @@ if __name__ == '__main__':
     # print(obj.next(2))
     # print(obj.next(1))
     # print(obj.next(1))
+
+    # 907 子数组的最小值之和，难度等级拉满（单调栈的应用）
+    # print(show.sumSubarrayMins([85, 93, 93, 90]))
