@@ -2579,6 +2579,27 @@ class Solution:
 
         return sum((i - left[i]) * (right[i] - i) * A[i] for i in range(lens)) % (10 ** 9 + 7)
 
+    def partitionDisjoint(self, A: List[int]) -> int:
+        # 不能只比较第一个元素,只想出了一半
+        lens = len(A)
+        # 记录从右到左的最小值列表以及从左到右的最大值列表
+        left_max, right_min = [A[0]], [A[-1]]
+        for i in range(1, lens):
+            left_max.append(max(left_max[i - 1], A[i]))
+            right_min.append(min(right_min[i - 1], A[lens - i - 1]))
+
+        right_min.reverse()
+        res = -1
+
+        # 死活想不出这个判断条件
+        for i in range(lens - 1):
+            # 需要跳出相同位置带来的禁锢，因此判断的是前后的位置
+            if right_min[i + 1] >= left_max[i]:
+                res = i
+                break
+
+        return res + 1
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2828,3 +2849,6 @@ if __name__ == '__main__':
 
     # 907 子数组的最小值之和，难度等级拉满（单调栈的应用）
     # print(show.sumSubarrayMins([85, 93, 93, 90]))
+
+    # 915 分割数组
+    # print(show.partitionDisjoint([90, 47, 69, 10, 43, 92, 31, 73, 61, 97]))
