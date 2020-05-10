@@ -2600,6 +2600,58 @@ class Solution:
 
         return res + 1
 
+    def maxSubarraySumCircular(self, A: List[int]) -> int:
+        # 连续子数组和的方法不适用
+        # res = A[0]
+        # cur_len = 0
+        # cur_sum = 0
+        # lens = len(A)
+        # A = A*2
+        #
+        # for value in A:
+        #     if cur_sum > 0:
+        #         cur_sum += value
+        #         cur_len += 1
+        #     else:
+        #         cur_sum = value
+        #         cur_len = 1
+        #     if cur_len <= lens:
+        #         res = max(cur_sum, res)
+        #
+        # return res
+
+        # Kandane 算法：求取区间段[i,j]的最大子序列和，基本思想基于动态规划
+        # dp[i] = A[i] + max(dp[i-1], 0)
+
+        # 题目无非就是两个区间，对于单区间直接使用Kandane算法即可
+        # 对于双区间最大，则采用逆向思维，如果双区间出现最大，则A[0],A[-1]必定包含在区间中
+        # 因此可以转化为先求解区间[1, len-2]的最小连续子序列，再用整体和相减即可（神仙操作）
+        lens = len(A)
+        if lens < 2:
+            return A[0]
+
+        # 求解单区间max
+        single_max = total = cur_sum = A[0]
+        for i in range(1, lens):
+            total += A[i]
+            if cur_sum > 0:
+                cur_sum += A[i]
+            else:
+                cur_sum = A[i]
+            single_max = max(single_max, cur_sum)
+
+        # 求解双区间min
+        multi_min = cur_min = A[1]
+        for i in range(2, lens - 1):
+            if cur_min < 0:
+                cur_min += A[i]
+            else:
+                cur_min = A[i]
+            multi_min = min(multi_min, cur_min)
+
+        # 最后比较两区间的max即可
+        return max(single_max, total - multi_min)
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2852,3 +2904,6 @@ if __name__ == '__main__':
 
     # 915 分割数组
     # print(show.partitionDisjoint([90, 47, 69, 10, 43, 92, 31, 73, 61, 97]))
+
+    # 918 环形子数组的最大和（难度值拉满，主要还是见识太少）
+    # print(show.maxSubarraySumCircular([-5, -1, -4]))
