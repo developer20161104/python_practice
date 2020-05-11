@@ -2652,6 +2652,48 @@ class Solution:
         # 最后比较两区间的max即可
         return max(single_max, total - multi_min)
 
+    def minFlipsMonoIncr(self, S: str) -> int:
+        # wrong case: 0101100011
+        # 缺少对右边的判断
+        # count_one, i = 0, 0
+        # lens = len(S)
+        # while i < lens and S[i] == '0':
+        #     i += 1
+        #
+        # temp = i
+        # while i < lens:
+        #     if S[i] == '1':
+        #         count_one += 1
+        #     i += 1
+        #
+        # return min(lens-temp-count_one, count_one)
+
+        # 拓展思路，去掉有序部分，再寻找最少的值
+        # wrong:可以部分修改0，剩余的修改1 case "10011111110010111011"
+        # lens = len(S)
+        # left, right = 0, lens-1
+        # while left < right and S[left] == '0':
+        #     left += 1
+        # while right > left and S[right] == '1':
+        #     right -= 1
+        #
+        # count_zero = S[left:right+1].count('0')
+        # return min(count_zero, right-left+1-count_zero)
+
+        # 看来还是需要动态规划处理这些问题
+        # 关键点：dp[i][0] 只能由 dp[i-1][0] 转变过来，因为需要满足递增的原则
+        # 使用 dp[i][0] 来表示第i个位置为0时候的最小翻转次数
+        # 由此有：当S[i] == '0' 时，有 dp[i][0] = dp[i-1][0], dp[i][1] = min(dp[i-1][0]+1, dp[i-1][1]+1)
+        # 当S[i] == '1' 时，有 dp[i][0] = dp[i-1][0]+1, dp[i][1] = min(dp[i-1][0], dp[i-1][1])
+        res_zero, res_one = 0, 0
+        for s in S:
+            if s == '0':
+                res_one, res_zero = min(res_zero + 1, res_one + 1), res_zero
+            else:
+                res_zero, res_one = res_zero + 1, min(res_zero, res_one)
+
+        return min(res_one, res_zero)
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2907,3 +2949,6 @@ if __name__ == '__main__':
 
     # 918 环形子数组的最大和（难度值拉满，主要还是见识太少）
     # print(show.maxSubarraySumCircular([-5, -1, -4]))
+
+    # 926 将字符串翻转到单调递增
+    # print(show.minFlipsMonoIncr("10011111110010111011"))
