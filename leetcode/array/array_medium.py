@@ -2694,6 +2694,48 @@ class Solution:
 
         return min(res_one, res_zero)
 
+    def minIncrementForUnique(self, A: List[int]) -> int:
+        # 贪心思想
+        # 算法思想：先进行排序，然后与当前增序列逐一比对，
+        # 若比序列值小，则说明需要进行操作
+        A.sort()
+        lens = len(A)
+        if not lens:
+            return 0
+        # 算法思想有问题，案例：0,2,2
+        # return sum(max(i-A[i], 0) for i in range(lens)) if not A[0] \
+        #     else sum(max(i-A[i-1], 0) for i in range(1, lens+1))
+        count = 0
+        # cur_val保存的是邻近增量序列值
+        cur_val = A[0]
+        for val in A:
+            temp = val - cur_val
+            if temp < 0:
+                count -= temp
+            elif temp > 0:
+                # 当val较大时，直接跳过去
+                cur_val = val
+            # 一般情况只增加一，使得操作次数最优
+            cur_val += 1
+
+        return count
+
+    def deckRevealedIncreasing(self, deck: List[int]) -> List[int]:
+        # 逆向思维很重要（秀的头皮发麻）
+        from _collections import deque
+        deck.sort()
+        lens = len(deck)
+        res = deque()
+        for i in range(lens - 1, 0, -1):
+            # 从尾到头重新推导
+            res.append(deck[i])
+            temp = res.popleft()
+            res.append(temp)
+
+        res.append(deck[0])
+        # 将结果取逆即可
+        return list(res)[::-1]
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -2952,3 +2994,9 @@ if __name__ == '__main__':
 
     # 926 将字符串翻转到单调递增
     # print(show.minFlipsMonoIncr("10011111110010111011"))
+
+    # 945 使数组唯一的最小增量
+    # print(show.minIncrementForUnique([0, 2, 2]))
+
+    # 950 按递增顺序显示卡牌
+    # print(show.deckRevealedIncreasing([17, 13, 11, 2, 3, 5, 7]))
