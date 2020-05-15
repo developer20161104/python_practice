@@ -2736,6 +2736,45 @@ class Solution:
         # 将结果取逆即可
         return list(res)[::-1]
 
+    def canReorderDoubled(self, A: List[int]) -> bool:
+        # 基本思想：排序加分队列处理，使用字典加速查找
+        dicts = {}
+        A.sort()
+        for e in A:
+            if e in dicts:
+                dicts[e] += 1
+            else:
+                dicts[e] = 1
+
+        # 首先判断正数部分的队列，
+        # 只要出现本身的为奇数，或者本身的一半不在字典以及本身的一半在字典的数量不足时，即为False
+        cur_pos = len(A) - 1
+        while cur_pos >= 0 and A[cur_pos] > 0:
+            # 只要注意如果当前的值数量不够时直接跳过即可
+            if dicts[A[cur_pos]] > 0:
+                if A[cur_pos] % 2 == 0 and A[cur_pos] // 2 in dicts and \
+                        dicts[A[cur_pos] // 2] > 0:
+                    dicts[A[cur_pos]] -= 1
+                    dicts[A[cur_pos] // 2] -= 1
+                else:
+                    return False
+            cur_pos -= 1
+
+        # 负数队列同理，只是顺序改为从左到右
+        i = 0
+        while i <= cur_pos:
+            if dicts[A[i]] > 0:
+                if A[i] % 2 == 0 and A[i] // 2 in dicts and \
+                        dicts[A[i] // 2] > 0:
+                    dicts[A[i]] -= 1
+                    dicts[A[i] // 2] -= 1
+                else:
+                    return False
+            i += 1
+
+        # 当两边都能成功遍历时，说明满足题目条件
+        return True
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3000,3 +3039,6 @@ if __name__ == '__main__':
 
     # 950 按递增顺序显示卡牌
     # print(show.deckRevealedIncreasing([17, 13, 11, 2, 3, 5, 7]))
+
+    # 954 二倍数对数组
+    # print(show.canReorderDoubled([-4, -1, 1, 2, 2, 3, 4, 6]))
