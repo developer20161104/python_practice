@@ -2775,6 +2775,44 @@ class Solution:
         # 当两边都能成功遍历时，说明满足题目条件
         return True
 
+    def maxWidthRamp(self, A: List[int]) -> int:
+        # 完全没思路
+        # 方法一：排序法
+        # 先对值进行排序，然后利用排序前的值所在的下标进行坡度长判断
+        # res = 0
+        # cur_min = 50001
+        # # python的骚气写法，利用值作为排序的key来对下标进行排列（活到老学到老）
+        # for i in sorted(range(len(A)), key=A.__getitem__):
+        #     # 最大的坡度必为当前的下标减去先前的最小下标（因为排序使得值有序）
+        #     res = max(res, i-cur_min)
+        #     cur_min = min(cur_min, i)
+        #
+        # return res
+
+        # 方法二：单调栈解法（还是没学会这个结构）
+        # 维护一个单调栈，第一个值为列表中的第一个元素下标，最后一个值为列表中的最小值的下标
+        # 从后向前遍历，出现比栈顶大的即进行一个坡度计算
+        stack = []
+        lens = len(A)
+        # 单调栈保存的是下标，并且是值由大到最小的下标
+        for i in range(lens):
+            if not stack or A[i] <= A[stack[-1]]:
+                stack.append(i)
+
+        res = 0
+        i = lens - 1
+        # 这个结束条件很巧妙（值得学习）
+        while i > res:
+            # 当出现大于或等于栈中的值的时候，计算一次坡度，并保存最大值
+            while stack and A[stack[-1]] <= A[i]:
+                res = max(res, i - stack[-1])
+                # 注意计算完成后需要弹出，因为说不定后面还有更大的坡度
+                stack.pop()
+
+            i -= 1
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3042,3 +3080,6 @@ if __name__ == '__main__':
 
     # 954 二倍数对数组
     # print(show.canReorderDoubled([-4, -1, 1, 2, 2, 3, 4, 6]))
+
+    # 962 最大宽坡度
+    # print(show.maxWidthRamp([6, 0, 8, 2, 1, 5]))
