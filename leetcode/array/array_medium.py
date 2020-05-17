@@ -2813,6 +2813,26 @@ class Solution:
 
         return res
 
+    def pancakeSort(self, A: List[int]) -> List[int]:
+        # 思路：每次移动最大元素，并将其放入正确位置，不断循环直到最小元素
+        # 引用了切片和内部索引，因此速度不是一般快
+        # 不过时间复杂度为n2，空间复杂度为n（切片需要额外空间）
+        lens = len(A)
+        res = []
+        for i in range(lens, 0, -1):
+            cur_pos = A.index(i)
+            if cur_pos != i - 1:
+                # python部分列表反转的小技巧A[尾部元素:起始元素-1:-1]
+                # 同样满足左闭右开原则
+                A[:cur_pos + 1] = A[cur_pos::-1]
+                # 如果只需要移动自身，则直接跳过
+                if cur_pos != 0:
+                    res.append(cur_pos + 1)
+                A[:i] = A[i - 1::-1]
+                res.append(i)
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3083,3 +3103,6 @@ if __name__ == '__main__':
 
     # 962 最大宽坡度
     # print(show.maxWidthRamp([6, 0, 8, 2, 1, 5]))
+
+    # 969 煎饼排序
+    # print(show.pancakeSort([1, 2, 3]))
