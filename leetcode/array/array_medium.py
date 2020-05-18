@@ -2833,6 +2833,21 @@ class Solution:
 
         return res
 
+    def subarraysDivByK(self, A: List[int], K: int) -> int:
+        # 还是太菜，知道需要用前缀和与hash表，但是忘了还有个同余定理
+        # 并且根本不知道怎么把这些联系起来（难于上青天）
+        from collections import Counter
+        p = [0]
+        for x in A:
+            # 添加同余后是结果
+            p.append((p[-1] + x) % K)
+
+        print(p)
+        c = Counter(p).values()
+        # 同余定理：如果有两个整数满足 (a-b)%k == 0, 则有 a%k == b%k
+        # 因此最终只需要利用组合计算前缀和相等的数量
+        return sum(v * (v - 1) // 2 for v in c)
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3013,7 +3028,7 @@ if __name__ == '__main__':
     # print(show.findPoisonedDuration([1, 2, 4, 8], 3))
 
     # 560 和为k的子数组
-    # print(show.subarraySum([1,1],1))
+    # print(show.subarraySum([4,5,0,-2,-3,1],5))
 
     # 565 数组嵌套
     # print(show.arrayNesting([5, 4, 0, 3, 1, 6, 2]))
@@ -3106,3 +3121,6 @@ if __name__ == '__main__':
 
     # 969 煎饼排序
     # print(show.pancakeSort([1, 2, 3]))
+
+    # 974 和可被K整除的子数组
+    # print(show.subarraysDivByK([4, 5, 0, -2, -3, 1], 5))
