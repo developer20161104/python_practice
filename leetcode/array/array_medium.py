@@ -2848,6 +2848,36 @@ class Solution:
         # 因此最终只需要利用组合计算前缀和相等的数量
         return sum(v * (v - 1) // 2 for v in c)
 
+    def maxTurbulenceSize(self, A: List[int]) -> int:
+        # 感觉贪心就可以了,没必要使用动态规划
+        # 添加相同尾部，减少尾部判别条件
+        A.append(A[-1])
+        lens = len(A)
+
+        # 使用符号标记过去的符号，1表示大于，0表示小于
+        pre_sym = -1
+        count, tot = 1, 0
+        for i in range(1, lens):
+            # 出现不同元素才进行添加
+            if A[i] != A[i - 1]:
+                sym = 0
+                if A[i] < A[i - 1]:
+                    sym = 1
+
+                if pre_sym == -1 or sym != pre_sym:
+                    count += 1
+                else:
+                    # 如果不再满足条件，则计算结果
+                    tot = max(tot, count)
+                    count = 2
+                pre_sym = sym
+            else:
+                # 如果出现相同元素，则直接计算结果，并重置各项变量
+                tot = max(tot, count)
+                count, pre_sym = 1, -1
+
+        return tot
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3124,3 +3154,6 @@ if __name__ == '__main__':
 
     # 974 和可被K整除的子数组
     # print(show.subarraysDivByK([4, 5, 0, -2, -3, 1], 5))
+
+    # 978 最长湍流子数组
+    # print(show.maxTurbulenceSize([4, 8]))
