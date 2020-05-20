@@ -2878,6 +2878,32 @@ class Solution:
 
         return tot
 
+    def minDominoRotations(self, A: List[int], B: List[int]) -> int:
+        # 基本思想：先找出出现最多的元素，然后再对该元素的出现情况进行遍历，
+        # 发现不满足的条件即退出，核心也是贪心思想，时间复杂度为O(n)（虽然需要遍历两遍）
+        count_a, count_b = [0] * 6, [0] * 6
+        for a, b in zip(A, B):
+            count_a[a - 1] += 1
+            count_b[b - 1] += 1
+
+        lens = len(A)
+        # 寻找出现最多的元素
+        max_v, value = count_a[0] + count_b[0], 0
+        for i in range(1, 6):
+            temp = count_a[i] + count_b[i]
+            if temp > max_v:
+                max_v, value = temp, i
+
+        # 如果出现最多的不能满足最低条件，直接返回
+        if max_v < lens:
+            return -1
+        else:
+            for index in range(lens):
+                if A[index] != value + 1 and B[index] != value + 1:
+                    return -1
+
+            return lens - max(count_b[value], count_a[value])
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3157,3 +3183,6 @@ if __name__ == '__main__':
 
     # 978 最长湍流子数组
     # print(show.maxTurbulenceSize([4, 8]))
+
+    # 1007 行相等的最少多米诺旋转
+    # print(show.minDominoRotations([2, 1, 2, 4, 2, 2], [5, 2, 6, 2, 3, 2]))
