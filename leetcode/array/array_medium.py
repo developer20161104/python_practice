@@ -2904,6 +2904,37 @@ class Solution:
 
             return lens - max(count_b[value], count_a[value])
 
+    def shipWithinDays(self, weights: List[int], D: int) -> int:
+        # 逆向思维很重要，
+        # 将过程进行模拟，约定上下界即可（这个思维转化确实值得学习）
+        # 过程模拟函数
+        def getDay(w: int) -> int:
+            count = 0
+            cur = 0
+            for wei in weights:
+                cur += wei
+                # 对于多出来的后面会继续运行，因此无需添加额外判断
+                if cur > w:
+                    cur = wei
+                    count += 1
+
+            # 若最终cur为0时，则无需增加计数
+            return count + 1 if cur else count
+
+        # 范围必为最大值与总和之间
+        right = sum(weights)
+        left = max(weights)
+        # 然后二分查找即可
+        while left < right:
+            mid = left + (right - left) // 2
+            days = getDay(mid)
+            if days > D:
+                left = mid + 1
+            else:
+                right = mid
+
+        return left
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3186,3 +3217,6 @@ if __name__ == '__main__':
 
     # 1007 行相等的最少多米诺旋转
     # print(show.minDominoRotations([2, 1, 2, 4, 2, 2], [5, 2, 6, 2, 3, 2]))
+
+    # 1011 在D天内送达包裹的能力
+    # print(show.shipWithinDays([1, 2, 3, 1, 1], 4))
