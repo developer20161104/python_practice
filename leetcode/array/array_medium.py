@@ -2935,6 +2935,41 @@ class Solution:
 
         return left
 
+    def maxScoreSightseeingPair(self, A: List[int]) -> int:
+        # 有动态规划的思想，将整体划分为 A[i]+i 与 A[j]-j 两个部分
+        # 先求取A[i]+i列表，再利用DP来求取A[j]-j列表中当前长度的最大值
+        # 需要进行三次遍历，时间复杂度为O（n）
+        # lens = len(A)
+        # # A[i]+i
+        # sort_i = [index+A[index] for index in range(lens-1)]
+        # # A[j]-j 中当前长度的最大值
+        # sort_j = [A[lens-1]-lens+1]
+        # for i in range(lens-2, 0, -1):
+        #     temp = A[i] - i
+        #     if temp > sort_j[-1]:
+        #         sort_j.append(temp)
+        #     else:
+        #         sort_j.append(sort_j[-1])
+        #
+        # cur_max = 0
+        # # 最后一次遍历求取整体max
+        # for i in range(lens-1):
+        #     cur_max = max(cur_max, sort_i[i]+sort_j[lens-2-i])
+        #
+        # return cur_max
+
+        # 网上大神思路：只需要一次遍历
+        # 关键点：两个所需要计算的变量都是固定的，
+        # 并且位置也固定，因此只需要逐一遍历即可
+        # left 保存先前的max A[i]+i
+        # A[j]-j 则直接进行遍历
+        left, res, lens = A[0], 0, len(A)
+        for j in range(1, lens):
+            res = max(res, left + A[j] - j)
+            left = max(left, A[j] + j)
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3220,3 +3255,6 @@ if __name__ == '__main__':
 
     # 1011 在D天内送达包裹的能力
     # print(show.shipWithinDays([1, 2, 3, 1, 1], 4))
+
+    # 1014 最佳观光组合
+    # print(show.maxScoreSightseeingPair([8, 3, 4]))
