@@ -2970,6 +2970,63 @@ class Solution:
 
         return res
 
+    def maxSumTwoNoOverlap(self, A: List[int], L: int, M: int) -> int:
+        # 最直白的方法：设置四个列表分别保存左边部分与右边部分L，M的max
+        # wrong: 未知名错误，思路应该是没错，就是下标太烦人了，懒得改了
+        # lens, pre_sum = len(A), [0]
+        # for i in range(lens):
+        #     pre_sum.append(pre_sum[i]+A[i])
+        #
+        # left_l, left_m, right_l, right_m = [0]*lens, [0]*lens, [0]*lens, [0]*lens
+        # for i in range(L-1, lens):
+        #     left_l[i] = max(left_l[i-1], pre_sum[i+1]-pre_sum[i-L+1])
+        #     right_l[i] = max(right_l[i-1], pre_sum[lens+L-i-1]-pre_sum[lens-i-1])
+        # right_l.reverse()
+        #
+        # for i in range(M-1, lens):
+        #     left_m[i] = max(left_m[i-1], pre_sum[i+1]-pre_sum[i-M+1])
+        #     right_m[i] = max(right_m[i-1], pre_sum[lens+M-i-1]-pre_sum[lens-i-1])
+        # right_m.reverse()
+        #
+        # max_sum = 0
+        # for i in range(lens):
+        #     max_sum = max(max(left_l[i]+right_m[i], left_m[i]+right_l[i]), max_sum)
+        #
+        # return max_sum
+
+        # 重新尝试一下
+        lens = len(A)
+        pre_sum = [0]
+        # 利用动态规划的思想保存各值，避免二次计算
+        # 分别设置四个列表保存各个方向的两个最大子列表的和
+        # 注意左侧不计算i位的值，右侧需要计算i位的值
+        # 并且考虑到步长1的原因，右侧需要额外一个空间存储初始位，防止溢出
+        left_l, left_m, right_l, right_m = [0] * lens, [0] * lens, [0] * (lens + 1), [0] * (lens + 1)
+
+        # 前缀和
+        for i in range(lens):
+            pre_sum.append(pre_sum[i] + A[i])
+
+        # 左侧L值
+        for i in range(L, lens):
+            left_l[i] = max(left_l[i - 1], pre_sum[i] - pre_sum[i - L])
+        # 右侧L值
+        for i in range(lens - L, -1, -1):
+            right_l[i] = max(right_l[i + 1], pre_sum[i + L] - pre_sum[i])
+        # 左侧M值
+        for i in range(M, lens):
+            left_m[i] = max(left_m[i - 1], pre_sum[i] - pre_sum[i - M])
+        # 右侧M值
+        for i in range(lens - M, -1, -1):
+            right_m[i] = max(right_m[i + 1], pre_sum[i + M] - pre_sum[i])
+
+        res = 0
+        # 最后进行两边判断即可
+        for i in range(lens):
+            res = max(res, max(left_l[i] + right_m[i], left_m[i] + right_l[i]))
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3258,3 +3315,6 @@ if __name__ == '__main__':
 
     # 1014 最佳观光组合
     # print(show.maxScoreSightseeingPair([8, 3, 4]))
+
+    # 1031 两个非重叠子数组的最大和
+    # print(show.maxSumTwoNoOverlap([2, 1, 5, 6, 0, 9, 5, 0, 3, 8], 3, 4))
