@@ -3027,6 +3027,23 @@ class Solution:
 
         return res
 
+    def maxUncrossedLines(self, A: List[int], B: List[int]) -> int:
+        # 动态规划状态转移方程死活想不出来，还是学不会
+        # 实质为求取最长公共子序列（不需要相连）
+        len_a, len_b = len(A), len(B)
+        dp = [[0] * (len_b + 1) for _ in range(len_a + 1)]
+
+        for i in range(len_a):
+            for j in range(len_b):
+                # 相等时，则为前一个的值加上一
+                if A[i] == B[j]:
+                    dp[i + 1][j + 1] = dp[i][j] + 1
+                # 不等时，为之前的最大值
+                else:
+                    dp[i + 1][j + 1] = max(dp[i][j + 1], dp[i + 1][j])
+
+        return dp[len_a][len_b]
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3318,3 +3335,6 @@ if __name__ == '__main__':
 
     # 1031 两个非重叠子数组的最大和
     # print(show.maxSumTwoNoOverlap([2, 1, 5, 6, 0, 9, 5, 0, 3, 8], 3, 4))
+
+    # 1035 不相交的线
+    # print(show.maxUncrossedLines([1, 4, 2], [1, 2, 4]))
