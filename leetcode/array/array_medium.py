@@ -3044,6 +3044,31 @@ class Solution:
 
         return dp[len_a][len_b]
 
+    def numMovesStonesII(self, stones: List[int]) -> List[int]:
+        # 思路确实很难想到，尤其是最大值部分的有关s2的求解
+        # 最小值的话找出初始时已经摆好的最多的石子，在实现上有难度（需要用到滑动窗口的思想）
+        stones.sort()
+        lens = len(stones)
+        # s1为总的空位
+        s1 = stones[lens - 1] - stones[0] + 1 - lens
+        # s2为移动左右端点后所减去的空位，由于取的是最大值，因此选最小
+        s2 = min(stones[1] - stones[0] - 1, stones[lens - 1] - stones[lens - 2] - 1)
+        mx = s1 - s2
+        mi, j = mx, 0
+        for i in range(lens):
+            # 当前窗口比元素总数高时，缩小窗口
+            while j + 1 < lens and stones[j + 1] - stones[i] + 1 <= lens:
+                j += 1
+            # 当前完成移动所需的开销，当前窗口的石头数量为 j-i+1
+            cost = lens - (j - i + 1)
+            # 如果出现只有最后一个错位时，还是需要两次搬运：2,3,4,7 或者 1,6,7,8
+            # 判断条件很灵性，不用考虑位置颠倒
+            if j - i + 1 == lens - 1 and stones[j] - stones[i] + 1 == lens - 1:
+                cost = 2
+            mi = min(mi, cost)
+
+        return [mi, mx]
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3338,3 +3363,6 @@ if __name__ == '__main__':
 
     # 1035 不相交的线
     # print(show.maxUncrossedLines([1, 4, 2], [1, 2, 4]))
+
+    # 1040 移动石子直到连续II （个人感觉极难，思路根本想不完全）
+    # print(show.numMovesStonesII([6, 7, 8, 1]))
