@@ -3069,6 +3069,27 @@ class Solution:
 
         return [mi, mx]
 
+    def maxSatisfied(self, customers: List[int], grumpy: List[int], X: int) -> int:
+        # 有使用到滑动窗口以及贪心思想，但是窗口长度固定，所以还比较好写
+        lens = len(customers)
+        # cur_sum 维护一个长度为X的列表的和，其中只包含grumpy为1时的值
+        total, cur_sum, max_sum = 0, 0, 0
+        for i in range(lens):
+            if not grumpy[i]:
+                total += customers[i]
+            else:
+                cur_sum += customers[i]
+
+            # 当且仅当窗口末端的值的grumpy为1时，才进行剔除
+            if i >= X and grumpy[i - X]:
+                cur_sum -= customers[i - X]
+
+            # 取仅含grumpy为1的最大值
+            max_sum = max(max_sum, cur_sum)
+
+        # 最后将0与1的值进行汇总即可
+        return max_sum + total
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3366,3 +3387,6 @@ if __name__ == '__main__':
 
     # 1040 移动石子直到连续II （个人感觉极难，思路根本想不完全）
     # print(show.numMovesStonesII([6, 7, 8, 1]))
+
+    # 1052 爱生气的书店老板
+    # print(show.maxSatisfied([1, 0, 1, 2, 1, 1, 7, 5], [0, 1, 0, 1, 0, 1, 0, 1], 3))
