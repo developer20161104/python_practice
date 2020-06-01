@@ -3090,6 +3090,31 @@ class Solution:
         # 最后将0与1的值进行汇总即可
         return max_sum + total
 
+    def prevPermOpt1(self, A: List[int]) -> List[int]:
+        # 有用到贪心的思想
+        lens = len(A)
+        switch, i = -1, 0
+        if not switch:
+            return A
+
+        # 从右向左寻找第一个非升序元素
+        for i in range(lens - 2, -1, -1):
+            if A[i] > A[i + 1]:
+                switch = i
+                break
+        # 如果当前序列已经全部有序，则必为最小序列，直接进行返回
+        if switch < 0:
+            return A
+
+        i = lens - 1
+        # 然后从右向左寻找小于非升序元素的最靠左边的位置，再进行交换
+        # 没有考虑到的问题，右边最大元素可能大于等于左边交换位置元素
+        while A[i] >= A[switch] or A[i] == A[i - 1]:
+            i -= 1
+
+        A[i], A[switch] = A[switch], A[i]
+        return A
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3390,3 +3415,6 @@ if __name__ == '__main__':
 
     # 1052 爱生气的书店老板
     # print(show.maxSatisfied([1, 0, 1, 2, 1, 1, 7, 5], [0, 1, 0, 1, 0, 1, 0, 1], 3))
+
+    # 1053 交换一次的先前排列
+    # print(show.prevPermOpt1([3, 1, 1, 4, 6]))
