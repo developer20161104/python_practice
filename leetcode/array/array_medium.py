@@ -3115,6 +3115,35 @@ class Solution:
         A[i], A[switch] = A[switch], A[i]
         return A
 
+    def corpFlightBookings(self, bookings: List[List[int]], n: int) -> List[int]:
+        # 暴力法：超时毋庸置疑
+        # res = [0]*n
+        #
+        # for book in bookings:
+        #     for i in range(book[0]-1, book[1]):
+        #         res[i] += book[2]
+        #
+        # return res
+
+        # 区间累加可以考虑使用差分数列（活到老学到老）
+        # 优化的关键点，将内层循环优化为O(1)
+        # 大神思想：定义一个差分列表，保存当前人数与上一个的人数之差
+        # 则有d[i] = res[i]-res[i-1]
+        # 最后进行累加即可（这个打死都想不出来）
+        diff, res = [0] * n, [0] * n
+        # 想象成公交车站的上下车问题，i处上车，j+1处下车
+        for book in bookings:
+            diff[book[0] - 1] += book[2]
+            if book[1] < n:
+                diff[book[1]] -= book[2]
+
+        res[0] = diff[0]
+        # 最后的累加由此处的公式求解
+        for i in range(1, n):
+            res[i] = res[i - 1] + diff[i]
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3418,3 +3447,6 @@ if __name__ == '__main__':
 
     # 1053 交换一次的先前排列
     # print(show.prevPermOpt1([3, 1, 1, 4, 6]))
+
+    # 1109 航班预订统计
+    # print(show.corpFlightBookings([[1, 2, 10], [2, 3, 20], [2, 5, 25]], 5))
