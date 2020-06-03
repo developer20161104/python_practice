@@ -3144,6 +3144,63 @@ class Solution:
 
         return res
 
+    def movesToMakeZigzag(self, nums: List[int]) -> int:
+        # wrong:没有动态对列表进行修改
+        # low_cost, high_cost = 0, 0
+        # lens = len(nums)
+        # if lens < 2:
+        #     return 0
+        #
+        # for i in range(1, lens):
+        #     if nums[i] > nums[i-1]:
+        #         if i % 2:
+        #             high_cost += nums[i] - nums[i-1] + 1
+        #         else:
+        #             low_cost += nums[i] - nums[i-1] + 1
+        #     elif nums[i] < nums[i-1]:
+        #         if i % 2:
+        #             low_cost += nums[i-1] - nums[i] + 1
+        #         else:
+        #             high_cost += nums[i-1] - nums[i] + 1
+        #     else:
+        #         low_cost += 1
+        #         high_cost += 1
+        #
+        # return min(low_cost, high_cost)
+
+        # 主要思想：贪心思想，然后直接对两种情况进行模拟，最后取其中的小值即可
+        # 时间复杂度为O(n)，空间复杂度为O(n)
+        # 错误原因，没有读题：只能减不能增加
+        # 由此带来的区别是，
+        # 当初始为递增序列时，如果在偶数位遇到较小值，则对前一位进行修改
+        # 由于后序序列的计算不需要上上个元素的值，因此，就不需要对当前进行修改
+        # 反之对于递减也是如此
+        lens = len(nums)
+        low, high = 0, 0
+        arr = [nums[0]] + [0] * (lens - 1)
+        for i in range(1, lens):
+            cur_val = nums[i]
+            if i % 2 and cur_val >= arr[i - 1]:
+                high += cur_val - arr[i - 1] + 1
+                cur_val = arr[i - 1] - 1
+            elif not i % 2 and cur_val <= arr[i - 1]:
+                high += arr[i - 1] - cur_val + 1
+                # 此处应该添加对i-1位置的修改，但是后面不需要用到，就直接省略了
+            arr[i] = cur_val
+
+        for i in range(1, lens):
+            cur_val = nums[i]
+            if i % 2 and cur_val <= arr[i - 1]:
+                # 同理此处也是如此
+                low += arr[i - 1] - cur_val + 1
+            elif not i % 2 and cur_val >= arr[i - 1]:
+                low += cur_val - arr[i - 1] + 1
+                cur_val = arr[i - 1] - 1
+
+            arr[i] = cur_val
+
+        return min(low, high)
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3450,3 +3507,6 @@ if __name__ == '__main__':
 
     # 1109 航班预订统计
     # print(show.corpFlightBookings([[1, 2, 10], [2, 3, 20], [2, 5, 25]], 5))
+
+    # 1144 递减元素使数组呈锯齿状
+    # print(show.movesToMakeZigzag([10, 4, 4, 10, 10, 6, 2, 3]))
