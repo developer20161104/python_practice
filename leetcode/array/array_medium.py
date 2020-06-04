@@ -139,6 +139,71 @@ class RLEIterator:
                 return -1
 
 
+# 1146 快照数组
+class SnapshotArray:
+    # 查询复杂度都为O(1)还是超时可还行
+    # 但是空间复杂度过于夸张，需要优化，不能每次都将整体进行保存
+
+    # # 有一点隐藏错误，题目没有给出，就是当下一次保存之前列表没有做任何修改，则保存的是上一次的列表，而不是更新列表
+    # # 初始化一个与指定长度相等的类数组的数据结构
+    # def __init__(self, length: int):
+    #     self.len = length
+    #     self.curlist = [0]*self.len
+    #     self.count = 1
+    #     self.search_dict = {}
+    #
+    # # 指定索引处的元素设置
+    # def set(self, index: int, val: int) -> None:
+    #     self.curlist[index] = val
+    #
+    # # 获取数组的快照，并返回快照编号
+    # def snap(self) -> int:
+    #     self.search_dict[self.count-1] = self.curlist[:]
+    #     self.count += 1
+    #     # self.curlist = [0]*self.len
+    #
+    #     return self.count-2
+    #
+    # # 根据指定id选择快照，并返回快照的索引值
+    # def get(self, index: int, snap_id: int) -> int:
+    #     if snap_id in self.search_dict:
+    #         return self.search_dict[snap_id][index]
+    #     return -1
+
+    # 另一种思路：每次快照只保存修改的位置，并且以二维列表的形式保存在对应位置上
+    # 在进行查找时使用二分降低时间复杂度
+    def __init__(self, length: int):
+        self.arr = [{} for _ in range(length)]
+        self.count = 0
+
+    # 指定索引处的元素设置
+    def set(self, index: int, val: int) -> None:
+        self.arr[index][self.count] = val
+
+    # 获取数组的快照，并返回快照编号
+    def snap(self) -> int:
+        self.count += 1
+        return self.count - 1
+
+    # 根据指定id选择快照，并返回快照的索引值
+    def get(self, index: int, snap_id: int) -> int:
+        # 在进行查找时，由于保存的是每次的修改值，因此有可能出现所查值不在保存列表中
+        # 因此还需要进行二分查找，寻找最近的修改
+        if snap_id in self.arr[index]:
+            return self.arr[index][snap_id]
+
+        search_list = list(self.arr[index].keys())
+        left, right = 0, len(search_list)
+        while left < right:
+            mid = left + (right-left)//2
+            if search_list[mid] < snap_id:
+                left = mid + 1
+            else:
+                right = mid
+
+        return self.arr[index][search_list[left-1]]
+
+
 class Solution:
     def __init__(self):
         self.order = 0
@@ -3510,3 +3575,11 @@ if __name__ == '__main__':
 
     # 1144 递减元素使数组呈锯齿状
     # print(show.movesToMakeZigzag([10, 4, 4, 10, 10, 6, 2, 3]))
+
+    # 1146 快照数组
+    # s = SnapshotArray(1)
+    # s.set(0,16)
+    # print(s.snap())
+    # print(s.snap())
+    # print(s.snap())
+    # print(s.get(0,2))
