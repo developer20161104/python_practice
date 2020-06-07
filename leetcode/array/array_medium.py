@@ -173,7 +173,8 @@ class SnapshotArray:
     # 另一种思路：每次快照只保存修改的位置，并且以二维列表的形式保存在对应位置上
     # 在进行查找时使用二分降低时间复杂度
     def __init__(self, length: int):
-        self.arr = [{} for _ in range(length)]
+        # 此处有问题，必须考虑不插入即保存的情况
+        self.arr = [{0: 0} for _ in range(length)]
         self.count = 0
 
     # 指定索引处的元素设置
@@ -195,13 +196,13 @@ class SnapshotArray:
         search_list = list(self.arr[index].keys())
         left, right = 0, len(search_list)
         while left < right:
-            mid = left + (right-left)//2
+            mid = left + (right - left) // 2
             if search_list[mid] < snap_id:
                 left = mid + 1
             else:
                 right = mid
 
-        return self.arr[index][search_list[left-1]]
+        return self.arr[index][search_list[left - 1]]
 
 
 class Solution:
@@ -3266,6 +3267,55 @@ class Solution:
 
         return min(low, high)
 
+    def invalidTransactions(self, transactions: List[str]) -> List[str]:
+        # 思路有问题？？
+        # tran = []
+        # for s in transactions:
+        #     tran.append(s.split(','))
+        # tran.sort(key=lambda x: [x[0], int(x[1])])
+        # lens = len(tran)
+        # res = []
+        # if int(tran[0][2]) >= 1000:
+        #     res.append(','.join(tran[0]))
+        #
+        # for i in range(1, lens):
+        #     flag = False
+        #
+        #     if int(tran[i][2]) >= 1000:
+        #         flag = True
+        #     if tran[i][0] == tran[i - 1][0] and \
+        #             tran[i][3] != tran[i - 1][3] and \
+        #             int(tran[i][1]) - int(tran[i - 1][1]) <= 60:
+        #         if int(tran[i - 1][2]) <= 1000:
+        #             res.append(','.join(tran[i - 1]))
+        #         flag = True
+        #
+        #     if flag:
+        #         res.append(','.join(tran[i]))
+        #
+        # return res
+
+        # 暴力法简单粗暴
+        # 时间复杂度为O(n2)
+        # 对每一个都进行从头到尾的遍历判断，满足条件即加入
+        tran = [x.split(',') for x in transactions]
+        res = []
+
+        # 遍历每一个列表
+        for i, st in enumerate(tran):
+            if int(st[2]) > 1000:
+                res.append(','.join(st))
+                continue
+            # 依次遍历列表，查看是否有能与当前列表满足条件的列表
+            for j, ed in enumerate(tran):
+                if i == j:
+                    continue
+                if st[0] == ed[0] and st[3] != ed[3] and abs(int(st[1]) - int(ed[1])) <= 60:
+                    res.append(','.join(st))
+                    break
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3583,3 +3633,6 @@ if __name__ == '__main__':
     # print(s.snap())
     # print(s.snap())
     # print(s.get(0,2))
+
+    # 1169 查询无效交易
+    # print(show.invalidTransactions(["alex,741,1507,barcelona","xnova,683,1149,amsterdam","bob,52,1152,beijing","bob,137,1261,beijing","bob,607,14,amsterdam","bob,307,645,barcelona","bob,220,105,beijing","xnova,914,715,beijing","alex,279,632,beijing"]))
