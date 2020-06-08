@@ -3316,6 +3316,49 @@ class Solution:
 
         return res
 
+    def canMakePaliQueries(self, s: str, queries: List[List[int]]) -> List[bool]:
+        # 思想很有意思：尤其是当k>=13这一点很有趣
+        # 需要注意子串是可以重排的，因此只需要看各字母出现奇数次的个数即可
+        # 虽然有点巧妙，但是还是暴力法，因此无法通过最后几个变态长度的案例
+        # from collections import Counter
+        # res = [True] * len(queries)
+        # for i, val in enumerate(queries):
+        #     if val[2] < 13:
+        #         tmp = Counter(s[val[0]:val[1] + 1])
+        #         odd = 0
+        #         for cur in tmp.values():
+        #             if cur % 2:
+        #                 odd += 1
+        #         # 如果弥补的数量少于能容许的数量，则为False
+        #         if odd - 2 * val[2] > (val[1] - val[0] + 1) % 2:
+        #             res[i] = False
+        #
+        # return res
+
+        # 尝试动态规划保存当前的字符出现次数
+        lens = len(s)
+        dp = [[0] * 26 for _ in range(lens + 1)]
+
+        # 统计到长度为i时的各字符出现次数
+        for i in range(len(s)):
+            # py浅拷贝列表元素
+            dp[i + 1][:] = dp[i][:]
+            # 每次只需要增加新增元素即可
+            dp[i + 1][ord(s[i]) - ord('a')] += 1
+
+        res = [True] * len(queries)
+        for index, val in enumerate(queries):
+            odd = 0
+            for i in range(26):
+                # dp[right+1]-dp[left]即为长度区间在[left, right]的元素分布
+                odd += (dp[val[1] + 1][i] - dp[val[0]][i]) % 2
+
+            # 判断剩余数量满足当前子串长度要求，奇数长度可以允许多出一个元素
+            if odd - 2 * val[2] > (val[1] - val[0] + 1) % 2:
+                res[index] = False
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3636,3 +3679,6 @@ if __name__ == '__main__':
 
     # 1169 查询无效交易
     # print(show.invalidTransactions(["alex,741,1507,barcelona","xnova,683,1149,amsterdam","bob,52,1152,beijing","bob,137,1261,beijing","bob,607,14,amsterdam","bob,307,645,barcelona","bob,220,105,beijing","xnova,914,715,beijing","alex,279,632,beijing"]))
+
+    # 1177 构建回文串检测
+    # print(show.canMakePaliQueries('abcda', [[3, 3, 0], [1, 2, 0], [0, 3, 1], [0, 3, 2], [0, 4, 1]]))
