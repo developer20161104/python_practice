@@ -3359,6 +3359,79 @@ class Solution:
 
         return res
 
+    def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
+        # 并查集，有点忘了怎么实现了..
+        # 并查集返回的好像也不是最终结果
+        # lens, count = len(s), 0
+        # belong = [i for i in range(lens)]
+        #
+        # # 并查集算法
+        # def find(root):
+        #     if belong[root] != root:
+        #         belong[root] = find(belong[root])
+        #     return belong[root]
+        #
+        # # 需要好好斟酌
+        # for left, right in pairs:
+        #     # pa_left, pa_right = find(left), find(right)
+        #     # if pa_left != pa_right:
+        #     #     belong[pa_left] = pa_right
+        #     # union 操作可以直接合并为一句，牛皮
+        #     belong[find(left)] = find(right)
+        #
+        # # 排序
+        # dicts = {}
+        # for i in range(lens):
+        #     if belong[i] not in dicts:
+        #         dicts[belong[i]] = ''
+        #     dicts[belong[i]] += s[i]
+        #
+        # for key in dicts:
+        #     dicts[key] = sorted(dicts[key])
+        #
+        # res = ['']*lens
+        # for key in dicts:
+        #     sort = dicts[key]
+        #     k = 0
+        #     for i in range(lens):
+        #         if belong[i] == key:
+        #             res[i] = sort[k]
+        #             k += 1
+        #
+        # return ''.join(res)
+
+        # 并查集加对序列排序放入
+        # 亮点，使用字典存储所属顶层节点的所有下标而非具体的字符
+        # 便于后续的放回处理
+        import collections
+        p = {i: i for i in range(len(s))}  # 初始化并查集
+
+        def f(x):
+            # 包含了路径压缩的find算法
+            if x != p[x]:
+                p[x] = f(p[x])
+            return p[x]
+
+        for i, j in pairs:
+            # union操作
+            p[f(j)] = f(i)
+
+        d = collections.defaultdict(list)
+        # 对并查集中的每一个元素都再使用find函数找出其顶层节点的值
+        for i, j in enumerate(map(f, p)):
+            # 将不同元素加入所属的顶层节点
+            d[j].append(i)
+        # 排序
+        ans = list(s)
+        # 每个顶层节点所包含的元素集合
+        for q in d.values():
+            # 对元素所指代的字符进行排序
+            t = sorted(ans[i] for i in q)
+            # 将元素与其指代值解压放入
+            for i, c in zip(sorted(q), t):
+                ans[i] = c
+        return ''.join(ans)
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3682,3 +3755,6 @@ if __name__ == '__main__':
 
     # 1177 构建回文串检测
     # print(show.canMakePaliQueries('abcda', [[3, 3, 0], [1, 2, 0], [0, 3, 1], [0, 3, 2], [0, 4, 1]]))
+
+    # 1202 交换字符串中的元素
+    # print(show.smallestStringWithSwaps('dcabe', [[0, 3], [0, 1], [2, 4]]))
