@@ -3432,6 +3432,22 @@ class Solution:
                 ans[i] = c
         return ''.join(ans)
 
+    def equalSubstring(self, s: str, t: str, maxCost: int) -> int:
+        # 题目都没交代清楚：应该是转化为最长子串，而非子序列
+        # 必须连续，因此可以采用滑动窗口来解决
+        lens = len(s)
+        res = [abs(ord(s[i]) - ord(t[i])) for i in range(lens)]
+        # i,j 分别为窗口的左右边界，一旦长度超过，则移动左指针，其余都是移动右指针
+        j, tot, max_len = 0, 0, 0
+        for i in range(lens):
+            tot += res[i]
+            if tot > maxCost:
+                tot -= res[j]
+                j += 1
+            max_len = max(max_len, i - j + 1)
+
+        return max_len
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3758,3 +3774,6 @@ if __name__ == '__main__':
 
     # 1202 交换字符串中的元素
     # print(show.smallestStringWithSwaps('dcabe', [[0, 3], [0, 1], [2, 4]]))
+
+    # 1208 尽可能使字符串相等
+    # print(show.equalSubstring('abcd', 'cdef', 3))
