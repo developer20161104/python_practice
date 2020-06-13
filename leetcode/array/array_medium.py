@@ -3448,6 +3448,32 @@ class Solution:
 
         return max_len
 
+    def queensAttacktheKing(self, queens: List[List[int]], king: List[int]) -> List[List[int]]:
+        # 预设基准，减少条件判断语句
+        judge = [[0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1]]
+        # 由于每一个queen都需要进行最多8次计算，因此还是比较耗时的
+        res = [[judge[i][0] * 100, judge[i][1] * 100] for i in range(8)]
+
+        for x, y in queens:
+            diffx, diffy = x - king[0], y - king[1]
+            for i in range(8):
+                # 通过判断两坐标与基准的比值是否相等以及比值大小来进行放置
+                if judge[i][0]:
+                    temp = diffx // judge[i][0]
+                    if 0 < temp < (res[i][0] - king[0]) // judge[i][0] and temp * judge[i][1] == diffy:
+                        res[i] = [x, y]
+                        break
+
+                # 判断纵坐标
+                if judge[i][1]:
+                    temp = diffy // judge[i][1]
+                    if temp * judge[i][0] == diffx and 0 < temp < (res[i][1] - king[1]) // judge[i][1]:
+                        res[i] = [x, y]
+                        break
+
+        # 过滤不在比较范围内的位置
+        return [x for x in res if abs(x[0]) != 100 and abs(x[1]) != 100]
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3777,3 +3803,9 @@ if __name__ == '__main__':
 
     # 1208 尽可能使字符串相等
     # print(show.equalSubstring('abcd', 'cdef', 3))
+
+    # 1222 可以攻击国王的皇后
+    # print(show.queensAttacktheKing(
+    #     [[5, 6], [7, 7], [2, 1], [0, 7], [1, 6], [5, 1], [3, 7], [0, 3], [4, 0], [1, 2], [6, 3], [5, 0], [0, 4], [2, 2],
+    #      [1, 1], [6, 4], [5, 4], [0, 0], [2, 6], [4, 5], [5, 2], [1, 4], [7, 5], [2, 3], [0, 5], [4, 2], [1, 0], [2, 7],
+    #      [0, 1], [4, 6], [6, 1], [0, 6], [4, 3], [1, 7]], [3, 4]))
