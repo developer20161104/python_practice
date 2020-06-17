@@ -3474,6 +3474,25 @@ class Solution:
         # 过滤不在比较范围内的位置
         return [x for x in res if abs(x[0]) != 100 and abs(x[1]) != 100]
 
+    def removeSubfolders(self, folder: List[str]) -> List[str]:
+        # 由于需要使用排序，因此时间复杂度为O(nlogn)，空间复杂度为O(1)，不含结果列表
+        folder.sort()
+        # 添加尾部结束符，减少多余的判断
+        folder.append('/')
+        sht_str, sht_cut = folder[0], folder[0].split('/')
+        res = []
+        for cur_str in folder[1:]:
+            cur_cut = cur_str.split('/')
+            sht_len = min(len(cur_cut), len(sht_cut)) - 1
+            # 当两者都不同时，可以直接添加，
+            # 否则就是出现诸如 /a/ab 与 /a/abc 等的情况，此时需要判断较短串尾部的字符是否相等
+            if sht_str not in cur_str or cur_cut[sht_len] != sht_cut[sht_len]:
+                res.append(sht_str)
+                sht_str = cur_str
+                sht_cut = sht_str.split('/')
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3804,8 +3823,9 @@ if __name__ == '__main__':
     # 1208 尽可能使字符串相等
     # print(show.equalSubstring('abcd', 'cdef', 3))
 
-    # 1222 可以攻击国王的皇后
-    # print(show.queensAttacktheKing(
-    #     [[5, 6], [7, 7], [2, 1], [0, 7], [1, 6], [5, 1], [3, 7], [0, 3], [4, 0], [1, 2], [6, 3], [5, 0], [0, 4], [2, 2],
-    #      [1, 1], [6, 4], [5, 4], [0, 0], [2, 6], [4, 5], [5, 2], [1, 4], [7, 5], [2, 3], [0, 5], [4, 2], [1, 0], [2, 7],
-    #      [0, 1], [4, 6], [6, 1], [0, 6], [4, 3], [1, 7]], [3, 4]))
+    # 1222 可以攻击国王的皇后 print(show.queensAttacktheKing( [[5, 6], [7, 7], [2, 1], [0, 7], [1, 6], [5, 1], [3, 7], [0, 3],
+    # [4, 0], [1, 2], [6, 3], [5, 0], [0, 4], [2, 2], [1, 1], [6, 4], [5, 4], [0, 0], [2, 6], [4, 5], [5, 2], [1, 4],
+    # [7, 5], [2, 3], [0, 5], [4, 2], [1, 0], [2, 7], [0, 1], [4, 6], [6, 1], [0, 6], [4, 3], [1, 7]], [3, 4]))
+
+    # 1233 删除子文件夹
+    # print(show.removeSubfolders(["/a", "/a/b", "/c/d", "/c/d/e", "/c/f", "/c/de"]))
