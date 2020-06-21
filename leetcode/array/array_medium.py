@@ -3493,6 +3493,61 @@ class Solution:
 
         return res
 
+    def countServers(self, grid: List[List[int]]) -> int:
+        # 思路一：常规法
+        # # 基本思路：使用行/列列表来分别统计每行/列出现的次数,然后根据统计的值来判断每个位置是否满足
+        # row, col = len(grid), len(grid[0])
+        # count_row, count_col = [0] * row, [0] * col
+        # for i in range(row):
+        #     for j in range(col):
+        #         if grid[i][j]:
+        #             count_row[i] += 1
+        #             count_col[j] += 1
+        #
+        # # res = 0
+        # # for i in range(row):
+        # #     for j in range(col):
+        # #         # 这里很巧妙，只要行列中有一个出现次数超过1时，说明相互有连接
+        # #         res += grid[i][j] and (count_row[i]>1 or count_col[j]>1)
+        # # return res
+        #
+        # return sum(grid[i][j] and (count_row[i] > 1 or count_col[j] > 1) for i in range(row) for j in range(col))
+
+        # 思路二：并查集
+        from collections import defaultdict
+        row, col = len(grid), len(grid[0])
+        pre = [i for i in range(row + col)]
+
+        # 并查集的基本操作
+        # 寻找同一集合的元素
+        def find(root: int):
+            if pre[root] != root:
+                pre[root] = find(pre[root])
+            return pre[root]
+
+        # 合并元素
+        def union(x: int, y: int):
+            pre[find(x)] = find(y)
+
+        # 先统计点总数
+        total = 0
+        for i in range(row):
+            for j in range(col):
+                if grid[i][j]:
+                    total += 1
+                    # 这里没看懂
+                    union(i, j + row)
+
+        # 统计每个集合的元素数
+        dparent = defaultdict(int)
+        for i in range(row):
+            for j in range(col):
+                if grid[i][j]:
+                    dparent[find(i)] += 1
+
+        # 减去只包含一个元素的集合个数
+        return total - sum(1 for i in dparent.values() if i == 1)
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3829,3 +3884,7 @@ if __name__ == '__main__':
 
     # 1233 删除子文件夹
     # print(show.removeSubfolders(["/a", "/a/b", "/c/d", "/c/d/e", "/c/f", "/c/de"]))
+
+    # 1267 统计参与通信的服务器
+    # 这个题值得思考，尤其是并查集的使用部分
+    # print(show.countServers([[0], [0], [1]]))
