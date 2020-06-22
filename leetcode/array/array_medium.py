@@ -3548,6 +3548,26 @@ class Solution:
         # 减去只包含一个元素的集合个数
         return total - sum(1 for i in dparent.values() if i == 1)
 
+    def countSquares(self, matrix: List[List[int]]) -> int:
+        # 纯粹的暴力法（碰到满足的顺序往下迭代）
+        count, row, col = 0, len(matrix), len(matrix[0])
+        for i in range(row):
+            for j in range(col):
+                if matrix[i][j]:
+                    count += 1
+                    ext_row, ext_col = i + 1, j + 1
+                    while ext_row < row and ext_col < col and matrix[i][ext_col] == matrix[ext_row][j] == 1:
+                        k = 1
+                        while i + k <= ext_row and matrix[i + k][ext_col] == matrix[ext_row][j + k] == 1:
+                            k += 1
+                        # 出现隐秘的错误：当较小的正方形都不满足时，较大的肯定也不满足
+                        if i + k > ext_row:
+                            count += 1
+                            ext_row, ext_col = ext_row + 1, ext_col + 1
+                        else:
+                            break
+        return count
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3888,3 +3908,6 @@ if __name__ == '__main__':
     # 1267 统计参与通信的服务器
     # 这个题值得思考，尤其是并查集的使用部分
     # print(show.countServers([[0], [0], [1]]))
+
+    # 1277 统计全为1的正方形子矩阵
+    # print(show.countSquares([[0, 1, 1, 1], [1, 1, 0, 1], [1, 1, 1, 1], [1, 0, 1, 0]]))
