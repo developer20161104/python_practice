@@ -3568,6 +3568,49 @@ class Solution:
                             break
         return count
 
+    def maxSideLength(self, mat: List[List[int]], threshold: int) -> int:
+        # 还是需要使用前缀和来解决，虽然比较耗时
+        row, col = len(mat), len(mat[0])
+        pre_sum = [[0] * (col + 1) for _ in range(row + 1)]
+        for i in range(row):
+            for j in range(col):
+                # 构建二维前缀和
+                pre_sum[i + 1][j + 1] = mat[i][j] + pre_sum[i][j + 1] + pre_sum[i + 1][j] - pre_sum[i][j]
+
+        tot_min = 0
+        # 直接暴力判断会超时，需要进行二分
+        # # 细节真心太差了，错误点：行列总数
+        # for k in range(1, min(row, col)+1):
+        #     cur_min = 200000
+        #     for i in range(k, row+1):
+        #         for j in range(k, col+1):
+        #             cur_min = min(cur_min, pre_sum[i][j]-pre_sum[i][j-k]-pre_sum[i-k][j]+pre_sum[i-k][j-k])
+        #
+        #     # 错误点：门限可以相等
+        #     if cur_min <= threshold:
+        #         tot_min = k
+
+        # 使用二分来进行查找k值，优化时间复杂度
+        left, right = 1, min(row, col) + 1
+        while left < right:
+            k = left + (right - left) // 2
+
+            cur_min = 200000
+            for i in range(k, row + 1):
+                for j in range(k, col + 1):
+                    # 实质为前缀和列表的逆运算
+                    cur_min = min(cur_min,
+                                  pre_sum[i][j] - pre_sum[i][j - k] - pre_sum[i - k][j] + pre_sum[i - k][j - k])
+
+            # 利用计算的门限来判断收缩的边界
+            if cur_min > threshold:
+                right = k
+            else:
+                tot_min = k
+                left = k + 1
+
+        return tot_min
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3911,3 +3954,6 @@ if __name__ == '__main__':
 
     # 1277 统计全为1的正方形子矩阵
     # print(show.countSquares([[0, 1, 1, 1], [1, 1, 0, 1], [1, 1, 1, 1], [1, 0, 1, 0]]))
+
+    # 1292 元素和小于等于阈值的正方形的最大边长
+    # print(show.maxSideLength([[2, 2, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2, 2, 2]], 1))
