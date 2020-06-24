@@ -3611,6 +3611,52 @@ class Solution:
 
         return tot_min
 
+    def isPossibleDivide(self, nums: List[int], k: int) -> bool:
+        # 暴力法：超时，还是不得行。
+        # 基本思路：将已经判断过的数字置零，最终求和计算结果
+        # lens = len(nums)
+        # if lens % k:
+        #     return False
+        # nums.sort()
+        #
+        # i = 0
+        # while i < lens:
+        #     if nums[i]:
+        #         j = i
+        #         cur_val = nums[j] - 1
+        #
+        #         for _ in range(k):
+        #             # 暴力穷举
+        #             while j < lens and nums[j] < cur_val + 1:
+        #                 j += 1
+        #             if j == lens or nums[j] != cur_val + 1:
+        #                 return False
+        #
+        #             cur_val += 1
+        #             nums[j] = 0
+        #             j += 1
+        #
+        #     i += 1
+        #
+        # return True if not sum(nums) else False
+
+        # 思路二，使用hash排序后进行模拟遍历
+        # 主要优势点：将重复组直接过滤，比逐一遍历过滤确实要快很多
+        from collections import Counter
+        count = Counter(nums)
+        sort_arr = sorted(count)
+        for num in sort_arr:
+            time = count[num]
+            if time > 0:
+                for i in range(num, num + k):
+                    # 直接减掉所有重复组
+                    if count[i] >= time:
+                        count[i] -= time
+                    else:
+                        return False
+
+        return True
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -3957,3 +4003,6 @@ if __name__ == '__main__':
 
     # 1292 元素和小于等于阈值的正方形的最大边长
     # print(show.maxSideLength([[2, 2, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2, 2, 2]], 1))
+
+    # 1296 划分数组为连续数字的集合
+    # print(show.isPossibleDivide([1, 1, 2, 2, 3, 3], 2))
