@@ -3657,6 +3657,37 @@ class Solution:
 
         return True
 
+    def findBestValue(self, arr: List[int], target: int) -> int:
+        # 问题很大，需要修改方式，直接暴力也可能会超时
+        # arr.sort()
+        # lens = len(arr)
+        # res, pre_val = round(target/lens), 0
+        # min_mod = target % lens
+        # if res > arr[0]:
+        #     for i in range(lens-1):
+        #         target -= arr[i]
+        #         if arr[i] != pre_val and arr[i] >= round(target/(lens-1-i)) and min_mod > target % (lens-1-i):
+        #             min_mod = target % (lens-1-i)
+        #             res = round(target / (lens-1-i))
+        #         pre_val = arr[i]
+        #
+        # return res
+        # 需要仔细斟酌
+        # 可以用这个思路，但是基本思想有问题
+        arr.sort()
+        cur_sum, lens = 0, len(arr)
+        for i in range(lens):
+            # 每次减去当前已经遍历过的总和
+            cur_avg = (target - cur_sum) // (lens - i)
+            # 这个结束条件没有想到
+            # 出现当前的avg值小于等于当前的值时，即可返回
+            if cur_avg <= arr[i]:
+                return round((target - cur_sum) / (lens - i))
+
+            cur_sum += arr[i]
+
+        return arr[-1]
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4001,8 +4032,11 @@ if __name__ == '__main__':
     # 1277 统计全为1的正方形子矩阵
     # print(show.countSquares([[0, 1, 1, 1], [1, 1, 0, 1], [1, 1, 1, 1], [1, 0, 1, 0]]))
 
-    # 1292 元素和小于等于阈值的正方形的最大边长
-    # print(show.maxSideLength([[2, 2, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2, 2, 2]], 1))
+    # 1292 元素和小于等于阈值的正方形的最大边长 print(show.maxSideLength([[2, 2, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2,
+    # 2, 2], [2, 2, 2, 2, 2]], 1))
 
     # 1296 划分数组为连续数字的集合
     # print(show.isPossibleDivide([1, 1, 2, 2, 3, 3], 2))
+
+    # 1300 转变数组后最接近目标值的数组和
+    # print(show.findBestValue([2, 3, 5], 10))
