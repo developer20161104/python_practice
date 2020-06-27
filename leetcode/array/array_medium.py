@@ -3688,6 +3688,45 @@ class Solution:
 
         return arr[-1]
 
+    def diagonalSort(self, mat: List[List[int]]) -> List[List[int]]:
+        # 最朴素的方法：逐一遍历，再排序放回
+        # 代码有点冗余
+        row, col = len(mat), len(mat[0])
+        if not row:
+            return mat
+
+        def get_sort(crow, ccol):
+            arr_sort = []
+            while 0 <= crow < row and 0 <= ccol < col:
+                arr.append(mat[crow][ccol])
+                crow += 1
+                ccol += 1
+
+            arr_sort.sort()
+            return arr_sort
+
+        # 左下角部分
+        for i in range(row - 1, -1, -1):
+            cur_row, cur_col = i, 0
+            arr = get_sort(cur_row, cur_col)
+
+            temp_col = 0
+            for j in range(i, cur_row):
+                mat[j][temp_col] = arr[j - i]
+                temp_col += 1
+
+        # 右上角部分
+        for i in range(1, col):
+            cur_row, cur_col = 0, i
+            arr = get_sort(cur_row, cur_col)
+
+            temp_row = 0
+            for j in range(i, cur_col):
+                mat[temp_row][j] = arr[j - i]
+                temp_row += 1
+
+        return mat
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4040,3 +4079,6 @@ if __name__ == '__main__':
 
     # 1300 转变数组后最接近目标值的数组和
     # print(show.findBestValue([2, 3, 5], 10))
+
+    # 1329 将矩阵按对角线排序
+    # print(show.diagonalSort([[3, 3, 1, 1], [2, 2, 1, 2], [1, 1, 1, 2]]))
