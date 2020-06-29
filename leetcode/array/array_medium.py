@@ -3727,6 +3727,45 @@ class Solution:
 
         return mat
 
+    def filterRestaurants(self, restaurants: List[List[int]], veganFriendly: int, maxPrice: int, maxDistance: int) -> \
+            List[int]:
+        # 插入排序，每次找到满足条件的进行顺序插入
+        # 错误一：id号并不与当前位置存在关系，需要建立映射
+        # res = []
+        #
+        # if not restaurants:
+        #     return res
+        # relas = {}
+        # # 建立id与餐厅的映射
+        # for i in restaurants:
+        #     relas[i[0]] = i[1:]
+        #
+        # for rest in restaurants:
+        #     # 对于满足条件的，采用简单插入排序来处理
+        #     if (not veganFriendly or rest[2]) and rest[3] <= maxPrice and rest[4] <= maxDistance:
+        #         # 时间复杂度为O(n)，尝试简化
+        #         # j = 0
+        #         # while j < len(res) and (
+        #         #         relas[res[j]][0] > restaurants[i][1] or relas[res[j]][0] == restaurants[i][
+        #         #     1] and res[j] > restaurants[i][0]):
+        #         #     j += 1
+        #         # res.insert(j, restaurants[i][0])
+        #         res.append(rest[0])
+        #
+        # # 内置函数是真滴牛皮，直接提升了一倍速度
+        # res.sort(key=lambda x: (-relas[x][0], -x))
+        #
+        # return res
+
+        # 简化版: 列表推导+内置多重排序
+        # 根本不需要hash来建立id与对应的餐馆的映射
+        if not restaurants:
+            return []
+        res = [rest for rest in restaurants if
+               (not veganFriendly or rest[2]) and rest[3] <= maxPrice and rest[4] <= maxDistance]
+        res.sort(key=lambda x: (-x[1], -x[0]))
+        return [x[0] for x in res]
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4082,3 +4121,8 @@ if __name__ == '__main__':
 
     # 1329 将矩阵按对角线排序
     # print(show.diagonalSort([[3, 3, 1, 1], [2, 2, 1, 2], [1, 1, 1, 2]]))
+
+    # 1333 餐厅过滤器
+    # print(show.filterRestaurants(
+    #     [[77484, 13400, 1, 4010, 2926], [3336, 85138, 0, 49966, 89979], [28391, 55328, 0, 69158, 29058],
+    #      [57395, 64988, 0, 45312, 30261]], 0, 99739, 60242))
