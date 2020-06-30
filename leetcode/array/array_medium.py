@@ -3766,6 +3766,21 @@ class Solution:
         res.sort(key=lambda x: (-x[1], -x[0]))
         return [x[0] for x in res]
 
+    def minSetSize(self, arr: List[int]) -> int:
+        # 基本思想是建立一个hash映射，关联出现的数字以及其出现的次数
+        from collections import Counter
+        relas = Counter(arr)
+        lens, count = len(arr), 0
+        # 对其进行排序再从大到小挑选，有贪心思想
+        choose = sorted(relas.keys(), key=lambda x: -relas[x])
+        for i in range(len(choose)):
+            count += relas[choose[i]]
+            if count >= lens // 2:
+                return i + 1
+
+        # 按照题给条件时不会跳到这一步的
+        return 0
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4126,3 +4141,6 @@ if __name__ == '__main__':
     # print(show.filterRestaurants(
     #     [[77484, 13400, 1, 4010, 2926], [3336, 85138, 0, 49966, 89979], [28391, 55328, 0, 69158, 29058],
     #      [57395, 64988, 0, 45312, 30261]], 0, 99739, 60242))
+
+    # 1338 数组大小减半
+    # print(show.minSetSize([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
