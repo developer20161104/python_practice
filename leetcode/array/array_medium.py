@@ -3781,6 +3781,53 @@ class Solution:
         # 按照题给条件时不会跳到这一步的
         return 0
 
+    def numOfSubarrays(self, arr: List[int], k: int, threshold: int) -> int:
+        # 尝试使用回溯，日，子数组
+        # lens = len(arr)
+        # if not lens:
+        #     return 0
+        #
+        # path = []
+        #
+        # def travel(index: int):
+        #     if len(path) == k:
+        #         return 1 if sum(path) // k >= threshold else 0
+        #
+        #     count = 0
+        #     for i in range(index, lens):
+        #         path.append(arr[i])
+        #
+        #         count += travel(i + 1)
+        #         path.pop()
+        #
+        #     return count
+        #
+        # return travel(0)
+
+        # 那应该用前缀和就行，时间复杂度为O(n)，空间复杂度为O(1)，尝试优化为O(1)
+        lens = len(arr)
+        if not lens:
+            return 0
+
+        # pre_sum = [0]*(lens+1)
+        #
+        # for i in range(1, lens+1):
+        #     pre_sum[i] = pre_sum[i-1]+arr[i-1]
+        #
+        # return sum(1 for i in range(k, lens+1) if (pre_sum[i]-pre_sum[i-k])//k >= threshold)
+
+        # 将空间复杂度降为O(1)，并且只需要进行一次遍历
+        count, cur_sum = 0, 0
+        for i in range(lens):
+            cur_sum += arr[i]
+            if i >= k:
+                cur_sum -= arr[i - k]
+
+            # 能不用除法一定不要使用除法
+            count += i >= k - 1 and cur_sum >= threshold * k
+
+        return count
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4144,3 +4191,6 @@ if __name__ == '__main__':
 
     # 1338 数组大小减半
     # print(show.minSetSize([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+
+    # 1343 大小为k且平均值大于等于阈值的子数组数目
+    # print(show.numOfSubarrays([11, 13, 17, 23, 29, 31, 7, 5, 2, 3], 3, 5))
