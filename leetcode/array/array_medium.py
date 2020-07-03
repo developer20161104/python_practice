@@ -205,6 +205,30 @@ class SnapshotArray:
         return self.arr[index][search_list[left - 1]]
 
 
+# 1352 最后k个数的乘积
+class ProductOfNumbers:
+    # 使用前缀积会有问题，如果出现0时，后续全部为0
+    # 因此，当num为0时，需要对保存的值修改为1，并记录当前0出现的位置
+    # 可以通过预设长度来进一步优化时间复杂度
+    def __init__(self):
+        self.pre_mul = [1]
+        self.len = 1
+        self.zero_pos = -1
+
+    def add(self, num: int) -> None:
+        # 就是此处有点耗时，每次添加需要使用O(n)的时间来创建
+        if not num:
+            self.zero_pos = self.len-1
+            self.pre_mul.append(1)
+        else:
+            self.pre_mul.append(self.pre_mul[self.len - 1] * num)
+        self.len += 1
+
+    def getProduct(self, k: int) -> int:
+        # 如果长度范围内出现0，则直接返回0，否则，利用前缀积可以在O(1)的时间内求出结果
+        return 0 if self.len - k - 1 <= self.zero_pos else self.pre_mul[self.len - 1] // self.pre_mul[self.len - 1 - k]
+
+
 class Solution:
     def __init__(self):
         self.order = 0
