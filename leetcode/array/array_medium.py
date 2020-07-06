@@ -218,7 +218,7 @@ class ProductOfNumbers:
     def add(self, num: int) -> None:
         # 就是此处有点耗时，每次添加需要使用O(n)的时间来创建
         if not num:
-            self.zero_pos = self.len-1
+            self.zero_pos = self.len - 1
             self.pre_mul.append(1)
         else:
             self.pre_mul.append(self.pre_mul[self.len - 1] * num)
@@ -3851,6 +3851,39 @@ class Solution:
             count += i >= k - 1 and cur_sum >= threshold * k
 
         return count
+
+    def rankTeams(self, votes: List[str]) -> str:
+        # 尝试转化为权重值,虽然可行，但是权重已经上升到了指数级别
+        # 为了使得前一名的票数为绝对优势所带来的开销有点大
+        # 时间复杂度为O(n2)，空间复杂度为O(m2)
+        # value = [0]*26
+        # max_count = 50
+        #
+        # for vote in votes:
+        #     lens = len(vote)
+        #     for i in range(lens):
+        #         value[ord(vote[i])-ord('A')] += 10**(max_count-2*i)
+        #
+        # # 利用列表中的值对列表进行排序，
+        # return "".join(chr(i[0]+ord('A')) for i in sorted(enumerate(value), key=lambda x: (-x[1], x[0])) if i[1] > 0)
+
+        # 思路二：直接撸起袖子干，不搞花里胡哨的
+        # 这个lambda函数有点优秀啊，会对列表自动进行顺序排序
+        # 相比于上一个思路，直接提升了一倍性能可还行
+        dicts = {}
+
+        lens = len(votes[0])
+        # 先逐一保存键值对
+        for vote in votes:
+            for i in range(lens):
+                if vote[i] not in dicts:
+                    dicts[vote[i]] = [0] * 26
+                dicts[vote[i]][i] += 1
+
+        # 再以多重排序来得到最终结果
+        # 因为需要使用列表作为判断依据，因此不好直接在其顺序上做处理，因此需要使用reverse参数
+        # 需要注意的是字符并不能像数字一样直接取反表示逆方向，因此需要转化
+        return ''.join(sorted(dicts, key=lambda x: (dicts[x], -ord(x)), reverse=True))
 
 
 # 二分查找最优方法，保留左闭右开原则
