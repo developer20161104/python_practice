@@ -3885,6 +3885,40 @@ class Solution:
         # 需要注意的是字符并不能像数字一样直接取反表示逆方向，因此需要转化
         return ''.join(sorted(dicts, key=lambda x: (dicts[x], -ord(x)), reverse=True))
 
+    def numTimesAllBlue(self, light: List[int]) -> int:
+        # 暴力法，O(n2) 超时
+        # count, lens = 0, len(light)
+        # visit = [0] * lens
+        # max_pos = light[0]-1
+        #
+        # for pos in light:
+        #     visit[pos - 1] = 1
+        #     max_pos = max(max_pos, pos)
+        #     if visit[0]:
+        #         temp = max_pos-1
+        #         # 在遇到黄灯时需要逐一向前遍历，此处应该能优化
+        #         while temp and visit[temp]:
+        #             temp -= 1
+        #         if temp == 0 or visit[temp] == 2:
+        #             visit[max_pos - 1] = 2
+        #             count += 1
+        #
+        # return count
+
+        # 还是没有理解透彻题目的内容：
+        # 关键点：如果点亮的灯的数量与当前最远的灯的位置相等时，说明此时状态满足所有的灯为蓝色
+        # 如果为大于时，说明至少存在一个黄灯（最远的那个），因此可以变成一次遍历
+        # 时间复杂度为O(n)
+        count, lens = 0, len(light)
+        max_pos = -1
+        for i in range(lens):
+            max_pos = max(max_pos, light[i] - 1)
+            # 只需要进行简单的条件判断即可
+            if max_pos == i:
+                count += 1
+
+        return count
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4259,3 +4293,6 @@ if __name__ == '__main__':
     # "FERSGNMJVZXWAYLIKCPUQHTO", "HPLRIUQMTSGYJVAXWNOCZEKF", "JUVWPTEGCOFYSKXNRMHQALIZ", "MWPIAZCNSLEYRTHFKQXUOVGJ",
     # "EZXLUNFVCMORSIWKTYHJAQPG", "HRQNLTKJFIEGMCSXAZPYOVUW", "LOHXVYGWRIJMCPSQENUAKTZF", "XKUTWPRGHOAQFLVYMJSNEIZC",
     # "WTCRQMVKPHOSLGAXZUEFYNJI"]))
+
+    # 1375 灯泡开关III
+    # print(show.numTimesAllBlue([2, 1, 4, 3, 6, 5]))
