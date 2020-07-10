@@ -3919,6 +3919,61 @@ class Solution:
 
         return count
 
+    def maxNumberOfFamilies(self, n: int, reservedSeats: List[List[int]]) -> int:
+        # 一个很憨批的暴力法，逐一遍历，并且包含各种细节判断
+        # reservedSeats.sort(key=lambda x: (x[0], x[1]))
+        # lens = len(reservedSeats)
+        # i, j, count = 1, 0, 0
+        # while i < n + 1:
+        #     # 出现j中的最大长度未达到n时，直接自增并结束语句
+        #     if j == lens:
+        #         count += (n - reservedSeats[j - 1][0]) * 2
+        #         break
+        #     # 当j中的长度已经超过i时，直接自增
+        #     if i < reservedSeats[j][0]:
+        #         count += 2 * (reservedSeats[j][0] - i)
+        #         i = reservedSeats[j][0]
+        #
+        #     pre_dis = cur_max = 0
+        #     while j < lens and reservedSeats[j][0] == i:
+        #         # 考虑当前只出现5的情况
+        #         if reservedSeats[j][1] == 5:
+        #             pre_dis = 1
+        #         # 计算左边的剩余
+        #         count += (reservedSeats[j][1] - pre_dis - 1) // 4
+        #         # 单独针对只出现一次9，出现2，7，以及出现4,9的特殊情况
+        #         if (not pre_dis and reservedSeats[j][1] == 9) or (pre_dis == 2 and reservedSeats[j][1] == 7) or (
+        #                 pre_dis == 4 and reservedSeats[j][1] == 9):
+        #             count -= 1
+        #         pre_dis = cur_max = reservedSeats[j][1]
+        #         j += 1
+        #     # 计算右边的剩余
+        #     if cur_max < 6:
+        #         count += (10 - cur_max - 1) // 4
+        #     i += 1
+        #
+        # return count
+
+        # 在遇到固定位置的判断时，尝试多多考虑二进制来对位置进行保存
+        # 官方思路：使用二进制来保存状态，并且通过题意，1,10两个位置的存在与否都没有影响
+        # 放置一共只有3中形式，2,3,4,5 4,5,6,7 5,6,7,8 这三种
+        from collections import defaultdict
+        left, middle, right = 0b11110000, 0b11000011, 0b00001111
+        occupied = defaultdict(int)
+        for seat in reservedSeats:
+            # 只需要保存出现在2,9之间的被占位置，转化为二进制的对应位置
+            if 2 <= seat[1] <= 9:
+                # 此处或的作用相当于加，将之前的1位置添加到当前的数中
+                occupied[seat[0]] |= (1 << (seat[1] - 2))
+
+        # 剩余行的直接增2
+        ans = (n - len(occupied)) * 2
+        for row, bitmask in occupied.items():
+            # 分别对三种状态使用或来进行判断
+            if (bitmask | left) == left or (bitmask | middle) == middle or (bitmask | right) == right:
+                ans += 1
+        return ans
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4296,3 +4351,6 @@ if __name__ == '__main__':
 
     # 1375 灯泡开关III
     # print(show.numTimesAllBlue([2, 1, 4, 3, 6, 5]))
+
+    # 1386 安排电影院座位
+    # print(show.maxNumberOfFamilies(4, [[2, 10], [3, 1], [1, 2], [2, 2], [3, 5], [4, 1], [4, 9], [2, 7]]))
