@@ -3974,6 +3974,32 @@ class Solution:
                 ans += 1
         return ans
 
+    def numTeams(self, rating: List[int]) -> int:
+        # 官方还有一种思路，即以中间位置的值作为基准，左边查找比其小/大的值，右边也做同样操作
+        # 这样可以得到以其为基准时所满足的数量为 cl*cr + (l-cl)*(r-cr) 这样也不用额外的空间复杂度
+
+        # 设置两个列表分别保存后面所出现的元素比当前值大/小的数量
+        # 将时间复杂度降为O(n2)
+        lens = len(rating)
+        if lens < 3:
+            return 0
+        lower, bigger = [0] * lens, [0] * lens
+        for i in range(lens - 1):
+            for j in range(i + 1, lens):
+                lower[i] += 1 if rating[i] > rating[j] else 0
+                bigger[i] += 1 if rating[i] < rating[j] else 0
+
+        count = 0
+        for i in range(lens - 2):
+            for j in range(i + 1, lens - 1):
+                # 在进行最终遍历时只需要自增之前的数量列表即可
+                if rating[i] > rating[j]:
+                    count += lower[j]
+                elif rating[i] < rating[j]:
+                    count += bigger[j]
+
+        return count
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4354,3 +4380,6 @@ if __name__ == '__main__':
 
     # 1386 安排电影院座位
     # print(show.maxNumberOfFamilies(4, [[2, 10], [3, 1], [1, 2], [2, 2], [3, 5], [4, 1], [4, 9], [2, 7]]))
+
+    # 1395 统计作战单位数
+    # print(show.numTeams([1, 2, 3, 4]))
