@@ -4000,6 +4000,19 @@ class Solution:
 
         return count
 
+    def processQueries(self, queries: List[int], m: int) -> List[int]:
+        # 直接暴力不BB，模拟操作
+        # 时间复杂度为O(nm)
+        arr = [i for i in range(1, m + 1)]
+        res = []
+        for query in queries:
+            pos = arr.index(query)
+            res.append(pos)
+            arr.pop(pos)
+            arr.insert(0, query)
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4383,3 +4396,6 @@ if __name__ == '__main__':
 
     # 1395 统计作战单位数
     # print(show.numTeams([1, 2, 3, 4]))
+
+    # 1409 查询带键的排列
+    # print(show.processQueries([7, 5, 5, 8, 3], 8))
