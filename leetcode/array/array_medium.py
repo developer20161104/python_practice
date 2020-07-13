@@ -4013,6 +4013,33 @@ class Solution:
 
         return res
 
+    def findMinFibonacciNumbers(self, k: int) -> int:
+        # 先构建fab数列，再用贪心思想的二分查找寻找当前小于等于k的值，并将k减去相应的值
+        # 时间复杂度为O(n)+O(logn)
+        lens = 2
+        fab = [1, 1]
+        while fab[lens - 1] <= k:
+            fab.append(fab[lens - 1] + fab[lens - 2])
+            lens += 1
+
+        k -= fab[lens - 2]
+        count = 1
+        left, right = 0, lens - 1
+        while k:
+            while left < right:
+                mid = left + (right - left) // 2
+                if k >= fab[mid]:
+                    left = mid + 1
+                else:
+                    right = mid
+
+            k -= fab[left - 1]
+
+            count += 1
+            right, left = left, 0
+
+        return count
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4399,3 +4426,6 @@ if __name__ == '__main__':
 
     # 1409 查询带键的排列
     # print(show.processQueries([7, 5, 5, 8, 3], 8))
+
+    # 1414 和为k的最少斐波那契数字数目
+    # print(show.findMinFibonacciNumbers(13))
