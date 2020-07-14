@@ -4040,6 +4040,38 @@ class Solution:
 
         return count
 
+    def maxScore(self, cardPoints: List[int], k: int) -> int:
+        # 这DP写得有问题
+        # lens = len(cardPoints)
+        # max_val, time = 0, 0
+        # dp = [[0] * (lens + 1) for _ in range(lens+1)]
+        # for i in range(lens):
+        #     for j in range(lens):
+        #         dp[i+1][j+1] = max(dp[i][j+1] , dp[i+1][j]) + max(cardPoints[i], cardPoints[lens - j-1])
+        #         if i + j+1 == k:
+        #             max_val = max(max_val, dp[i+1][j+1])
+        #             time += 1
+        #             break
+        #
+        #         if time == 2:
+        #             return max_val
+        # return max_val
+
+        # 官方思路：前缀和+滑动窗口+逆向思维
+        # 既然求取的是两边的最大，则可以转化为求取中间的最小，再减去即可
+        lens = len(cardPoints)
+        pre_sum = [0] * (lens + 1)
+        for i in range(lens):
+            pre_sum[i + 1] = pre_sum[i] + cardPoints[i]
+
+        # 求取中间的最小
+        min_sum = pre_sum[lens]
+        for i in range(lens - k, lens + 1):
+            min_sum = min(min_sum, pre_sum[i] - pre_sum[i - lens + k])
+
+        # 最后减去即可
+        return pre_sum[lens] - min_sum
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4429,3 +4461,6 @@ if __name__ == '__main__':
 
     # 1414 和为k的最少斐波那契数字数目
     # print(show.findMinFibonacciNumbers(13))
+
+    # 1423 可获得的最大点数
+    # print(show.maxScore([100, 1, 1, 200, 1, 1], 3))
