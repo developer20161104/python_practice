@@ -4072,6 +4072,26 @@ class Solution:
         # 最后减去即可
         return pre_sum[lens] - min_sum
 
+    def findDiagonalOrder(self, nums: List[List[int]]) -> List[int]:
+        # 使用行列和进行分类，然后逆序即可
+        # 时间复杂度为O(nm)，空间复杂度为O(nm)
+        row = len(nums)
+        col = len(nums[0])
+        for num in nums[1:]:
+            col = max(col, len(num))
+
+        # 此处有个小坑，最后行，列的值不一定是总和最大的
+        store = [[] for _ in range(row + col - 1)]
+        for i, num in enumerate(nums):
+            for j, dig in enumerate(num):
+                store[i + j].append(dig)
+
+        res = []
+        for l in store:
+            res += l[::-1]
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4464,3 +4484,6 @@ if __name__ == '__main__':
 
     # 1423 可获得的最大点数
     # print(show.maxScore([100, 1, 1, 200, 1, 1], 3))
+
+    # 1424 对角线遍历II
+    # print(show.findDiagonalOrder([[14, 12, 19, 16, 9], [13, 14, 15, 8, 11], [11, 13, 1]]))
