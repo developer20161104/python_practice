@@ -4092,6 +4092,20 @@ class Solution:
 
         return res
 
+    def kLengthApart(self, nums: List[int], k: int) -> bool:
+        # 对于特殊情况的判断
+        if not k:
+            return True
+        # 思想是记录前一个1的位置，然后他们之间的0数量就能通过下标直接求解
+        pre_index = -k - 1
+        for i, value in enumerate(nums):
+            if value:
+                # 记录数量少的时候直接返回False即可
+                if i - pre_index - 1 < k:
+                    return False
+                pre_index = i
+        return True
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4487,3 +4501,6 @@ if __name__ == '__main__':
 
     # 1424 对角线遍历II
     # print(show.findDiagonalOrder([[14, 12, 19, 16, 9], [13, 14, 15, 8, 11], [11, 13, 1]]))
+
+    # 1437 是否所有1至少相隔k个元素
+    # print(show.kLengthApart([0, 1, 1, 1, 1, 1], 0))
