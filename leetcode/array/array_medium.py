@@ -4106,6 +4106,39 @@ class Solution:
                 pre_index = i
         return True
 
+    def longestSubarray(self, nums: List[int], limit: int) -> int:
+        # 这个方法以前确实没见过，慢慢学（使用单调队列可以维护一个动态的最大最小值）
+        # 维护两个单调队列，一个保存降序元素，一个保存升序元素，两个都包含下标
+        # 使用滑动窗口，如果当前max-min大于limit，则需要将开始位置后移
+        # 移动时候，如果出现队首元素比开始位置靠前时，将队首元素出列
+        up_sort, down_sort = [], []
+        # 单调队列当前的队首位置
+        up_p, down_p = 0, 0
+        # 滑动窗口的起点与最终结果的取值
+        st, res = 0, 0
+        for i, num in enumerate(nums):
+            # 当len与队首相等时，表示已经超出了范围
+            while len(up_sort) > up_p and num < up_sort[-1][0]:
+                up_sort.pop()
+            up_sort.append([num, i])
+
+            while len(down_sort) > down_p and num > down_sort[-1][0]:
+                down_sort.pop()
+            down_sort.append([num, i])
+
+            # 在出现子数组已经不满足当前的limit时，需要开始移动左指针
+            while down_sort[down_p][0] - up_sort[up_p][0] > limit:
+                st += 1
+                # 发现当前的队列中的元素已经在范围之外时，则将首部指针右移
+                if up_sort[up_p][1] < st:
+                    up_p += 1
+                if down_sort[down_p][1] < st:
+                    down_p += 1
+
+            res = max(res, i - st + 1)
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4504,3 +4537,6 @@ if __name__ == '__main__':
 
     # 1437 是否所有1至少相隔k个元素
     # print(show.kLengthApart([0, 1, 1, 1, 1, 1], 0))
+
+    # 1438 绝对差不超过限制的最长连续子数组(有点难，是个新方法)
+    # print(show.longestSubarray([10, 1, 2, 4, 7, 2], 5))
