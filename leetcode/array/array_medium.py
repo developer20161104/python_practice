@@ -4139,6 +4139,36 @@ class Solution:
 
         return res
 
+    def countTriplets(self, arr: List[int]) -> int:
+        # 使用前缀异或优化了n的复杂度，但是还是O(n3)，太高了
+        # lens = len(arr)
+        # pre_arr = [0] * (lens + 1)
+        #
+        # for i in range(1, lens + 1):
+        #     pre_arr[i] = pre_arr[i - 1] ^ arr[i - 1]
+        #
+        # count = 0
+        # for i in range(lens):
+        #     for j in range(i + 1, lens):
+        #         for k in range(j, lens):
+        #             count += 1 and pre_arr[j] ^ pre_arr[i] == pre_arr[k + 1] ^ pre_arr[j]
+        #
+        # return count
+
+        # 题意没有理解透彻
+        # 实质就是将式子进行化简后可以发现，只要在i，k区间的值为0，则不管j取什么值最终都会满足要求
+        # 因此可以将复杂度降到O(n2)，虽然实质也是暴力，但是又优化了一个数量级
+        res, lens = 0, len(arr)
+        for i in range(lens):
+            cur = arr[i]
+            for k in range(i+1, lens):
+                cur ^= arr[k]
+                if not cur:
+                    # 选取的数量上需要复查
+                    res += k-i
+
+        return res
+
 
 # 二分查找最优方法，保留左闭右开原则
 def binary_sarch(arr: List[int], target: int) -> int:
@@ -4540,3 +4570,6 @@ if __name__ == '__main__':
 
     # 1438 绝对差不超过限制的最长连续子数组(有点难，是个新方法)
     # print(show.longestSubarray([10, 1, 2, 4, 7, 2], 5))
+
+    # 1442 形成两个亦或相等的三元组数目
+    # print(show.countTriplets([1, 1, 1, 1, 1]))
